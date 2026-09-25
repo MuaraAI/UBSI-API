@@ -94,8 +94,18 @@ GET /elearning/materials           → /learning/{enc} [No,Kode Mtk,Kelas,Judul,
                                      file host: students.bsi.ac.id (silabus/modul zip)
 GET /elearning/quiz                → /exercise [No,Kode Mtk,Paket,Dosen,Waktu,Mulai,Selesai,Aksi]
 
+# elibrary (publik, custom PHP, server LAMBAT — timeout 60s + retry wajib)
+GET /elibrary/search?q=&opsi=buku|semua|ta|skripsi|jurnal|prosiding|ebook&page
+    → GET /opac/pingresult?q={q}&opsi={opsi}; "Ditemukan N hasil";
+      paginasi /opac/result/?q=&o={opsi}&pg={offset}
+GET /elibrary/categories           → /opac/buku|ebook|jurnal|prosiding|referensi|skripsi|tugasakhir
+GET /elibrary/book/{id}            → /readbook/{id}/{slug}.html
+                                     KV: kode, klasifikasi, judul, edisi, penulis,
+                                     penerbit, bahasa, tahun, ISBN, tajuk subjek,
+                                     deskripsi/sinopsis, eksemplar, stok
+GET /elibrary/news                 → /news (+ /readnews/{y}/{m}/{id}/slug)
+
 # publik (audit menyusul saat modulnya dibangun)
-GET /elibrary/search?q=&page=      GET /elibrary/book/{id}
 GET /ejournal/search?q=&page=      GET /ejournal/article/{id}
 GET /repository/search?q=&page=    GET /repository/item/{id}
 GET /news                          → portal berita (news.bsi.ac.id/feed/ sudah ada di curzy_digest)
@@ -110,6 +120,27 @@ GET /news                          → portal berita (news.bsi.ac.id/feed/ sudah
   kosong/seasonal — endpoint khusus hanya kalau nanti dibutuhkan.
 - `/halaman-ujian` (MyBest) redirect loop saat tidak ada ujian aktif — tidak dijadikan endpoint.
 - studentv2 beranda juga mengekspos PDF pengumuman internal per-fakultas (sumber announcements).
+
+### Catatan audit elibrary (25 Sep 2026)
+
+- Bukan SLiMS/Koha — custom PHP CodeIgniter-ish. robots.txt hanya blokir `/cgi-bin/`.
+- Search: `/opac/pingresult?q=...&opsi=...` (GET, butuh `opsi`; tanpa itu respons kosong).
+  Verified live: `q=metode&opsi=buku` → "Ditemukan 967 hasil", 20 item/halaman.
+- Paginasi: `/opac/result/?q=...&o=buku&pg=N` (pg=10 = hal. 2; pola offset — konfirmasi ulang saat build).
+- Detail `/readbook/{id}/{slug}.html` = tabel KV lengkap + sinopsis + stok.
+  Tombol "Download" + pembaca PDF (pdf.js) ada tapi butuh login member (loginmember) —
+  v1 sajikan metadata + stok saja, baca/download buku bukan scope.
+- Bonus koleksi: tugas akhir `/tugasakhir/{nim}/{slug}` + berita perpustakaan.
+- Server sering timeout 30s+ — client wajib timeout 60s + retry 3x exponential.
+
+### Catatan audit ejournal (25 Sep 2026)
+
+- Cloudflare challenge menutup `/ejurnal/` root dan `/ejurnal/index.php/*` (semua jurnal OJS,
+  16 judul terpetakan dari fallback). Plain httpx 403; Obscura stealth pun belum lolos.
+- CELAH: `/ejurnal/oai?verb=Identify` dilayani TANPA challenge (fallback ke homepage) —
+  katalog jurnal tetap bisa diambil.
+- Keputusan final di M6, urutan: (1) curl_cffi impersonate Chrome → (2) flaresolverr
+  (butuh docker di VPS) → (3) fallback: modul ejournal mode katalog-only via celah oai.
 
 ## 6. Cloudflare (ejournal)
 
