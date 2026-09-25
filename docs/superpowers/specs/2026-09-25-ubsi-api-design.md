@@ -62,30 +62,54 @@ Komponen:
 - `app/session.py` — AsyncClient per modul login-an (cookie jar persisten in-memory), helper re-login sekali saat redirect ke halaman login terdeteksi. Sleep acak kecil (0.5–1.5s) antar request ber-paginasi ke kampus.
 - `app/<modul>.py` — masing-masing: fungsi fetch + parser murni (parse(html) → dict) yang bisa dites tanpa jaringan.
 
-## 5. Endpoint (v1)
+## 5. Endpoint (v1) — dikunci dari hasil audit live 25 Sep 2026
 
-Endpoint final tiap modul dikunci saat modul dibangun (form/param asli situs didiscovery saat itu), tapi shape-nya:
+Hasil audit: presensi ternyata ada di MyBest (bukan studentv2); tagihan TIDAK
+ada di kedua portal (sistem pembayaran terpisah) — di-drop dari scope.
+Semua URL `/absen-mhs/{enc}`, `/assignment/{enc}`, `/learning/{enc}` pakai
+token Laravel terenkripsi — diperlakukan opaque, selalu diambil dari `/sch`.
 
 ```
-GET /health                       → { status, redis: up/down }
-GET /studentv2/announcements      → daftar pengumuman {id, title, date, body_url}
-GET /studentv2/schedule           → jadwal kuliah semester aktif
-GET /studentv2/grades             → nilai per semester
-GET /studentv2/bills              → tagihan + status
-GET /studentv2/presence           → presensi
-GET /elearning/courses            → daftar course aktif
-GET /elearning/courses/{id}/materials
-GET /elearning/assignments        → tugas + deadline (lintas course)
-GET /elibrary/search?q=&page=
-GET /elibrary/book/{id}
-GET /ejournal/search?q=&page=
-GET /ejournal/article/{id}
-GET /repository/search?q=&page=
-GET /repository/item/{id}
-GET /news                         → berita portal utama
+GET /health                        → { status, redis: up/down }
+
+# studentv2 (login CSRF _token; terbukti di ubsi_sync.py)
+GET /studentv2/announcements       → beranda: pengumuman internal (PDF) + menu berita
+GET /studentv2/news                → /mahasiswa/berita (608 baris; pagination/cap)
+GET /studentv2/schedule            → /mahasiswa/jadwal-kuliah
+                                     [No,Hari,Jam,Kode Dosen,Kode,MK,SKS,Kel.Pratek,Ruang,Bahan Ajar]
+GET /studentv2/grades              → /mahasiswa/nilai-murni
+                                     [No,Kode,MK,SKS,UTS,UAS,Tugas,Absen,Total,Grade]
+GET /studentv2/khs                 → /mahasiswa/khs [No,Kode,MK,SKS,Nilai,Mutu,Ket]
+GET /studentv2/krs                 → /mahasiswa/krs [No,Kode,MK,SKS,Paraf]
+
+# elearning MyBest (login CSRF + captcha matematika; terbukti di ubsi_sync.py)
+GET /elearning/courses             → /sch: kartu matkul (nama,kode dosen,kode mtk,
+                                     sks,ruang,kel praktek,kode gabung,hari,jam) + token
+GET /elearning/presence            → /absen-mhs/{enc}
+                                     [#,Status Absen,Tanggal,MK,Pertemuan,Rangkuman,Berita Acara]
+GET /elearning/assignments         → /assignment/{enc} (2 tabel):
+                                     tugas [No,Kode Mtk,Kelas,Judul,Des,Pertemuan,Mulai,Selesai,Aksi]
+                                     submission [Judul,Link Tugas,Komentar Dosen,Nilai]
+GET /elearning/materials           → /learning/{enc} [No,Kode Mtk,Kelas,Judul,Deskripsi,File]
+                                     file host: students.bsi.ac.id (silabus/modul zip)
+GET /elearning/quiz                → /exercise [No,Kode Mtk,Paket,Dosen,Waktu,Mulai,Selesai,Aksi]
+
+# publik (audit menyusul saat modulnya dibangun)
+GET /elibrary/search?q=&page=      GET /elibrary/book/{id}
+GET /ejournal/search?q=&page=      GET /ejournal/article/{id}
+GET /repository/search?q=&page=    GET /repository/item/{id}
+GET /news                          → portal berita (news.bsi.ac.id/feed/ sudah ada di curzy_digest)
 ```
 
 `id` item = hash stabil dari URL/judul sumber (dipakai consumer untuk deteksi item baru).
+
+### Catatan audit (25 Sep 2026)
+
+- Login kedua situs SUKSES via fungsi `ubsi_sync.py` (Study-Curzy) — logika dipakai ulang.
+- `/mahasiswa/khs-semester`, `/mahasiswa/nilai-uts`, `/mahasiswa/uts`, `/mahasiswa/kalender`
+  kosong/seasonal — endpoint khusus hanya kalau nanti dibutuhkan.
+- `/halaman-ujian` (MyBest) redirect loop saat tidak ada ujian aktif — tidak dijadikan endpoint.
+- studentv2 beranda juga mengekspos PDF pengumuman internal per-fakultas (sumber announcements).
 
 ## 6. Cloudflare (ejournal)
 
