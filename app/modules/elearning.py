@@ -10,9 +10,9 @@ from scrapling.parser import Adaptor
 from app.config import settings
 from app.deps import require_elearning_creds
 from app.envelope import success_response, error_response
-from app.cache import cache
 from app.session_pool import SessionPool
 from app.retry import retry_async
+from app.router_helper import cached_endpoint
 
 router = APIRouter(prefix="/v1/elearning", tags=["elearning"])
 
@@ -365,37 +365,14 @@ pooled_elearning_client = PooledElearningClient()
 @router.get("/courses")
 async def get_courses(creds: tuple[str, str] = Depends(require_elearning_creds)):
     nim, password = creds
-    cache_key = cache.make_key("elearning", "courses", nim=nim)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            html = await pooled_elearning_client.fetch_page(
-                    "/sch",
-                    nim,
-                    password
-                )
-            data = parse_courses(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="elearning")
-            )
+    return await cached_endpoint(
+        module="elearning",
+        name="courses",
+        fetch=lambda: pooled_elearning_client.fetch_page("/sch", nim, password),
+        parse=parse_courses,
+        ttl=settings.TTL_ASSIGNMENTS,
+        cache_params={"nim": nim},
+    )
 
 @router.get("/assignments")
 async def get_assignments(
@@ -412,37 +389,14 @@ async def get_assignments(
             return success_response(data={"tasks": [], "submissions": []}, cached=False)
         token = courses[0]["token_assignment"]
 
-    cache_key = cache.make_key("elearning", "assignments", token=token)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            html = await pooled_elearning_client.fetch_page(
-                    f"/assignment/{token}",
-                    nim,
-                    password
-                )
-            data = parse_assignments(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="elearning")
-            )
+    return await cached_endpoint(
+        module="elearning",
+        name="assignments",
+        fetch=lambda: pooled_elearning_client.fetch_page(f"/assignment/{token}", nim, password),
+        parse=parse_assignments,
+        ttl=settings.TTL_ASSIGNMENTS,
+        cache_params={"token": token},
+    )
 
 @router.get("/presence")
 async def get_presence(
@@ -458,37 +412,14 @@ async def get_presence(
             return success_response(data=[], cached=False)
         token = courses[0]["token_absen"]
 
-    cache_key = cache.make_key("elearning", "presence", token=token)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            html = await pooled_elearning_client.fetch_page(
-                    f"/absen-mhs/{token}",
-                    nim,
-                    password
-                )
-            data = parse_presence(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="elearning")
-            )
+    return await cached_endpoint(
+        module="elearning",
+        name="presence",
+        fetch=lambda: pooled_elearning_client.fetch_page(f"/absen-mhs/{token}", nim, password),
+        parse=parse_presence,
+        ttl=settings.TTL_ASSIGNMENTS,
+        cache_params={"token": token},
+    )
 
 @router.get("/materials")
 async def get_materials(
@@ -504,69 +435,23 @@ async def get_materials(
             return success_response(data=[], cached=False)
         token = courses[0]["token_learning"]
 
-    cache_key = cache.make_key("elearning", "materials", token=token)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            html = await pooled_elearning_client.fetch_page(
-                    f"/learning/{token}",
-                    nim,
-                    password
-                )
-            data = parse_materials(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="elearning")
-            )
+    return await cached_endpoint(
+        module="elearning",
+        name="materials",
+        fetch=lambda: pooled_elearning_client.fetch_page(f"/learning/{token}", nim, password),
+        parse=parse_materials,
+        ttl=settings.TTL_ASSIGNMENTS,
+        cache_params={"token": token},
+    )
 
 @router.get("/quiz")
 async def get_quiz(creds: tuple[str, str] = Depends(require_elearning_creds)):
     nim, password = creds
-    cache_key = cache.make_key("elearning", "quiz", nim=nim)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            html = await pooled_elearning_client.fetch_page(
-                    "/exercise",
-                    nim,
-                    password
-                )
-            data = parse_quiz(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="elearning")
-            )
+    return await cached_endpoint(
+        module="elearning",
+        name="quiz",
+        fetch=lambda: pooled_elearning_client.fetch_page("/exercise", nim, password),
+        parse=parse_quiz,
+        ttl=settings.TTL_ASSIGNMENTS,
+        cache_params={"nim": nim},
+    )
