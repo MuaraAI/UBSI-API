@@ -29,6 +29,7 @@ rsync -avz --delete \
 if [ -f .env ]; then
     echo "Syncing .env to VPS..."
     rsync -avz .env "${VPS_HOST}:${REMOTE_DIR}/.env"
+    ssh "${VPS_HOST}" "chmod 600 '${REMOTE_DIR}/.env'"
 fi
 
 echo "=== 4. Setting up Python venv & installing dependencies on VPS ==="
