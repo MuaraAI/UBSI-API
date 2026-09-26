@@ -36,8 +36,10 @@ Sources:
 | Domain / HTTPS | Skip di v1 (YAGNI) — evaluasi di v2 jika ada kebutuhan akses publik |
 | Auth API | Tanpa API key di v1 (localhost boundary murni) |
 | Rate Limit | 60 req/menit via Redis sliding window counter |
+| Anti-Ban Protections | Session cookie re-use, single-flight mutex per account, human jitter (0.8–1.5s), Scrapling Chrome TLS impersonation |
+| Tiered Cache TTL | Jadwal & KRS: 2 jam (7200s); Nilai: 30 menit (1800s); Tugas/MyBest: 10 menit (600s); Berita: 15 menit (900s); Elibrary: 1 jam (3600s) |
 | Response Format | Clean Minimalist JSON: `{"success": true, "data": ..., "cached": false}` |
-| Cache | Redis lokal: fresh TTL ~60s + last-known-good tanpa TTL |
+| Cache | Redis lokal: fresh TTL (berjenjang) + last-known-good tanpa TTL |
 | Persistensi | Redis saja; tanpa SQLite, tanpa ORM |
 
 ## 4. Arsitektur
@@ -100,6 +102,18 @@ request → Rate Limiter (Redis 60 req/min)
          }
        }
        ```
+
+6. **Anti-Ban & Safety Protection Layers**:
+   - **Session Re-use**: Cookie session disimpan di memori dan dipakai berulang kali. Hanya melakukan POST ke `/login` jika session beneran kedaluwarsa.
+   - **Tiered Cache TTL**:
+     - Jadwal Kuliah & KRS: 7200 detik (2 jam).
+     - Nilai Murni & KHS: 1800 detik (30 menit).
+     - Tugas & Submission: 600 detik (10 menit).
+     - Berita & Pengumuman: 900 detik (15 menit).
+     - Elibrary (Katalog & Buku): 3600 detik (1 jam).
+   - **Single-Flight Mutex**: Mencegah multiple concurrent fetch untuk endpoint/resource yang sama. Jika ada 3 request bersamaan saat cache kosong, request ke-1 yang scrape live, request ke-2 & ke-3 menunggu lock dan menerima hasil cache. Server BSI hanya menerima 1 hit.
+   - **Browser TLS Impersonation**: Menggunakan Scrapling (`curl_cffi` dengan `impersonate="chrome"`) sehingga fingerprint TLS/JA3/JA4 dan header frame identik 100% dengan Google Chrome di desktop.
+   - **Human Jitter**: Jeda acak 0.8–1.5 detik jika modul melakukan crawling lebih dari 1 halaman. Concurrency scraping per akun kampus dibatasi 1.
 
 Komponen:
 
