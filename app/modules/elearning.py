@@ -3,8 +3,8 @@ import hashlib
 import re
 from typing import Any, Optional
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from scrapling.fetchers import FetcherSession
 from scrapling.parser import Adaptor
 
 from app.config import settings
@@ -235,43 +235,45 @@ def parse_quiz(html: str) -> list[dict[str, Any]]:
 
 class ElearningClient:
     BASE_URL = "https://elearning.bsi.ac.id"
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Origin": "https://elearning.bsi.ac.id",
+        "Referer": "https://elearning.bsi.ac.id/login",
+    }
 
     def __init__(self):
-        self._session_ctx: Optional[FetcherSession] = None
-        self._session: Any = None
+        self._client: Optional[httpx.Client] = None
         self._logged_in: bool = False
         self._login_lock = asyncio.Lock()
 
-    def get_session(self) -> Any:
-        if self._session is None:
-            self._session_ctx = FetcherSession(impersonate="chrome")
-            self._session = self._session_ctx.__enter__()
-        return self._session
+    def get_client(self) -> httpx.Client:
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.Client(headers=self.HEADERS, follow_redirects=True, timeout=25.0)
+        return self._client
 
     def close(self) -> None:
-        if self._session_ctx is not None:
+        if self._client is not None and not self._client.is_closed:
             try:
-                self._session_ctx.__exit__(None, None, None)
+                self._client.close()
             except Exception:
                 pass
-            self._session = None
-            self._session_ctx = None
+            self._client = None
             self._logged_in = False
 
     def login(self, nim: str, password: str) -> bool:
-        session = self.get_session()
+        client = self.get_client()
         login_url = f"{self.BASE_URL}/login"
         try:
-            r1 = session.get(login_url, timeout=20)
-            token_el = r1.css('input[name="_token"]')
-            if not token_el:
+            r1 = client.get(login_url)
+            m = re.search(r'name=["\']_token["\']\s+value=["\']([^"\']+)["\']', r1.text)
+            if not m:
                 return False
-            token = token_el[0].attrib.get("value")
+            token = m.group(1)
 
-            # Extract and solve math captcha
-            q_el = r1.css("#captcha_question")
-            q_text = q_el[0].text if q_el else r1.text
-            ans = solve_captcha(q_text)
+            c_match = re.search(r"(\d+)\s*\+\s*(\d+)", r1.text)
+            if not c_match:
+                return False
+            ans = int(c_match.group(1)) + int(c_match.group(2))
 
             payload = {
                 "_token": token,
@@ -279,8 +281,8 @@ class ElearningClient:
                 "password": password,
                 "captcha_answer": str(ans),
             }
-            r2 = session.post(login_url, data=payload, timeout=20)
-            if "dashboard" in str(r2.url) or "elearning.bsi.ac.id/user" in str(r2.url) or r2.status == 200:
+            r2 = client.post(login_url, data=payload)
+            if "dashboard" in str(r2.url) or "elearning.bsi.ac.id/user" in str(r2.url) or r2.status_code == 200:
                 self._logged_in = True
                 return True
             return False
@@ -288,7 +290,7 @@ class ElearningClient:
             return False
 
     def fetch_page(self, path: str, nim: str, password: str) -> str:
-        session = self.get_session()
+        client = self.get_client()
         target_url = f"{self.BASE_URL}{path}" if path.startswith("/") else path
 
         if not self._logged_in:
@@ -303,7 +305,7 @@ class ElearningClient:
                     )
                 )
 
-        r = session.get(target_url, timeout=30)
+        r = client.get(target_url)
 
         # Handle session expiration
         if "/login" in str(r.url):
@@ -317,9 +319,9 @@ class ElearningClient:
                         module="elearning"
                     )
                 )
-            r = session.get(target_url, timeout=30)
+            r = client.get(target_url)
 
-        return r.text if hasattr(r, "text") else r.body.decode("utf-8", "ignore")
+        return r.text
 
 elearning_client = ElearningClient()
 

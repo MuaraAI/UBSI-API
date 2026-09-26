@@ -3,8 +3,8 @@ import hashlib
 import re
 from typing import Any, Optional
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from scrapling.fetchers import FetcherSession
 from scrapling.parser import Adaptor
 
 from app.config import settings
@@ -115,38 +115,40 @@ def parse_announcements(html: str) -> list[dict[str, Any]]:
 
 class StudentV2Client:
     BASE_URL = "https://studentv2.bsi.ac.id"
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Origin": "https://studentv2.bsi.ac.id",
+        "Referer": "https://studentv2.bsi.ac.id/login",
+    }
 
     def __init__(self):
-        self._session_ctx: Optional[FetcherSession] = None
-        self._session: Any = None
+        self._client: Optional[httpx.Client] = None
         self._logged_in: bool = False
         self._login_lock = asyncio.Lock()
 
-    def get_session(self) -> Any:
-        if self._session is None:
-            self._session_ctx = FetcherSession(impersonate="chrome")
-            self._session = self._session_ctx.__enter__()
-        return self._session
+    def get_client(self) -> httpx.Client:
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.Client(headers=self.HEADERS, follow_redirects=True, timeout=25.0)
+        return self._client
 
     def close(self) -> None:
-        if self._session_ctx is not None:
+        if self._client is not None and not self._client.is_closed:
             try:
-                self._session_ctx.__exit__(None, None, None)
+                self._client.close()
             except Exception:
                 pass
-            self._session = None
-            self._session_ctx = None
+            self._client = None
             self._logged_in = False
 
     def login(self, nim: str, password: str) -> bool:
-        session = self.get_session()
+        client = self.get_client()
         login_url = f"{self.BASE_URL}/login"
         try:
-            r1 = session.get(login_url, timeout=20)
-            token_el = r1.css('input[name="_token"]')
-            if not token_el:
+            r1 = client.get(login_url)
+            m = re.search(r'name=["\']_token["\']\s+value=["\']([^"\']+)["\']', r1.text)
+            if not m:
                 return False
-            token = token_el[0].attrib.get("value")
+            token = m.group(1)
 
             payload = {
                 "_token": token,
@@ -154,7 +156,7 @@ class StudentV2Client:
                 "password": password,
                 "remember": "on"
             }
-            r2 = session.post(login_url, data=payload, timeout=20)
+            r2 = client.post(login_url, data=payload)
             if "mahasiswa/beranda" in str(r2.url) or "studentv2.bsi.ac.id/mahasiswa" in str(r2.url):
                 self._logged_in = True
                 return True
@@ -163,7 +165,7 @@ class StudentV2Client:
             return False
 
     def fetch_page(self, path: str, nim: str, password: str) -> str:
-        session = self.get_session()
+        client = self.get_client()
         target_url = f"{self.BASE_URL}{path}"
         
         if not self._logged_in:
@@ -178,7 +180,7 @@ class StudentV2Client:
                     )
                 )
 
-        r = session.get(target_url, timeout=25)
+        r = client.get(target_url)
         
         # Check if redirected to login (expired session)
         if "/login" in str(r.url):
@@ -192,9 +194,9 @@ class StudentV2Client:
                         module="studentv2"
                     )
                 )
-            r = session.get(target_url, timeout=25)
+            r = client.get(target_url)
 
-        return r.text if hasattr(r, "text") else r.body.decode("utf-8", "ignore")
+        return r.text
 
 studentv2_client = StudentV2Client()
 
