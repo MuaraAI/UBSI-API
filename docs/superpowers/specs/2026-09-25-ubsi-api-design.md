@@ -242,9 +242,10 @@ UBSI-API/
 
 ## 9. Deploy
 
-- `scripts/deploy.sh`: rsync `app/` + `requirements.txt` → `pip install -r` di venv VPS → `systemctl restart ubsi-api`.
-- systemd unit: `ExecStart=uvicorn app.main:app --host 127.0.0.1 --port 8300`, `Restart=always`, user non-root.
-- RAM: ~60–80MB, aman di sisa ~900MB VPS.
+- Target path VPS: `/home/ubuntu/ubsi-api` (user `ubuntu` di `curzy-vps-tencent`).
+- Process Manager: PM2 (`pm2 start "uvicorn app.main:app --host 127.0.0.1 --port 8300 --workers 2" --name ubsi-api`).
+- `scripts/deploy.sh`: rsync `app/`, `requirements.txt`, `ecosystem.config.cjs` → VPS `~/ubsi-api` → `uv pip install -r requirements.txt` → `pm2 restart ubsi-api`.
+- RAM usage: ~60–80MB, sangat aman di sisa 887MB VPS.
 
 ## 10. Security & etika
 
