@@ -13,6 +13,7 @@ from app.envelope import success_response, error_response
 from app.cache import cache
 from app.session_pool import SessionPool
 from app.retry import retry_async
+from app.router_helper import cached_endpoint
 
 router = APIRouter(prefix="/v1/studentv2", tags=["studentv2"])
 
@@ -243,92 +244,26 @@ studentv2_client = PooledStudentV2Client()
 @router.get("/schedule")
 async def get_schedule(creds: tuple[str, str] = Depends(require_studentv2_creds)):
     nim, password = creds
-    cache_key = cache.make_key("studentv2", "schedule", nim=nim)
-
-    # 1. Stale-while-revalidate: LGG dikirim instan, refresh jalan di belakang
-    cached = await cache.fresh_or_stale(cache_key)
-    if cached is not None:
-        data, is_stale = cached
-        if is_stale:
-            async def _revalidate():
-                try:
-                    html = await studentv2_client.fetch_page(
-                        "/mahasiswa/jadwal-kuliah", nim, password
-                    )
-                    parsed = parse_schedule(html)
-                    await cache.set(cache_key, parsed, ttl=settings.TTL_SCHEDULE)
-                except Exception:
-                    pass
-
-            asyncio.create_task(_revalidate())
-            return success_response(data=data, cached=True, stale=True)
-        return success_response(data=data, cached=True)
-
-    # 2. Mutex single-flight lock
-    async with cache.get_lock(cache_key):
-        cached = await cache.fresh_or_stale(cache_key)
-        if cached is not None:
-            data, is_stale = cached
-            if is_stale:
-                return success_response(data=data, cached=True, stale=True)
-            return success_response(data=data, cached=True)
-
-        try:
-            html = await studentv2_client.fetch_page(
-                "/mahasiswa/jadwal-kuliah",
-                nim,
-                password
-            )
-            data = parse_schedule(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_SCHEDULE)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            # Check LGG fallback
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="studentv2")
-            )
+    return await cached_endpoint(
+        module="studentv2",
+        name="schedule",
+        fetch=lambda: studentv2_client.fetch_page("/mahasiswa/jadwal-kuliah", nim, password),
+        parse=parse_schedule,
+        ttl=settings.TTL_SCHEDULE,
+        cache_params={"nim": nim},
+    )
 
 @router.get("/grades")
 async def get_grades(creds: tuple[str, str] = Depends(require_studentv2_creds)):
     nim, password = creds
-    cache_key = cache.make_key("studentv2", "grades", nim=nim)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            html = await studentv2_client.fetch_page(
-                "/mahasiswa/nilai-murni",
-                nim,
-                password
-            )
-            data = parse_grades(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_GRADES)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="studentv2")
-            )
+    return await cached_endpoint(
+        module="studentv2",
+        name="grades",
+        fetch=lambda: studentv2_client.fetch_page("/mahasiswa/nilai-murni", nim, password),
+        parse=parse_grades,
+        ttl=settings.TTL_GRADES,
+        cache_params={"nim": nim},
+    )
 
 @router.get("/news")
 async def get_news(
@@ -336,72 +271,29 @@ async def get_news(
     creds: tuple[str, str] = Depends(require_studentv2_creds)
 ):
     nim, password = creds
-    cache_key = cache.make_key("studentv2", "news", limit=limit)
 
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
+    def _parse(html: str):
+        return parse_news(html, limit=limit)
 
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            html = await studentv2_client.fetch_page(
-                "/mahasiswa/berita",
-                nim,
-                password
-            )
-            data = parse_news(html, limit=limit)
-            await cache.set(cache_key, data, ttl=settings.TTL_NEWS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="studentv2")
-            )
+    return await cached_endpoint(
+        module="studentv2",
+        name="news",
+        fetch=lambda: studentv2_client.fetch_page("/mahasiswa/berita", nim, password),
+        parse=_parse,
+        ttl=settings.TTL_NEWS,
+        cache_params={"limit": limit},
+    )
 
 @router.get("/announcements")
 async def get_announcements(creds: tuple[str, str] = Depends(require_studentv2_creds)):
     nim, password = creds
-    cache_key = cache.make_key("studentv2", "announcements")
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            html = await studentv2_client.fetch_page(
-                "/mahasiswa/beranda",
-                nim,
-                password
-            )
-            data = parse_announcements(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_NEWS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="studentv2")
-            )
+    return await cached_endpoint(
+        module="studentv2",
+        name="announcements",
+        fetch=lambda: studentv2_client.fetch_page("/mahasiswa/beranda", nim, password),
+        parse=parse_announcements,
+        ttl=settings.TTL_NEWS,
+    )
 
 
 @router.get("/dashboard")
