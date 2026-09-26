@@ -28,7 +28,7 @@ Sources:
 |---|---|
 | Audiens | Pribadi, 1 user |
 | Modul | 6 (semua sumber di atas) |
-| Stack | Python 3.12+, FastAPI, httpx (AsyncClient), selectolax |
+| Stack | Python 3.12+, FastAPI, Scrapling (Fetcher / FetcherSession with curl_cffi Chrome impersonation) |
 | Dev | Laptop; deploy ke VPS Tencent via script |
 | Binding | 127.0.0.1:8300 (VPS dan lokal) — tidak pernah 0.0.0.0 |
 | Auth API | Tidak ada (localhost-only adalah boundary-nya) |
