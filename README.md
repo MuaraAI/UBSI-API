@@ -93,4 +93,5 @@ Dokumentasi interaktif OpenAPI/Swagger dapat diakses di `http://127.0.0.1:8300/d
 
 - **Panduan Kontribusi**: Lihat [`CONTRIBUTING.md`](CONTRIBUTING.md) untuk setup development, panduan pengujian TDD, dan struktur folder `tests/`.
 - **Kebijakan Keamanan & Etika**: Lihat [`SECURITY.md`](SECURITY.md) untuk batasan penggunaan pribadi dan proteksi anti-ban.
+- **Pemberitahuan Hak Cipta & DMCA**: Lihat [`DMCA.md`](DMCA.md).
 - **Lisensi**: MIT License — lihat [`LICENSE`](LICENSE).
