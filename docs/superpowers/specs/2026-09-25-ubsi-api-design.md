@@ -84,6 +84,22 @@ request → Rate Limiter (Redis 60 req/min)
    - Nilai/Grade: parse ke `float`, jika bernilai `"-"` atau belum dinilai → `null`.
    - Waktu/Tanggal: format standar ISO-8601 string.
 
+5. **Handling Kredensial Kosong (Modular Check — Opsi B)**:
+   - Server tidak mati total jika kredensial `.env` belum diisi.
+   - Endpoint publik (`/v1/news`, `/v1/elibrary`, `/v1/repository`, `/health`) tetap beroperasi 100% tanpa butuh login.
+   - Jika endpoint privat (`/v1/studentv2/*` atau `/v1/elearning/*`) diakses saat env terkait kosong:
+     - Kembalikan HTTP 400 dengan JSON bersih:
+       ```json
+       {
+         "success": false,
+         "error": {
+           "code": "CONFIG_MISSING",
+           "message": "STUDENTV2_NIM dan STUDENTV2_PASS belum diatur di .env",
+           "module": "studentv2"
+         }
+       }
+       ```
+
 Komponen:
 
 - `app/cache.py` — wrapper redis.asyncio: `get_fresh`, `set_fresh`, `get_lgg`, `set_lgg`. Key = `sha256(modul + path + params)`. Dua key per entry: `ubsi:fresh:{h}` (EX 60), `ubsi:lgg:{h}` (no TTL).
@@ -214,7 +230,7 @@ UBSI-API/
   requirements.txt  # fastapi, uvicorn, httpx, selectolax, redis
 ```
 
-`.env` di-gitignore, fail-fast saat startup kalau var login tidak ada (modul publik tidak butuh kredensial).
+`.env` di-gitignore; modular check saat request (endpoint publik tetap jalan jika kredensial privat belum diisi).
 
 ## 8. Testing
 
