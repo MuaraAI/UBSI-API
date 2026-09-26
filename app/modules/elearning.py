@@ -11,6 +11,8 @@ from app.config import settings
 from app.deps import require_elearning_creds
 from app.envelope import success_response, error_response
 from app.cache import cache
+from app.session_pool import SessionPool
+from app.retry import retry_async
 
 router = APIRouter(prefix="/v1/elearning", tags=["elearning"])
 
@@ -325,6 +327,33 @@ class ElearningClient:
 
 elearning_client = ElearningClient()
 
+
+class PooledElearningClient:
+    """Fasade client elearning dengan pool sesi per-NIM (pola sama studentv2)."""
+
+    def __init__(self, ttl_seconds: int = 900):
+        self._pool = SessionPool(lambda: ElearningClient(), ttl_seconds=ttl_seconds)
+
+    async def fetch_page(self, path: str, nim: str, password: str) -> str:
+        client = self._pool.get(nim)
+
+        def _fetch_once() -> str:
+            return client.fetch_page(path, nim, password)
+
+        try:
+            return await retry_async(_fetch_once, attempts=3, base_delay=1.0)
+        except HTTPException as exc:
+            detail = getattr(exc, "detail", None)
+            if isinstance(detail, dict) and detail.get("code") == "AUTH_EXPIRED":
+                self._pool.invalidate(nim)
+            raise
+
+    async def evict_idle(self) -> int:
+        return await self._pool.evict_idle()
+
+
+pooled_elearning_client = PooledElearningClient()
+
 # ============================================================================
 # API Routes
 # ============================================================================
@@ -344,14 +373,11 @@ async def get_courses(creds: tuple[str, str] = Depends(require_elearning_creds))
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                elearning_client.fetch_page,
-                "/sch",
-                nim,
-                password
-            )
+            html = await pooled_elearning_client.fetch_page(
+                    "/sch",
+                    nim,
+                    password
+                )
             data = parse_courses(html)
             await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
             return success_response(data=data, cached=False)
@@ -394,14 +420,11 @@ async def get_assignments(
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                elearning_client.fetch_page,
-                f"/assignment/{token}",
-                nim,
-                password
-            )
+            html = await pooled_elearning_client.fetch_page(
+                    f"/assignment/{token}",
+                    nim,
+                    password
+                )
             data = parse_assignments(html)
             await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
             return success_response(data=data, cached=False)
@@ -443,14 +466,11 @@ async def get_presence(
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                elearning_client.fetch_page,
-                f"/absen-mhs/{token}",
-                nim,
-                password
-            )
+            html = await pooled_elearning_client.fetch_page(
+                    f"/absen-mhs/{token}",
+                    nim,
+                    password
+                )
             data = parse_presence(html)
             await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
             return success_response(data=data, cached=False)
@@ -492,14 +512,11 @@ async def get_materials(
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                elearning_client.fetch_page,
-                f"/learning/{token}",
-                nim,
-                password
-            )
+            html = await pooled_elearning_client.fetch_page(
+                    f"/learning/{token}",
+                    nim,
+                    password
+                )
             data = parse_materials(html)
             await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
             return success_response(data=data, cached=False)
@@ -530,14 +547,11 @@ async def get_quiz(creds: tuple[str, str] = Depends(require_elearning_creds)):
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                elearning_client.fetch_page,
-                "/exercise",
-                nim,
-                password
-            )
+            html = await pooled_elearning_client.fetch_page(
+                    "/exercise",
+                    nim,
+                    password
+                )
             data = parse_quiz(html)
             await cache.set(cache_key, data, ttl=settings.TTL_ASSIGNMENTS)
             return success_response(data=data, cached=False)

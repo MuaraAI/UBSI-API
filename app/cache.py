@@ -65,5 +65,20 @@ class CacheManager:
             self._locks[key] = asyncio.Lock()
         return self._locks[key]
 
+    async def fresh_or_stale(self, key: str) -> Optional[tuple[Any, bool]]:
+        """Ambil data fresh; kalau kosong, ambil LGG sebagai cadangan.
+
+        Return (data, is_stale) atau None kalau dua-duanya kosong.
+        Dipakai router untuk pola stale-while-revalidate: data LGG dikirim
+        instan dengan flag stale, refresh upstream berjalan di belakang.
+        """
+        fresh = await self.get_fresh(key)
+        if fresh is not None:
+            return fresh, False
+        lgg = await self.get_lgg(key)
+        if lgg:
+            return lgg[0], True
+        return None
+
 from app.config import settings
 cache = CacheManager(settings.REDIS_URL, default_ttl=settings.TTL_DEFAULT)
