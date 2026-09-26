@@ -11,6 +11,7 @@ from app.config import settings
 from app.deps import require_studentv2_creds
 from app.envelope import success_response, error_response
 from app.cache import cache
+from app.session_pool import SessionPool
 
 router = APIRouter(prefix="/v1/studentv2", tags=["studentv2"])
 
@@ -198,7 +199,32 @@ class StudentV2Client:
 
         return r.text
 
-studentv2_client = StudentV2Client()
+class PooledStudentV2Client:
+    """Fasade client dengan pool sesi per-NIM.
+
+    Dua NIM berbeda yang memanggil bersamaan tidak lagi saling menimpa sesi:
+    setiap NIM mendapat instance StudentV2Client sendiri di dalam pool, dan
+    sesi idle ditutup oleh evict_idle.
+    """
+
+    def __init__(self, ttl_seconds: int = 900):
+        self._pool = SessionPool(lambda: StudentV2Client(), ttl_seconds=ttl_seconds)
+
+    def fetch_page(self, path: str, nim: str, password: str) -> str:
+        client = self._pool.get(nim)
+        try:
+            return client.fetch_page(path, nim, password)
+        except HTTPException as exc:
+            # Login expired → buang sesi supaya request berikutnya login ulang
+            if exc.detail and getattr(exc.detail, "code", None) == "AUTH_EXPIRED":
+                self._pool.invalidate(nim)
+            raise
+
+    async def evict_idle(self) -> int:
+        return await self._pool.evict_idle()
+
+
+studentv2_client = PooledStudentV2Client()
 
 # ============================================================================
 # API Routes
@@ -361,3 +387,70 @@ async def get_announcements(creds: tuple[str, str] = Depends(require_studentv2_c
                 status_code=status.HTTP_502_BAD_GATEWAY,
                 detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="studentv2")
             )
+
+
+@router.get("/dashboard")
+async def get_dashboard(creds: tuple[str, str] = Depends(require_studentv2_creds)):
+    """Ambil jadwal + nilai + berita + pengumuman sekaligus secara paralel.
+
+    Total waktu respons = halaman upstream paling lambat, bukan jumlah
+    keempatnya. Data yang sudah ada di cache tidak memicu fetch ulang.
+    """
+    nim, password = creds
+
+    async def _section(name: str, path: str, parser, ttl: int):
+        cache_key = cache.make_key("studentv2", name, nim=nim)
+        fresh = await cache.get_fresh(cache_key)
+        if fresh is not None:
+            return name, success_response(data=fresh, cached=True), cache_key
+        try:
+            loop = asyncio.get_running_loop()
+            html = await loop.run_in_executor(
+                None,
+                studentv2_client.fetch_page,
+                path,
+                nim,
+                password,
+            )
+            data = parser(html)
+            await cache.set(cache_key, data, ttl=ttl)
+            return name, success_response(data=data, cached=False), cache_key
+        except Exception as e:
+            lgg_result = await cache.get_lgg(cache_key)
+            if lgg_result:
+                lgg_data, _ = lgg_result
+                return name, success_response(data=lgg_data, cached=True, stale=True), cache_key
+            if isinstance(e, HTTPException):
+                raise e
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="studentv2")
+            )
+
+    results = await asyncio.gather(
+        _section("schedule", "/mahasiswa/jadwal-kuliah", parse_schedule, settings.TTL_SCHEDULE),
+        _section("grades", "/mahasiswa/nilai-murni", parse_grades, settings.TTL_GRADES),
+        _section("news", "/mahasiswa/berita", parse_news, settings.TTL_NEWS),
+        _section("announcements", "/mahasiswa/beranda", parse_announcements, settings.TTL_NEWS),
+        return_exceptions=True,
+    )
+
+    dashboard: dict[str, Any] = {}
+    all_cached = True
+    errors: list[str] = []
+    for item in results:
+        if isinstance(item, Exception):
+            errors.append(str(item))
+            continue
+        name, response, _ = item
+        dashboard[name] = response["data"]
+        if not response.get("cached"):
+            all_cached = False
+
+    if not dashboard and errors:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=error_response(code="UPSTREAM_ERROR", message="; ".join(errors), module="studentv2")
+        )
+
+    return success_response(data=dashboard, cached=all_cached)
