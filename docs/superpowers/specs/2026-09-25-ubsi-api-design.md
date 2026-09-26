@@ -108,7 +108,11 @@ GET /elibrary/news                 → /news (+ /readnews/{y}/{m}/{id}/slug)
 # publik (audit menyusul saat modulnya dibangun)
 GET /ejournal/search?q=&page=      GET /ejournal/article/{id}
 GET /repository/search?q=&page=    GET /repository/item/{id}
-GET /news                          → portal berita (news.bsi.ac.id/feed/ sudah ada di curzy_digest)
+# news portal (news.bsi.ac.id — terbukti punya WordPress REST API aktif)
+GET /news?page=1&per_page=10&search=   → proxy/transform ke https://news.bsi.ac.id/wp-json/wp/v2/posts?_embed=1
+                                          (Native JSON, full content, author, featured image, no HTML scraping)
+GET /news/feed                         → https://news.bsi.ac.id/feed/ (RSS XML/JSON)
+GET /news/{id}                         → https://news.bsi.ac.id/wp-json/wp/v2/posts/{id}?_embed=1
 ```
 
 `id` item = hash stabil dari URL/judul sumber (dipakai consumer untuk deteksi item baru).
