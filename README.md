@@ -1,169 +1,219 @@
-# UBSI API
+<h1 align="center">UBSI API</h1>
+<p align="center">
+  <strong>Private Unofficial REST API Aggregator for UBSI Services</strong>
+</p>
 
-Private REST API aggregating UBSI student, LMS, library, and research services into structured JSON.
+<p align="center">
+  Unified JSON interface for StudentV2 (SIAKAD), MyBest LMS, Elibrary, EJournal, Repository, and News Portal.
+</p>
 
-Personal automation backend for student bots and notification agents. Binds exclusively to localhost (`127.0.0.1:8300`).
+<div align="center">
+
+  <a href="https://github.com/Curzyori/UBSI-API"><img src="https://img.shields.io/badge/status-active-success?style=for-the-badge&color=374151" alt="Status" /></a>
+  <a href="https://github.com/Curzyori/UBSI-API/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Curzyori/UBSI-API?style=for-the-badge&color=374151" alt="License" /></a>
+  <img src="https://img.shields.io/badge/python-3.12+-blue?style=for-the-badge&color=374151" alt="Python Version" />
+  <img src="https://img.shields.io/badge/framework-FastAPI-teal?style=for-the-badge&color=374151" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/cache-Redis%20DB2-red?style=for-the-badge&color=374151" alt="Redis Cache" />
+
+</div>
+
+<p align="center">
+  <a href="#disclaimer">Disclaimer</a> ·
+  <a href="#why">Why</a> ·
+  <a href="#key-features">Features</a> ·
+  <a href="#endpoints">Endpoints</a> ·
+  <a href="#tech-stack">Tech Stack</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#testing">Testing</a> ·
+  <a href="#deployment">Deployment</a> ·
+  <a href="#license">License</a>
+</p>
 
 ---
 
-> **PENTING / DISCLAIMER RESMI**:
+## <a id="disclaimer"></a>⚠️ PENTING / DISCLAIMER RESMI
+
+> **Pernyataan Penafian (Disclaimer)**:
+> 
+> Proyek **UBSI API** ini adalah software *unofficial* (tidak resmi) yang dikembangkan semata-mata untuk **keperluan riset edukasi rekayasa perangkat lunak, otomatisasi personal, dan efisiensi waktu**. Proyek ini dibuat agar mahasiswa dan developer kampus dapat mengakses informasi jadwal, nilai, tugas, dan materi kuliah mereka sendiri secara terstruktur tanpa perlu melakukan navigasi manual yang memakan waktu setiap hari.
 >
-> Proyek ini adalah **Unofficial API** independen yang dibuat semata-mata untuk tujuan riset edukasi, pembelajaran interoperabilitas perangkat lunak, dan mempermudah mahasiswa/developer UBSI mengakses data materi, jadwal, serta tugas perkuliahan milik mereka sendiri secara terstruktur tanpa perlu navigasi manual yang memakan waktu.
->
-> **Batasan Tanggung Jawab**:
-> 1. Proyek ini sama sekali **tidak berafiliasi resmi, tidak didukung, dan tidak dikelola oleh pihak Universitas Bina Sarana Informatika (UBSI)**.
-> 2. Pembuat/maintainer repositori ini **tidak bertanggung jawab** atas segala bentuk penyalahgunaan, pelanggaran tata tertib, pemblokiran akun, atau kerugian apa pun yang diakibatkan oleh penggunaan tool ini. Penggunaan sepenuhnya menjadi risiko dan tanggung jawab masing-masing individu.
-> 3. Semua merek dagang, nama sistem, materi silabus, dan data akademik adalah hak cipta dan kepemilikan penuh dari **Universitas Bina Sarana Informatika** serta pemilik hak ciptanya masing-masing.
+> 1. Proyek ini **sama sekali tidak berafiliasi resmi, tidak disponsori, dan tidak dikelola oleh Universitas Bina Sarana Informatika (UBSI)**.
+> 2. Pengembang/maintainer **tidak bertanggung jawab** atas segala bentuk penyalahgunaan, kerugian, atau pelanggaran ketentuan yang timbul akibat penggunaan software ini. Seluruh penggunaan menjadi tanggung jawab pribadi masing-masing pengguna.
+> 3. Seluruh nama, logo, merek dagang, materi perkuliahan, dan data akademik adalah hak cipta dan hak milik sah dari **Universitas Bina Sarana Informatika** serta pemilik hak ciptanya masing-masing.
 >
 > **Permohonan Penghapusan / Pengarsipan (Takedown Notice)**:
-> Jika pihak otoritas universitas, pengelola sistem IT, atau dosen UBSI merasa keberatan atas keberadaan repositori ini, silakan hubungi maintainer langsung melalui GitHub ([@Curzyori](https://github.com/Curzyori)). Repositori ini akan dengan senang hati **diarsipkan, diubah, atau dihapus permanen secara kooperatif**.
+> Jika pihak rektorat, dekanat, dosen, atau pengelola sistem IT UBSI yang berwenang merasa keberatan atas keberadaan repositori atau endpoint ini, silakan hubungi pengelola langsung via GitHub ([@Curzyori](https://github.com/Curzyori)). Repositori ini akan dengan senang hati **diarsipkan, diubah, atau dihapus secara kooperatif**.
 
 ---
 
-## Why This
+## <a id="why"></a>💡 Why UBSI API?
 
-- **Two-tier Redis cache**: Tiered TTLs (schedules 2h, grades 30m, assignments 10m) with Last-Known-Good fallback (`stale: true`) when campus portals are down.
-- **Anti-ban protection**: In-memory session cookie re-use, single-flight mutex per resource, and Chrome TLS fingerprint impersonation via Scrapling.
-- **Normalized JSON**: Pervasive HTML cleanup; extracts clean integers, floats, ISO timestamps, and `null` values instead of raw table strings.
-- **Local boundary**: Zero open ingress ports; private single-user deployment.
+Layanan kampus UBSI tersebar di berbagai subdomain terpisah dengan antarmuka web konvensional (`studentv2`, `elearning`, `elibrary`, `repository`, `ejournal`, `news`). Mengambil jadwal kuliah atau mengecek tugas baru biasanya membutuhkan navigasi browser berulang-ulang.
+
+UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di `127.0.0.1:8300` dengan proteksi keamanan tingkat tinggi:
+
+| Fitur | Keterangan |
+|---|---|
+| ✅ **Dua Tingkat Cache (Redis DB 2)** | TTL berjenjang (Jadwal 2j, Nilai 30m, Tugas 10m) + Last-Known-Good fallback jika kampus offline |
+| ✅ **Anti-Ban Protection** | Re-use session cookies in-memory, single-flight mutex per request, dan human jitter (0.8–1.5s) |
+| ✅ **Browser TLS Impersonation** | Scrapling dengan `curl_cffi` desktop Chrome TLS signature; 100% identik dengan browser asli |
+| ✅ **Normalized Clean JSON** | Sanitasi HTML otomatis; integer untuk SKS, float untuk nilai, dan ISO-8601 untuk tanggal |
+| ✅ **Localhost Security Boundary** | Hanya mengikat ke `127.0.0.1:8300`; nol port ingress terbuka ke internet |
+| ✅ **Native WordPress REST API** | Modul berita kampus mengambil langsung dari endpoint native JSON tanpa scraping HTML |
 
 ---
 
-## Quick Start
+## <a id="key-features"></a>🎯 Key Features
 
+| Modul | Status | Sumber | Kemampuan Utama |
+|:---|:---:|:---|:---|
+| **StudentV2** | ✅ | `studentv2.bsi.ac.id` | Jadwal kuliah semester aktif, nilai murni, pengumuman PDF, arsip berita |
+| **Elearning** | ✅ | `elearning.bsi.ac.id` (MyBest) | Kartu matkul, presensi perkuliahan, tugas & submission, materi ZIP, kuis |
+| **Elibrary** | ✅ | `elibrary.bsi.ac.id` | OPAC search katalog, detail buku, stok fisik, 60s timeout & retry |
+| **News Portal** | ✅ | `news.bsi.ac.id` | Berita kampus resmi via native WP REST API (`/wp-json/wp/v2/posts`) |
+| **Repository** | ✅ | `repository.bsi.ac.id` | Publikasi ilmiah terbaru & pencarian riset EPrints |
+| **EJournal** | ✅ | `ejournal.bsi.ac.id` | Katalog 16 jurnal ilmiah resmi UBSI via jalur OAI bypass |
+| **Rate Limiter** | ✅ | Internal Engine | Sliding-window limiter 60 request/menit via Redis |
+
+---
+
+## <a id="endpoints"></a>📡 Endpoints Reference (`/v1/`)
+
+### Sistem
+- `GET /health` — Status kesehatan aplikasi & koneksi Redis (`up`/`down`).
+
+### StudentV2 (SIAKAD)
+- `GET /v1/studentv2/schedule` — Jadwal kuliah semester aktif.
+- `GET /v1/studentv2/grades` — Rekap nilai murni lengkap per mata kuliah.
+- `GET /v1/studentv2/news` — Arsip pengumuman berita akademik.
+- `GET /v1/studentv2/announcements` — Pengumuman edaran internal terbaru dari beranda.
+
+### Elearning (MyBest LMS)
+- `GET /v1/elearning/courses` — Daftar kartu mata kuliah aktif beserta token terenkripsi.
+- `GET /v1/elearning/assignments` — Daftar tugas aktif & riwayat submission (nilai + komentar dosen).
+- `GET /v1/elearning/presence` — Rekap status presensi perkuliahan per pertemuan.
+- `GET /v1/elearning/materials` — Berkas silabus dan modul pembelajaran (ZIP/PDF).
+- `GET /v1/elearning/quiz` — Jadwal kuis latihan dan ujian online aktif.
+
+### Perpustakaan (Elibrary)
+- `GET /v1/elibrary/search?q=&opsi=buku&page=1` — Pencarian katalog OPAC perpustakaan.
+- `GET /v1/elibrary/book/{book_id}` — Detail metadata buku lengkap beserta stok fisik.
+
+### Publikasi Ilmiah & Berita
+- `GET /v1/news?search=&page=&per_page=` — Berita kampus resmi (dilengkapi author & featured image).
+- `GET /v1/news/{post_id}` — Detail artikel berita lengkap.
+- `GET /v1/repository/recent` — Publikasi karya ilmiah dan tugas akhir terbaru di EPrints.
+- `GET /v1/repository/search?q=` — Pencarian repositori karya ilmiah.
+- `GET /v1/ejournal/journals` — Katalog 16 jurnal ilmiah resmi UBSI.
+
+---
+
+## <a id="tech-stack"></a>🛠️ Tech Stack
+
+- **Runtime & Web**: Python 3.12+, FastAPI, Uvicorn (uvloop).
+- **Scraping & TLS**: Scrapling (FetcherSession), `curl_cffi` (Chrome impersonation), lxml.
+- **Caching & Limiter**: Redis DB 2 (asyncio), Single-flight Mutex, Sliding Window Limiter.
+- **Testing & Quality**: Pytest, Pytest-Asyncio, HTTPX (ASGITransport).
+- **Process Manager**: PM2 (`ecosystem.config.cjs`).
+
+---
+
+## <a id="architecture"></a>🏗️ Architecture
+
+```
+UBSI-API/
+├── app/
+│   ├── modules/
+│   │   ├── studentv2.py       # SIAKAD: Jadwal, Nilai, Berita, Pengumuman
+│   │   ├── elearning.py       # MyBest: Captcha solver, Courses, Absensi, Tugas, Materi, Kuis
+│   │   ├── elibrary.py        # Perpus: OPAC search, Book detail, 60s retry
+│   │   ├── news.py            # Portal: Native WP REST API (/wp-json/wp/v2/posts)
+│   │   ├── repository.py      # EPrints: Recent publications & search
+│   │   └── ejournal.py        # OJS: 16 Journal catalog via OAI bypass
+│   ├── cache.py               # Redis 2-tier cache (fresh + LGG) & single-flight mutex
+│   ├── config.py              # Pydantic Settings & tiered TTLs
+│   ├── deps.py                # Modular credential validation (Option B)
+│   ├── envelope.py            # Clean Minimalist JSON envelope
+│   ├── limiter.py             # Sliding window rate limiter (60 req/min)
+│   └── main.py                # Base FastAPI app & global middleware
+├── tests/
+│   ├── fixtures/              # Snapshot HTML offline
+│   └── test_*.py              # 46 Automated unit & integration tests
+├── scripts/
+│   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
+│   └── smoke.py               # Live verification CLI tool
+├── ecosystem.config.cjs       # PM2 production config untuk VPS
+├── CONTRIBUTING.md            # Panduan kontribusi & layout tests
+├── SECURITY.md                # Kebijakan etika & privasi akademik
+├── DMCA.md                    # Kebijakan hak cipta & takedown notice
+├── LICENSE                    # MIT License (c) 2026 Yuken Velino
+└── requirements.txt           # Project dependencies
+```
+
+---
+
+## <a id="quick-start"></a>🚀 Quick Start
+
+### 1. Kloning & Persiapan
 ```bash
-# Clone and setup
 git clone https://github.com/Curzyori/UBSI-API.git
 cd UBSI-API
 
-# Virtual environment and dependencies (Python 3.12+)
+# Buat virtual environment & install dependensi
 uv venv .venv --python 3.12
 source .venv/bin/activate
 uv pip install -r requirements.txt
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your student NIM/password
-
-# Start local server
-.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8300
 ```
+
+### 2. Konfigurasi Environment
+```bash
+cp .env.example .env
+# Edit .env dan masukkan NIM serta Password UBSI Anda
+```
+
+### 3. Menjalankan Server
+```bash
+.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8300 --reload
+```
+
+Dokumentasi interaktif OpenAPI/Swagger dapat diakses di:
+👉 **`http://127.0.0.1:8300/docs`**
 
 ---
 
-## Usage
+## <a id="testing"></a>🧪 Testing
 
-Request active semester schedule:
+Semua parser diuji terhadap snapshot HTML offline tanpa melakukan request live ke kampus:
 
 ```bash
-curl -s http://127.0.0.1:8300/v1/studentv2/schedule | jq .
+# Menjalankan seluruh test suite (46 tests)
+.venv/bin/pytest -v
+
+# Menjalankan live smoke test terhadap server lokal
+.venv/bin/python scripts/smoke.py --base-url http://127.0.0.1:8300
 ```
-
-Real response payload:
-
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "e0a17f300c3b",
-      "kode": "104",
-      "nama": "BAHASA INGGRIS I",
-      "hari": "Selasa",
-      "jam": "09:10-10:50",
-      "sks": 2,
-      "kelompok_praktek": null,
-      "ruang": "EN2-P1",
-      "kode_dosen": "TDL"
-    },
-    {
-      "id": "7b88ec7b6a12",
-      "kode": "207",
-      "nama": "LOGIKA DAN ALGORITMA",
-      "hari": "Rabu",
-      "jam": "08:20-11:40",
-      "sks": 4,
-      "kelompok_praktek": null,
-      "ruang": "301-P1",
-      "kode_dosen": "ERX"
-    }
-  ],
-  "cached": false
-}
-```
-
-Interactive OpenAPI documentation is available at `http://127.0.0.1:8300/docs`.
 
 ---
 
-## Endpoints
+## <a id="deployment"></a>🚀 Deployment ke VPS
 
-| Service | Method | Route | Description |
-|---|---|---|---|
-| **System** | `GET` | `/health` | Server and Redis connectivity status |
-| **StudentV2** | `GET` | `/v1/studentv2/schedule` | Active course schedule with room and lecturer |
-| | `GET` | `/v1/studentv2/grades` | Semester grade breakdown (UTS, UAS, Tugas, Grade) |
-| | `GET` | `/v1/studentv2/news` | Campus announcements archive |
-| | `GET` | `/v1/studentv2/announcements` | Latest portal circulars (PDF links) |
-| **Elearning** | `GET` | `/v1/elearning/courses` | LMS courses with encrypted action tokens |
-| | `GET` | `/v1/elearning/assignments` | Active tasks and lecturer grading feedback |
-| | `GET` | `/v1/elearning/presence` | Attendance logs per course meeting |
-| | `GET` | `/v1/elearning/materials` | Download links for course syllabus and modules (ZIP) |
-| | `GET` | `/v1/elearning/quiz` | Active online quizzes and practice exam schedules |
-| **Elibrary** | `GET` | `/v1/elibrary/search` | OPAC library catalog search |
-| | `GET` | `/v1/elibrary/book/{id}` | Book metadata, classification, and physical stock |
-| **News** | `GET` | `/v1/news` | Official university news via WordPress REST API |
-| | `GET` | `/v1/news/{id}` | Full article content and featured media |
-| **Repository** | `GET` | `/v1/repository/recent` | Recent institutional research publications |
-| | `GET` | `/v1/repository/search` | EPrints repository search |
-| **EJournal** | `GET` | `/v1/ejournal/journals` | Catalog of 16 university academic journals |
+Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder `/home/ubuntu/ubsi-api`:
 
----
-
-## How It Works
-
-<details>
-<summary>Architecture & Upstream Request Lifecycle</summary>
-
-```
-Client Request -> Sliding Rate Limiter (Redis, 60 req/min)
-               -> Cache Manager (Redis DB 2)
-                    ├─ Fresh Cache Hit -> Return immediate JSON
-                    └─ Cache Miss -> Scrapling Client (Chrome TLS impersonation)
-                         ├─ In-memory cookie session -> Fetch upstream portal
-                         ├─ If redirect to /login -> Auto re-login 1x & retry
-                         ├─ Pure Parser -> Extract and sanitize data types
-                         ├─ Save to Redis: fresh (tiered TTL) + LGG (no TTL)
-                         └─ Return JSON
-Upstream Error -> Check LGG in Redis -> Return cached data with stale: true
+```bash
+# Deploy otomatis 1-perintah via rsync & PM2 ke curzy-vps-tencent
+./scripts/deploy.sh
 ```
 
-Scraping runs through Scrapling's `FetcherSession` with `impersonate="chrome"`, matching desktop browser TLS handshakes and headers.
-
-</details>
-
 ---
 
-## Testing & Deployment
+## <a id="license"></a>⚖️ License & Legal
 
-- Run unit & integration tests:
-  ```bash
-  .venv/bin/pytest -v
-  ```
-- Run live smoke test suite:
-  ```bash
-  .venv/bin/python scripts/smoke.py --base-url http://127.0.0.1:8300
-  ```
-- Deploy to remote server via PM2:
-  ```bash
-  ./scripts/deploy.sh
-  ```
+- **Lisensi**: MIT License — lihat berkas [LICENSE](LICENSE).
+- **Kebijakan Keamanan**: Lihat berkas [SECURITY.md](SECURITY.md).
+- **Pemberitahuan Hak Cipta & DMCA**: Lihat berkas [DMCA.md](DMCA.md).
+- **Panduan Kontribusi**: Lihat berkas [CONTRIBUTING.md](CONTRIBUTING.md).
 
----
-
-## Documentation Links
-
-- Contribution guidelines and test directory structure: [CONTRIBUTING.md](CONTRIBUTING.md)
-- Security policy and credential handling: [SECURITY.md](SECURITY.md)
-- Intellectual property and copyright disclaimer: [DMCA.md](DMCA.md)
-- License: [MIT License](LICENSE)
+<p align="center">
+  <sub>Built with passion for productivity by <b>@Curzyori</b></sub>
+</p>
