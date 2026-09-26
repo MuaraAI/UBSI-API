@@ -28,6 +28,25 @@ cp .env.example .env
 ## 2. Testing Guidelines (TDD Mandatory)
 
 - **Pure Parser Isolation**: Unit tests for HTML parsers must strictly test against offline snapshot fixtures in `tests/fixtures/`. Never make live network requests inside pytest suites.
+- **Directory Structure of `tests/`**:
+  ```text
+  tests/
+  ├── fixtures/                 # Offline snapshot HTML fixtures (sv2_*.html, el_*.html)
+  ├── test_config.py            # Settings, env loading, and tiered TTLs
+  ├── test_envelope.py          # Response envelope standardization (clean JSON)
+  ├── test_cache.py             # Two-tier Redis cache (fresh + LGG) and mutex
+  ├── test_limiter.py           # Sliding-window rate limiter (60 req/min)
+  ├── test_main.py              # Base FastAPI app, /health, and middleware
+  ├── test_studentv2_parser.py  # Pure parsers for schedule, grades, news, announcements
+  ├── test_studentv2_router.py  # StudentV2 endpoint integration tests
+  ├── test_elearning_parser.py  # Pure parsers for MyBest courses, captcha, presence, tasks
+  ├── test_elearning_router.py  # Elearning endpoint integration tests
+  ├── test_elibrary_parser.py   # Elibrary OPAC search & book detail parsers
+  ├── test_elibrary_router.py   # Elibrary endpoint integration & retry tests
+  ├── test_public_modules.py    # News (WP REST API), Repository, and EJournal parsers
+  ├── test_public_routers.py    # Public endpoints integration tests
+  └── test_integration.py       # End-to-end full pipeline integration test
+  ```
 - **Run the Test Suite**:
   ```bash
   .venv/bin/pytest -v
