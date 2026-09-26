@@ -27,6 +27,7 @@
   <a href="#quick-start">Quick Start</a> ·
   <a href="#testing">Testing</a> ·
   <a href="#deployment">Deployment</a> ·
+  <a href="#contributors">Contributors</a> ·
   <a href="#license">License</a>
 </p>
 
@@ -217,11 +218,22 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 
 ## <a id="documentation"></a>📚 Documentation
 
-- [API Reference](docs/api.md) — Kamus lengkap 17 endpoint beserta format request & response JSON.
+- [API Reference](docs/api.md) — Kamus lengkap 18 endpoint beserta format request & response JSON.
 - [System Architecture](docs/architecture.md) — Siklus request, two-tier cache, dan single-flight mutex.
 - [Anti-Ban Protocol](docs/anti-ban.md) — Protokol proteksi akun kampus (cookie re-use, TLS impersonation, jitter).
 - [Production Deployment](docs/deploy.md) — Panduan operasi dan pemeliharaan server VPS via PM2.
 - [Agent Skill](skills/SKILL.md) — Panduan AI coding agent untuk konsumsi dan pengembangan otomatisasi UBSI API.
+
+---
+
+## <a id="contributors"></a>👥 Contributors
+
+Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak:
+
+| Kontributor | Identitas Mahasiswa | Peran & Kontribusi |
+|---|---|---|
+| **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator**<br>- Arsitektur 6 modul aggregator<br>- 2-Tier Redis cache (fresh + LGG)<br>- Scrapling Chrome TLS impersonation<br>- Standarisasi JSON & testing TDD |
+| **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2)**<br>- `SessionPool` per-NIM (isolasi sesi login)<br>- Endpoint `GET /v1/studentv2/dashboard` (paralel) |
 
 ---
 

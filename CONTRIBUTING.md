@@ -26,6 +26,7 @@ cp .env.example .env
 - **TDD Mandatory**: Parser unit tests must test against offline snapshot fixtures in `tests/fixtures/`. Never make live network requests to campus servers inside pytest. All 46+ tests must pass (`.venv/bin/pytest -v`).
 - **Zero Secrets Rule**: Never stage or commit `.env`, session cookies, credentials, or personal tokens. Always verify `git status` and `git diff` before pushing.
 - Upstream changes: mention which campus service was tested (`studentv2`, `elearning`, `elibrary`, `news`, `repository`, `ejournal`) and provide anonymized snapshot proof if layout changed.
+- **Student Contributor Attribution**: If you are a UBSI student, you are encouraged to mention your student metadata (Full Name, NIM, Faculty, Study Program, Class, Semester) in the PR body so your contribution is recognized in the `README.md` Contributors table.
 
 ## Tests structure
 
