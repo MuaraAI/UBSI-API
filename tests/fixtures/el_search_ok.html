@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keyword" content="Perpustakaan UBSI, Elibrary UBSI, Perpus Online">
+    <meta name="description" content="Perpustakaan Universitas Bina Sarana Informatika menyediakan layanan informasi lengkap bagi civitas akademika, termasuk koleksi buku, jurnal, majalah, prosiding, dan sumber ilmiah lainnya untuk mendukung kegiatan belajar dan penelitian mahasiswa." />
+    <meta name="author" content="Ade Suryadi">
+    <title>PERPUSTAKAAN UBSI</title>
+
+    <link rel="Shortcut Icon" href="https://elibrary.bsi.ac.id/assets/images/logo/thumb/20200729153147-PERPUSTAKAANUBSI.png" type="image/x-icon" />
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+	<link href="https://elibrary.bsi.ac.id/global_assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+	<link href="https://elibrary.bsi.ac.id/global_assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
+	<link href="https://elibrary.bsi.ac.id/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="https://elibrary.bsi.ac.id/assets/css/core.min.css" rel="stylesheet" type="text/css">
+	<link href="https://elibrary.bsi.ac.id/assets/css/components.min.css" rel="stylesheet" type="text/css">
+	<link href="https://elibrary.bsi.ac.id/assets/css/colors.min.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+	<link rel="stylesheet" href="https://elibrary.bsi.ac.id/assets/vendor/bsvalidator/css/bootstrapValidator.css"/>
+	<link rel="stylesheet" href="https://elibrary.bsi.ac.id/assets/vendor/owl/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://elibrary.bsi.ac.id/assets/vendor/owl/assets/owl.theme.default.min.css">
+	
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/loaders/pace.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/core/libraries/jquery.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/core/libraries/bootstrap.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/ui/moment/moment.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/pickers/daterangepicker.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/media/fancybox.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/forms/styling/uniform.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/tables/datatables/datatables.min.js"></script> 
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/tables/datatables/extensions/fixed_columns.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/tables/datatables/extensions/responsive.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/forms/selects/bootstrap_multiselect.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/forms/selects/bootstrap_select.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/forms/selects/select2.min.js"></script>
+	<script type="text/javascript" src="https://elibrary.bsi.ac.id/assets/vendor/bsvalidator/js/bootstrapValidator.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/visualization/echarts/echarts.min.js"></script>
+	
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/forms/tags/tagsinput.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/ui/prism.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/forms/inputs/typeahead/typeahead.bundle.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/forms/inputs/typeahead/handlebars.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/ui/fullcalendar/fullcalendar.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/ui/fullcalendar/lang/all.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/notifications/pnotify.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/notifications/sweet_alert.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/plugins/notifications/pnotify.min.js"></script>
+	<script src="https://elibrary.bsi.ac.id/assets/js/app.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/demo_pages/form_bootstrap_select.js"></script>
+	<script src="https://elibrary.bsi.ac.id/global_assets/js/demo_pages/form_multiselect.js"></script>
+	<script src="https://elibrary.bsi.ac.id/assets/js/bootbox.min.js"></script>
+	
+    <script type="text/javascript" src="https://elibrary.bsi.ac.id/assets/vendor/lazy/jquery.lazy.min.js"></script>
+    <script type="text/javascript" src="https://elibrary.bsi.ac.id/assets/vendor/lazy/jquery.lazy.plugins.min.js"></script>
+    
+    <script src="https://elibrary.bsi.ac.id/assets/vendor/owl/owl.carousel.min.js"></script>
+    <script src='https://elibrary.bsi.ac.id/assets/js/pdf/pdfobject.min.js'></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+    <script>
+    // plugin build-in placeholder management
+    $(function() {
+        $('.lazy').lazy();
+    });
+                  
+    </script>   
+    
+    <meta name="google-site-verification" content="u5AzZpjlEwJEu-ZWF30oeurzvTGu_AzGp8z26Yewanc" />
+    
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MS2MSQ2N5M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MS2MSQ2N5M');
+</script>
+
+
+<style>
+body {
+    font-size: 14px;
+}
+
+.media-body{
+   width: inherit; 
+}
+img.lazy {
+        background-image: url('https://elibrary.bsi.ac.id/assets/ajax-loader.gif');
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+    }
+    
+    .imge{
+      display: block;
+      max-width:100%;
+      max-height:500px;
+      width: auto;
+      height: auto;
+    }
+    .bg-white{
+        background:#fff;
+    }
+    .bg-navbar{
+        background:#073c64;
+    }
+    .row{
+        margin-left:0px;
+        margin-right:0px;
+    }
+</style>
+<style>
+.refresh-block {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255, 255, 255, 0.8);
+	-webkit-transition: all .05s ease;
+	transition: all .05s ease;
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	z-index: 1000;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+}
+
+.refresh-block .refresh-loader {
+	display: inline-block;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	left: 50%;
+	margin-left: -16px;
+	margin-top: -16px;
+}
+
+.refresh-block .refresh-loader i {
+	display: inline-block;
+	line-height: 32px;
+	color: #626262;
+}
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #23b9a9;
+  border-bottom: 16px solid #4aa9e9;
+  width: 100px;
+  height: 100px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style></head>
+
+<body>
+
+	<!-- Main navbar -->
+<nav class="navbar navbar-inverse bg-indigo-800" style="padding-top:5px;padding-bottom:5px;" role="navigation" aria-label="Menu utama">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="https://elibrary.bsi.ac.id/" aria-label="Beranda">
+            <img src="https://elibrary.bsi.ac.id/assets/perpustakaan.png" alt="PERPUSTAKAAN UBSI" style="margin-top: -10px;height: 40px;">
+        </a>
+        <ul class="nav navbar-nav visible-xs-block">
+            <li>
+                <a data-toggle="collapse" data-target="#navbar-mobile" aria-label="Buka menu navigasi mobile">
+                    <i class="icon-paragraph-justify3" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="navbar-collapse collapse" id="navbar-mobile">
+        <ul class="nav navbar-nav navbar-right" role="menubar">
+                            <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-user position-left" aria-hidden="true"></i> Login <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                        <li><a href="https://elibrary.bsi.ac.id/loginmember" role="menuitem" title="Login Mahasiswa">Mahasiswa</a></li>
+                        <li><a href="https://elibrary.bsi.ac.id/logindosen" role="menuitem" title="Login Dosen">Dosen</a></li>
+                        <li><a href="https://elibrary.bsi.ac.id/loginpustakawan" role="menuitem" title="Login Pustakawan">Pustakawan</a></li>
+                    </ul>
+                </li>
+                    </ul>
+
+        <ul class="nav navbar-nav navbar-right" role="menubar">
+                                <li>
+                        <a href="https://elibrary.bsi.ac.id/beranda" role="menuitem" title="Beranda">
+                            <i class="icon-home" aria-hidden="true"></i> Beranda                        </a>
+                    </li>
+                                    <li class="dropdown">
+                        <a href="https://elibrary.bsi.ac.id/tentangkami" class="dropdown-toggle" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false" title="Tentang Kami">
+                            <i class="icon-dots position-left" aria-hidden="true"></i> Tentang Kami <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/info/YUE9PQ==/visi-misi-perpustakaan" role="menuitem" title="Visi & Misi">
+                                        Visi & Misi                                    </a>
+                                </li>
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/info/YVE9PQ==/struktur-organisasi" role="menuitem" title="Struktur Organisasi">
+                                        Struktur Organisasi                                    </a>
+                                </li>
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/info/YWc9PQ==/keanggotaan-perpustakaan" role="menuitem" title="Keanggotaan Perpustakaan">
+                                        Keanggotaan Perpustakaan                                    </a>
+                                </li>
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/info/YXc9PQ==/sarana-prasarana" role="menuitem" title="Sarana & Prasarana">
+                                        Sarana & Prasarana                                    </a>
+                                </li>
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/info/YkE9PQ==/kontak-perpustakaan" role="menuitem" title="Kontak Perpustakaan">
+                                        Kontak Perpustakaan                                    </a>
+                                </li>
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/foto_perpustakaan" role="menuitem" title="Foto Perpustakaan">
+                                        Foto Perpustakaan                                    </a>
+                                </li>
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/staff_perpus" role="menuitem" title="Staff Perpustakaan">
+                                        Staff Perpustakaan                                    </a>
+                                </li>
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/alamat_perpus" role="menuitem" title="Alamat Perpustakaan">
+                                        Alamat Perpustakaan                                    </a>
+                                </li>
+                                                            <li>
+                                    <a href="https://elibrary.bsi.ac.id/info/YlE9PQ==/sejarah" role="menuitem" title="Sejarah UBSI">
+                                        Sejarah UBSI                                    </a>
+                                </li>
+                                                    </ul>
+                    </li>
+                                    <li>
+                        <a href="https://elibrary.bsi.ac.id/opac" role="menuitem" title="OPAC">
+                            <i class="icon-laptop" aria-hidden="true"></i> OPAC                        </a>
+                    </li>
+                                    <li>
+                        <a href="https://elibrary.bsi.ac.id/news" role="menuitem" title="Berita">
+                            <i class="icon-magazine" aria-hidden="true"></i> Berita                        </a>
+                    </li>
+                                    <li>
+                        <a href="https://elibrary.bsi.ac.id/downloadfile" role="menuitem" title="Download">
+                            <i class="icon-download7" aria-hidden="true"></i> Download                        </a>
+                    </li>
+                
+            <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="icon-list-unordered position-left" aria-hidden="true"></i> Link Lain <span class="caret"></span>
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+
+        <li><a href="https://ubsi.perpustakaan.co.id/" role="menuitem" title="Digital Ebook">Buku Digital</a></li>
+        <li><a href="https://repository.bsi.ac.id/" role="menuitem" title="Repositori UBSI">Repository UBSI</a></li>
+        <li><a href="https://ejournal.bsi.ac.id/ejurnal/" role="menuitem" title="E-journal UBSI">E-Journal UBSI</a></li>
+        <li><a href="https://elearning.bsi.ac.id/" role="menuitem" title="E-Learning UBSI">E-Learning UBSI</a></li>
+        <li><a href="https://kemahasiswaan.bsi.ac.id/" role="menuitem" title="Kemahasiswaan UBSI">Kemahasiswaan UBSI</a></li>
+        <li><a href="https://www.perpusnas.go.id/" role="menuitem" title="Perpustakaan Nasional">Perpustakaan Nasional</a></li>
+        <li><a href="https://e-resources.perpusnas.go.id/" role="menuitem" title="e-Resources">e-Resources</a></li>
+        <li><a href="https://pustakadigital.fppti-jateng.or.id/" role="menuitem" title="Pustaka Digital FPPTI Jateng">Pustaka Digital FPPTI Jateng</a></li>
+
+        <!-- ===================== -->
+        <!-- SUBMENU: Gale OneFile -->
+        <!-- ===================== -->
+        <li class="dropdown-submenu">
+            <a tabindex="-1" href="#" title="Gale OneFile">Gale OneFile</a>
+            <ul class="dropdown-menu">
+
+                <li>
+                    <a href="https://link.gale.com/apps/ITBC?u=fjatbus" 
+                       target="_blank" rel="noopener noreferrer" title="Business">
+                        Business
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://link.gale.com/apps/SPJ.SP00?u=fjathum" 
+                       target="_blank" rel="noopener noreferrer" title="Periodicals 250 Titles">
+                        Periodicals (250 Titles)
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://link.gale.com/apps/PPGS?u=fjatsci" 
+                       target="_blank" rel="noopener noreferrer" title="Science">
+                        Science
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://link.gale.com/apps/PPNU?u=fjathlt" 
+                       target="_blank" rel="noopener noreferrer" title="Nursing">
+                        Nursing & Allied Health
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <!-- END SUBMENU -->
+
+        <!-- ===================== -->
+        <!-- ProQuest (Tanpa Submenu) -->
+        <!-- ===================== -->
+        <li>
+            <a href="https://www.proquest.com/login" role="menuitem" title="ProQuest" target="_blank" rel="noopener noreferrer">
+                ProQuest
+            </a>
+        </li>
+
+    </ul>
+</li>
+
+        </ul>
+    </div>
+</nav>
+<!-- /main navbar -->
+
+<script>
+    document.querySelectorAll('.dropdown-toggle').forEach(function(el) {
+  el.addEventListener('click', function() {
+    const expanded = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', !expanded);
+  });
+});
+
+</script>
+	<!-- Page container -->
+	<div class="page-container">
+
+		<!-- Page content -->
+		<div class="page-content">
+
+			<!-- Main content -->
+			<div class="content-wrapper">
+<style>
+    .nosel{
+        -moz-appearance:none; /* Firefox */
+        -webkit-appearance:none; /* Safari and Chrome */
+        appearance:none;
+    }
+</style>
+<div class="row" style="margin-top:10px;">
+<div class="col-lg-8 col-lg-offset-2">
+     <div class="panel no-border">
+		<div class="panel-body">
+			<h1 class="text-center content-group-lg text-bold" style="margin: 0;font-size: 34px;color: #ffd806;text-shadow: 2px 2px 4px #000;">
+				Online Public Access Catalog
+			</h1>
+
+			<form action="https://elibrary.bsi.ac.id/opac/pingresult" method="get" class="main-search">
+			    			    
+			    <div class="input-group nosel">
+				    <i class="icon-sort-amount-asc text-muted small"></i> <select name="opsi" style="background: #fff;border: #fff;padding: 0; -moz-appearance:none; /* Firefox */-webkit-appearance:none; /* Safari and Chrome */appearance:none;" class="text-muted">
+                        <option value="semua">Cari Semua </option>
+                        <option value="buku" selected='selected'>Buku</option>
+                        <option value="ta" >Tugas Akhir</option>
+                        <option value="skripsi" >Skripsi</option>
+                        <option value="jurnal" >Jurnal</option>
+                        <option value="prosiding" >Prosiding</option>
+                        <option value="ebook" >Ebook</option>
+                    </select>
+                </div>
+				<div class="input-group content-group" style="margin-bottom: 0px !important;">
+						<input type="text" class="form-control input-xlg" placeholder="Cari Buku, Jurnal, Tugas Akhir, Skripsi" name="q" id="q" required="required" value="metode">
+						
+					<div class="input-group-btn">
+						<button type="submit" class="btn btn-link btn-xlg"><i class="icon-search4 text-indigo"></i> Cari</button>
+					</div>
+				</div>
+			</form>
+			
+                
+		</div>
+    </div>
+</div>
+</div>
+
+<script>
+$(document).ready(function(){
+    var filter_d = new Bloodhound({
+   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+   queryTokenizer: Bloodhound.tokenizers.whitespace,
+   prefetch:'https://elibrary.bsi.ac.id/homepage/autojudul',
+   remote:{
+    url:'https://elibrary.bsi.ac.id/homepage/autojudul/%QUERY',
+    wildcard:'%QUERY'
+   }
+  });
+  
+  var filter_date = new Bloodhound({
+   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+   queryTokenizer: Bloodhound.tokenizers.whitespace,
+   prefetch:'https://elibrary.bsi.ac.id/homepage/autota',
+   remote:{
+    url:'https://elibrary.bsi.ac.id/homepage/autota/%QUERY',
+    wildcard:'%QUERY'
+   }
+  });
+  
+  var filter_skripsi = new Bloodhound({
+   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+   queryTokenizer: Bloodhound.tokenizers.whitespace,
+   prefetch:'https://elibrary.bsi.ac.id/homepage/autoskripsi',
+   remote:{
+    url:'https://elibrary.bsi.ac.id/homepage/autoskripsi/%QUERY',
+    wildcard:'%QUERY'
+   }
+  });
+  
+  var filter_dar = new Bloodhound({
+   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+   queryTokenizer: Bloodhound.tokenizers.whitespace,
+   prefetch:'https://elibrary.bsi.ac.id/homepage/autojurnal',
+   remote:{
+    url:'https://elibrary.bsi.ac.id/homepage/autojurnal/%QUERY',
+    wildcard:'%QUERY'
+   }
+  });
+  
+  var filter_dat = new Bloodhound({
+   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+   queryTokenizer: Bloodhound.tokenizers.whitespace,
+   prefetch:'https://elibrary.bsi.ac.id/homepage/autoebook',
+   remote:{
+    url:'https://elibrary.bsi.ac.id/homepage/autoebook/%QUERY',
+    wildcard:'%QUERY'
+   }
+  });
+
+   filter_d.initialize();
+   filter_dat.initialize();
+   filter_date.initialize();
+   filter_skripsi.initialize();
+   filter_dar.initialize();
+    $('#q').typeahead({
+        highlight: true
+        },
+        {
+        name: 'filter_d',
+        display: 'name',
+        source:filter_d,
+        limit:10,
+        templates:{
+            header: '<span class="tt-heading text-success"><i class="icon-search4"></i> Pencarian di Buku</span>',
+            suggestion:Handlebars.compile('<div>{{name}} - {{tahun}}</div>')
+        }
+    },
+    {
+        name: 'filter_dat',
+        display: 'name',
+        source:filter_dat,
+        limit:10,
+        templates:{
+            header: '<span class="tt-heading text-success"><i class="icon-search4"></i> Pencarian di Ebook</span>',
+            suggestion:Handlebars.compile('<div>{{name}} - {{tahun}}</div>')
+        }
+    },
+    {
+        name: 'filter_date',
+        display: 'name',
+        source:filter_date,
+        limit:10,
+        templates:{
+            header: '<span class="tt-heading text-success"><i class="icon-search4"></i> Pencarian di Tugas Akhir</span>',
+            suggestion:Handlebars.compile('<div>{{name}} - {{tahun}}</div>')
+        }
+    },
+    {
+        name: 'filter_skripsi',
+        display: 'name',
+        source:filter_date,
+        limit:10,
+        templates:{
+            header: '<span class="tt-heading text-success"><i class="icon-search4"></i> Pencarian di Skripsi</span>',
+            suggestion:Handlebars.compile('<div>{{name}} - {{tahun}}</div>')
+        }
+    },
+    {
+        name: 'filter_dar',
+        display: 'name',
+        source:filter_dar,
+        limit:10,
+        templates:{
+            header: '<span class="tt-heading text-success"><i class="icon-search4"></i> Pencarian di Jurnal</span>',
+            suggestion:Handlebars.compile('<div>{{name}}</div>')
+        }
+    });
+});
+</script>
+
+
+
+
+<div class="row">
+<div class="col-lg-8 col-lg-offset-2">
+
+<!-- Tabs -->
+<ul class="nav nav-lg nav-tabs nav-tabs-bottom search-results-tabs">
+	<li class="active"><a href="https://elibrary.bsi.ac.id/opac/result?q=metode" title="Cari di buku">Buku <span class="badge badge-success">967</span></a></li>
+	<li><a href="https://elibrary.bsi.ac.id/opac/resultebook?q=metode" title="Cari di ebook">Ebook <span class="badge badge-warning">4</span></a></li>
+	<li><a href="https://elibrary.bsi.ac.id/opac/resultta?q=metode" title="Cari di Tugas Akhir">Tugas Akhir <span class="badge badge-danger">9259</span></a></li>
+	<li><a href="https://elibrary.bsi.ac.id/opac/resultskripsi?q=metode" title="Cari di Skripsi">Skripsi <span class="badge badge-info">10576</span></a></li>
+	<li><a href="https://elibrary.bsi.ac.id/opac/resultjurnal?q=metode" title="Cari di Jurnal">Jurnal <span class="badge badge-primary">0</span></a></li>
+	<li><a href="https://elibrary.bsi.ac.id/opac/resultprosiding?q=metode" title="Cari di prosiding">Prosiding <span class="badge badge-primary">0</span></a></li>
+	
+</ul>
+<!-- /tabs -->
+
+<!-- Search results -->
+		<div class="panel panel-body no-border">
+			<p class="text-muted text-size-small">Ditemukan 967 hasil di pencarian Buku</p>
+
+			<hr>
+
+			            	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/240688/kupas-tuntas-algoritma-clustering-konsep-perhitungan-manual-dan-program" title="Kupas tuntas algoritma clustering : konsep, perhitungan manual, dan program"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/240688.png" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/240688.png" src="https://elibrary.bsi.ac.id/assets/images/buku/240688.png" alt="Kupas tuntas algoritma clustering : konsep, perhitungan manual, dan program" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/240688/kupas-tuntas-algoritma-clustering-konsep-perhitungan-manual-dan-program" title="Kupas tuntas algoritma clustering : konsep, perhitungan manual, dan program" class="text-blue-800">Kupas tuntas algoritma clustering : konsep, perhitungan manual, dan program</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Rani Rotul Muhima., dkk</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">Andi</li>
+            			<li class="text-success">2021</li>
+            			<li class="text-success">Edisi : 1</li>
+            			<li class="text-success">ISBN: 978-623-01-2564-5</li>
+            			<li class="text-success">Deskripsi : xiv, 226 hlm.; 23 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 240688 | Klasifikasi: 004 | Eksemplar : 3</p>
+					<p class="small text-muted">Tersedia di 1 perpustakaan | dilihat : 539 kali | dipinjam : 0 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=data-processing&o=buku"><span class="label bg-teal-300">Data Processing</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=computer-science&o=buku"><span class="label bg-teal-300">Computer Science</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/203127/metode-penelitian" title="Metode penelitian"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/203127.jpg" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/203127.jpg" src="https://elibrary.bsi.ac.id/assets/images/buku/203127.jpg" alt="Metode penelitian" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/203127/metode-penelitian" title="Metode penelitian" class="text-blue-800">Metode penelitian</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Moh. Nazir</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">Ghalia Indonesia</li>
+            			<li class="text-success">2009</li>
+            			<li class="text-success">Edisi : -</li>
+            			<li class="text-success">ISBN: 978-979-450-173-3</li>
+            			<li class="text-success">Deskripsi : 544 hlm. ; 23 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 203127 | Klasifikasi: 001.20 | Eksemplar : 4</p>
+					<p class="small text-muted">Tersedia di 2 perpustakaan | dilihat : 4321 kali | dipinjam : 1 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode-penelitian&o=buku"><span class="label bg-teal-300">Metode Penelitian</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metodologi-penelitian&o=buku"><span class="label bg-teal-300">Metodologi Penelitian</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=penelitian&o=buku"><span class="label bg-teal-300">penelitian</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/201071/metode-penelitian" title="Metode penelitian"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/201071.png" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/201071.png" src="https://elibrary.bsi.ac.id/assets/images/buku/201071.png" alt="Metode penelitian" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/201071/metode-penelitian" title="Metode penelitian" class="text-blue-800">Metode penelitian</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Moh. Nazir</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">Ghalia Indonesia</li>
+            			<li class="text-success">2009</li>
+            			<li class="text-success">Edisi : -</li>
+            			<li class="text-success">ISBN: 979-450-173-5</li>
+            			<li class="text-success">Deskripsi : 542 hlm. : ill. ; 23 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 201071 | Klasifikasi: 001.42 | Eksemplar : 37</p>
+					<p class="small text-muted">Tersedia di 11 perpustakaan | dilihat : 882 kali | dipinjam : 19 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode-penelitian&o=buku"><span class="label bg-teal-300">Metode Penelitian</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/202191/komputasi-numerik-pemrograman-matlab-untuk-metode-numerik" title="Komputasi numerik : pemrograman matlab untuk metode numerik"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/202191.jpg" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/202191.jpg" src="https://elibrary.bsi.ac.id/assets/images/buku/202191.jpg" alt="Komputasi numerik : pemrograman matlab untuk metode numerik" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/202191/komputasi-numerik-pemrograman-matlab-untuk-metode-numerik" title="Komputasi numerik : pemrograman matlab untuk metode numerik" class="text-blue-800">Komputasi numerik : pemrograman matlab untuk metode numerik</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Suarga, M. Math</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">Andi Offset</li>
+            			<li class="text-success">2014</li>
+            			<li class="text-success">Edisi : I</li>
+            			<li class="text-success">ISBN: 978-979-29-4443-3</li>
+            			<li class="text-success">Deskripsi : xiv, 482 hlm. ; 28 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 202191 | Klasifikasi: 005.12 | Eksemplar : 2</p>
+					<p class="small text-muted">Tersedia di 5 perpustakaan | dilihat : 3801 kali | dipinjam : 0 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=komputer&o=buku"><span class="label bg-teal-300">Komputer</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=sistem-informasi&o=buku"><span class="label bg-teal-300">Sistem Informasi</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=rekayasa-perangkat-lunak&o=buku"><span class="label bg-teal-300">Rekayasa Perangkat Lunak</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/203833/metode-dan-instrumen-penelitian-ekonomi-dan-bisnis" title="Metode dan instrumen penelitian ekonomi dan bisnis"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/203833.jpg" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/203833.jpg" src="https://elibrary.bsi.ac.id/assets/images/buku/203833.jpg" alt="Metode dan instrumen penelitian ekonomi dan bisnis" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/203833/metode-dan-instrumen-penelitian-ekonomi-dan-bisnis" title="Metode dan instrumen penelitian ekonomi dan bisnis" class="text-blue-800">Metode dan instrumen penelitian ekonomi dan bisnis</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i>  danang Sunyoto</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">CAPS</li>
+            			<li class="text-success">2013</li>
+            			<li class="text-success">Edisi : -</li>
+            			<li class="text-success">ISBN: 978-602-9324-28-0</li>
+            			<li class="text-success">Deskripsi : viii, 168 hlm.;23 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 203833 | Klasifikasi: 650 | Eksemplar : 1</p>
+					<p class="small text-muted">Tersedia di 1 perpustakaan | dilihat : 1118 kali | dipinjam : 0 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode-penelitian&o=buku"><span class="label bg-teal-300">Metode Penelitian</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=ekonomi&o=buku"><span class="label bg-teal-300">Ekonomi</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=bisnis&o=buku"><span class="label bg-teal-300">Bisnis</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/205831/metodologi-penelitian-kualitatif-untuk-ilmu-ilmu-sosial" title="Metodologi penelitian kualitatif untuk ilmu-ilmu sosial"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/205831.jpg" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/205831.jpg" src="https://elibrary.bsi.ac.id/assets/images/buku/205831.jpg" alt="Metodologi penelitian kualitatif untuk ilmu-ilmu sosial" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/205831/metodologi-penelitian-kualitatif-untuk-ilmu-ilmu-sosial" title="Metodologi penelitian kualitatif untuk ilmu-ilmu sosial" class="text-blue-800">Metodologi penelitian kualitatif untuk ilmu-ilmu sosial</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Haris Herdiansyah</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">Salemba Humanika</li>
+            			<li class="text-success">2010</li>
+            			<li class="text-success">Edisi : -</li>
+            			<li class="text-success">ISBN: 978-602-8555-25-8</li>
+            			<li class="text-success">Deskripsi : xx, 236 hlm. : ill. : ind. ; 24 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 205831 | Klasifikasi: 001.42 | Eksemplar : 7</p>
+					<p class="small text-muted">Tersedia di 5 perpustakaan | dilihat : 2113 kali | dipinjam : 2 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metodologi-penelitian&o=buku"><span class="label bg-teal-300">Metodologi Penelitian</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=kualitatif&o=buku"><span class="label bg-teal-300">Kualitatif</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=ilmu-sosial&o=buku"><span class="label bg-teal-300">Ilmu Sosial</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/205921/metode-penelitian-administrasi-dilengkapi-dengan-metode-r-dan-d" title="Metode penelitian administrasi : dilengkapi dengan metode R dan D"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/205921.jpeg" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/205921.jpeg" src="https://elibrary.bsi.ac.id/assets/images/buku/205921.jpeg" alt="Metode penelitian administrasi : dilengkapi dengan metode R dan D" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/205921/metode-penelitian-administrasi-dilengkapi-dengan-metode-r-dan-d" title="Metode penelitian administrasi : dilengkapi dengan metode R dan D" class="text-blue-800">Metode penelitian administrasi : dilengkapi dengan metode R dan D</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Sugiyono</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">ALFABETA</li>
+            			<li class="text-success">2012</li>
+            			<li class="text-success">Edisi : -</li>
+            			<li class="text-success">ISBN: 979-8433-02-5</li>
+            			<li class="text-success">Deskripsi :  x, 390 hlm. : ill. ; 24 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 205921 | Klasifikasi: 001.42 | Eksemplar : 2</p>
+					<p class="small text-muted">Tersedia di 7 perpustakaan | dilihat : 1689 kali | dipinjam : 10 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode-penelitian&o=buku"><span class="label bg-teal-300">Metode Penelitian</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=administrasi&o=buku"><span class="label bg-teal-300">Administrasi</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/206983/metode-penelitian-kualitatif-dan-mixed-method" title="Metode penelitian kualitatif dan mixed method"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/206983.jpg" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/206983.jpg" src="https://elibrary.bsi.ac.id/assets/images/buku/206983.jpg" alt="Metode penelitian kualitatif dan mixed method" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/206983/metode-penelitian-kualitatif-dan-mixed-method" title="Metode penelitian kualitatif dan mixed method" class="text-blue-800">Metode penelitian kualitatif dan mixed method</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Seto Mulyadi, M. Heru Basuki dan Hendro Prabowo</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">Rajawali Pers</li>
+            			<li class="text-success">2019</li>
+            			<li class="text-success">Edisi : 1</li>
+            			<li class="text-success">ISBN: 978-602-425-605-0</li>
+            			<li class="text-success">Deskripsi : xvi, 282 hlm. : ill. ; 23 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 206983 | Klasifikasi: 001.42 | Eksemplar : 1</p>
+					<p class="small text-muted">Tersedia di 3 perpustakaan | dilihat : 1069 kali | dipinjam : 0 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode-penelitian&o=buku"><span class="label bg-teal-300">Metode Penelitian</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/211802/metodologi-penelitian-kualitatif-untuk-ilmu-ilmu-sosial" title="Metodologi penelitian kualitatif untuk ilmu-ilmu sosial"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/211802.jpg" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/211802.jpg" src="https://elibrary.bsi.ac.id/assets/images/buku/211802.jpg" alt="Metodologi penelitian kualitatif untuk ilmu-ilmu sosial" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/211802/metodologi-penelitian-kualitatif-untuk-ilmu-ilmu-sosial" title="Metodologi penelitian kualitatif untuk ilmu-ilmu sosial" class="text-blue-800">Metodologi penelitian kualitatif untuk ilmu-ilmu sosial</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Haris Herdiansyah</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">Salemba Humanika</li>
+            			<li class="text-success">2012</li>
+            			<li class="text-success">Edisi : -</li>
+            			<li class="text-success">ISBN: 978-602-8555-25-8</li>
+            			<li class="text-success">Deskripsi : xx, 254 hlm. ; ill. : 24 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 211802 | Klasifikasi: 001.42 | Eksemplar : 2</p>
+					<p class="small text-muted">Tersedia di 2 perpustakaan | dilihat : 3240 kali | dipinjam : 0 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metodologi-penelitian&o=buku"><span class="label bg-teal-300">Metodologi Penelitian</span></a></li>
+											<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=kualitatif&o=buku"><span class="label bg-teal-300">Kualitatif</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+                        	<div class="row" style="margin-bottom:10px;">
+            
+            	<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        			<a href="https://elibrary.bsi.ac.id/readbook/207604/metode-penelitian" title="Metode penelitian"><img class="lazy" data-src="https://elibrary.bsi.ac.id/assets/images/buku/207604.jpg" data-retina="https://elibrary.bsi.ac.id/assets/images/buku/207604.jpg" src="https://elibrary.bsi.ac.id/assets/images/buku/207604.jpg" alt="Metode penelitian" class="img-responsive" style="max-width:150px;border-radius:10px;"></a>
+        		</div>
+        		<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">			    
+				    <h4 class="media-heading text-uppercase"><a href="https://elibrary.bsi.ac.id/readbook/207604/metode-penelitian" title="Metode penelitian" class="text-blue-800">Metode penelitian</a></h4>
+    		
+					<ul class="list-inline list-inline-separate text-muted">
+            			<li><i class="icon-user position-left"></i> Moh. Nazir</li>
+            		</ul>
+            		<ul class="list-inline list-inline-separate text-muted">
+            			<li class="text-success">Ghalia Indonesia</li>
+            			<li class="text-success">2005</li>
+            			<li class="text-success">Edisi : -</li>
+            			<li class="text-success">ISBN: 979-450-173-5</li>
+            			<li class="text-success">Deskripsi : 544 hal. : ill. ; 24 cm</li>
+            		</ul>
+					<p class="text-muted">Kode Buku: 207604 | Klasifikasi: 001.42 | Eksemplar : 1</p>
+					<p class="small text-muted">Tersedia di 4 perpustakaan | dilihat : 6180 kali | dipinjam : 1 kali</p>
+					
+					<ul class="list-inline list-inline-condensed heading-text">
+					    						<li><a href="https://elibrary.bsi.ac.id/opac/result/?q=metodologi-penelitian&o=buku"><span class="label bg-teal-300">Metodologi Penelitian</span></a></li>
+										</ul>
+				</div>
+				<hr>
+			</div>			
+            	
+            	
+            
+            <div class="text-center pb-10 pt-10">
+                <div class="pagging text-center"><nav><ul class="pagination pagination-flat"><li class="page-item active"><span class="page-link">1<span class="sr-only">(current)</span></span></li><li class="page-item"><span class="page-link"><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode&o=buku&pg=10" data-ci-pagination-page="2">2</a></span></li><li class="page-item"><span class="page-link"><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode&o=buku&pg=20" data-ci-pagination-page="3">3</a></span></li><li class="page-item"><span class="page-link"><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode&o=buku&pg=10" data-ci-pagination-page="2" rel="next">Next</a><li class="page-item"><span class="page-link"><a href="https://elibrary.bsi.ac.id/opac/result/?q=metode&o=buku&pg=960" data-ci-pagination-page="97">Last</a></ul></nav></div>			</div>
+		</div>
+	
+	</div>
+</div>
+
+    
+
+    <footer class="bg-indigo-600 text-white" role="contentinfo" aria-label="Footer Informasi Perpustakaan">
+    <div class="container pt-4 pb-4">
+        <div class="row">
+            <!-- Tentang Perpustakaan -->
+            <section class="col-lg-4 mb-4" aria-labelledby="footer-about">
+                <h4 id="footer-about" class="content-group text-semibold text-white">Tentang Perpustakaan</h4>
+                <hr>
+                <img src="https://elibrary.bsi.ac.id/assets/perpustakaan.png" alt="PERPUSTAKAAN UBSI" style="height: 60px;">
+                <p class="mt-3">Perpustakaan Universitas Bina Sarana Informatika menyediakan layanan informasi lengkap bagi civitas akademika, termasuk koleksi buku, jurnal, majalah, prosiding, dan sumber ilmiah lainnya untuk mendukung kegiatan belajar dan penelitian mahasiswa.</p>
+                <br>
+                <!-- Histats -->
+                <div id="histats_counter" class="mt-3"></div>
+                <script type="text/javascript">
+                    var _Hasync = _Hasync || [];
+                    _Hasync.push(['Histats.start', '1,4467802,4,1041,200,30,00011111']);
+                    _Hasync.push(['Histats.fasi', '1']);
+                    _Hasync.push(['Histats.track_hits', '']);
+                    (function() {
+                        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+                        hs.src = ('//s10.histats.com/js15_as.js');
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+                    })();
+                </script>
+                <noscript>
+                    <a href="/" target="_blank">
+                        <img src="//sstatic1.histats.com/0.gif?4467802&101" alt="Web Hit Counter" style="border:0;" />
+                    </a>
+                </noscript>
+            </section>
+
+            <!-- Informasi Kontak -->
+            <section class="col-lg-4 mb-4" aria-labelledby="footer-contact">
+                <h4 id="footer-contact" class="content-group text-semibold text-white">Informasi</h4>
+                <hr>
+                <address class="text-white">
+                    <p><strong>Alamat:</strong><br>Jl. Kramat Raya No.98, Senen, Jakarta Pusat</p>
+                    <p><i class="icon-phone" aria-hidden="true"></i> Telp:
+                        <a href="tel:+6285777854809" class="text-white">+6285777854809</a>
+                    </p>
+                    <p><i class="icon-envelop3" aria-hidden="true"></i> Email:
+                        <a href="mailto:perpustakaan@bsi.ac.id" class="text-white">perpustakaan@bsi.ac.id</a>
+                    </p>
+                    <p><i class="icon-instagram" aria-hidden="true"></i> IG:
+                        <a href="https://instagram.com/perpustakaan_ubsi" target="_blank" rel="noopener noreferrer" class="text-white">@perpustakaan_ubsi</a>
+                    </p>
+                    <p><strong>Jam Operasional:</strong><br>Senin - Jumat : 08.00 s/d 21.30 WIB<br />
+Isitirahat Siang : 12.00 s/d 13.00 WIB<br />
+Istirahat Sore : 18.00 s/d 19.00 WIB</p>
+                </address>
+            </section>
+
+            <!-- Link Terkait -->
+            <section class="col-lg-4 mb-4" aria-labelledby="footer-links">
+                <h4 id="footer-links" class="content-group text-semibold text-white">Link Terkait</h4>
+                <hr>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="https://ubsi.perpustakaan.co.id/" target="_blank" rel="noopener noreferrer" class="text-white" title="Digital Ebook">
+                            Buku Digital
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://lppm.bsi.ac.id/" target="_blank" rel="noopener noreferrer" class="text-white" title="LPPM UBSI">
+                            LPPM UBSI
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://repository.bsi.ac.id/" target="_blank" rel="noopener noreferrer" class="text-white" title="Repositori UBSI">
+                            Repository UBSI
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://ejournal.bsi.ac.id/ejurnal/" target="_blank" rel="noopener noreferrer" class="text-white" title="E-journal UBSI">
+                            E-Journal UBSI
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://elearning.bsi.ac.id/" target="_blank" rel="noopener noreferrer" class="text-white" title="E-Learning UBSI">
+                            E-Learning UBSI
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://kemahasiswaan.bsi.ac.id/" target="_blank" rel="noopener noreferrer" class="text-white" title="Kemahasiswaan UBSI">
+                            Kemahasiswaan UBSI
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.perpusnas.go.id/" target="_blank" rel="noopener noreferrer" class="text-white" title="Perpustakaan Nasional">
+                            Perpustakaan Nasional
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://e-resources.perpusnas.go.id/" target="_blank" rel="noopener noreferrer" class="text-white" title="e-Resources">
+                            e-Resources
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://pustakadigital.fppti-jateng.or.id/" target="_blank" rel="noopener noreferrer" class="text-white" title="Pustaka Digital FPPTI Jateng">
+                            Pustaka Digital FPPTI Jateng
+                        </a>
+                    </li>
+
+                    <!-- Gale OneFile -->
+                    <li>
+                        <strong>Gale OneFile</strong>
+                    </li>
+                    <li>
+                        <a href="https://link.gale.com/apps/ITBC?u=fjatbus" target="_blank" rel="noopener noreferrer" class="text-white" title="Gale OneFile: Business">
+                            Gale OneFile: Business
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://link.gale.com/apps/SPJ.SP00?u=fjathum" target="_blank" rel="noopener noreferrer" class="text-white" title="Gale OneFile: Periodicals 250 Titles">
+                            Gale OneFile: Periodicals 250 Titles
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://link.gale.com/apps/PPGS?u=fjatsci" target="_blank" rel="noopener noreferrer" class="text-white" title="Gale OneFile: Science">
+                            Gale OneFile: Science
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://link.gale.com/apps/PPNU?u=fjathlt" target="_blank" rel="noopener noreferrer" class="text-white" title="Gale OneFile: Nursing and Allied Health">
+                            Gale OneFile: Nursing and Allied Health
+                        </a>
+                    </li>
+
+                    <!-- ProQuest -->
+                    <li>
+                        <a href="https://www.proquest.com/login" target="_blank" rel="noopener noreferrer" class="text-white" title="ProQuest">
+                            ProQuest
+                        </a>
+                    </li>
+                </ul>
+
+                
+            </section>
+        </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="row bg-indigo-800 text-white text-center py-3">
+        <div class="col-12">
+            <p class="mb-0">&copy; 2026 Perpustakaan Universitas Bina Sarana Informatika. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+
+</div>
+<!-- /page container -->
+<!-- Modal -->
+<div class="modal fade" id="pleaseWaitDialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h1><span id="stater"></span></h1>
+      </div>
+      <div class="modal-body">
+        <div class="progress">
+			<div class="progress-bar progress-bar-striped active" style="width: 100%">
+				<span class="sr-only">100% Complete</span>
+			</div>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>   
+<script>
+function modalOpen(){
+    $('#pleaseWaitDialog').modal({show: 'true', backdrop: 'static', keyboard: false}); 
+}
+function modalClose(){
+    $("#pleaseWaitDialog").modal('hide');
+}
+
+$('[data-popup="lightbox"]').fancybox({padding: 3});
+
+var count = 0;
+var stop = '';
+function jsonSukses(url, data, modal, location, text, pesan) {
+    
+    count++;
+    $.ajax({
+        url: "https://elibrary.bsi.ac.id/" + url,
+        method: "POST",
+        data: data,
+        dataType:"json",
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function () {
+            if(modal != 'Not'){
+            $(modal).modal('hide'); 
+            }
+            $(text).html("Sedang Proses...");
+        },
+        success: function (kode) {
+            if(pesan == "Redirecting"){
+                $(text).html("<span class='text-success'>Redirecting</span>");
+            }else{
+                $(text).html("<span class='text-success'>OK. Berhasil</span>");
+            }
+            
+            if(location == "reloadmhs"){
+                setTimeout(function(){
+                    modalClose();
+                    document.location = "https://elibrary.bsi.ac.id/member/bookingmhs"; }
+                , 1000);
+                
+            }else if(location == "reloadkry"){
+                setTimeout(function(){
+                    modalClose();
+                    document.location = "https://elibrary.bsi.ac.id/member/bookingkry"; }
+                , 1000);
+                
+            }else{
+                setTimeout(function () {
+                    document.location = "https://elibrary.bsi.ac.id/" + location; 
+                }, 2000);
+            }
+        },
+        error: function (jqXHR, exception) {
+            var msg = '';
+            if (jqXHR.status === 0) {
+                msg = 'Koneksi Internet Putus. Mencoba Ulang ke ' + count;
+                setTimeout(function () {
+                    jsonSukses(url, data, modal, location, text);
+                }, 10000);
+            } else if (jqXHR.status == 500) {
+                msg = 'Terjadi Kesalahan Server [500].';
+            } else if (exception === 'parsererror') {
+                msg = 'Terjadi Kesalahan Pada Server [parseerror]';
+            } else if (exception === 'timeout') {
+                msg = 'Timeout. Mencoba Ulang ke ' + count;
+                setTimeout(function () {
+                    jsonSukses(url, data, modal, location, text);
+                }, 10000);
+            } else {
+                msg = '(Harap refresh) Error';
+            }
+            if(count >= 10){
+                msg = 'Mending Stop Aja deh!';
+                stop = "<br><a href='" + window.location.href +"' class='btn btn-danger btn-sm' title='Stop'>Stop</a>";
+                
+            }
+            $(text).html("<span class='text-danger'>" + msg + "</span>" + stop); 
+        }
+
+    });
+}
+</script>
+<script>
+
+$(document).ready(function () {
+    
+    $('#owl-slider').owlCarousel({
+        items:1,
+        lazyLoad:true,
+        animateOut: 'slideOutDown',
+        animateIn: 'flipInX',
+        loop:true,
+        smartSpeed:450,
+        autoHeight:true,
+        margin:10,
+        autoplay:true,
+        autoplayTimeout:5000,
+        autoplayHoverPause:true,
+        responsiveClass:true,
+        responsive:{
+            1000:{
+                items:1,
+            }
+        }
+    });
+});
+
+$(document).ready(function () {
+    
+    $('#owl-staffperpus').owlCarousel({
+        items:5,
+        lazyLoad:true,
+        loop:true,
+        margin:5,
+        dots:false,
+        autoHeight:true,
+        autoplay:true,
+        autoplayTimeout:10000,
+        autoplayHoverPause:true,
+        responsiveClass:true,
+        responsive:{
+            300:{
+                items:1,
+                dots:false
+            },
+            390:{
+                items:3
+            },
+            1000:{
+                items:4
+            },
+            1400:{
+                items:6
+            }
+            
+        }
+    });
+});
+
+$(document).ready(function () {
+    
+    $('#owl-fituropac').owlCarousel({
+        items:5,
+        lazyLoad:true,
+        loop:true,
+        margin:10,
+        autoplay:true,
+        autoplayTimeout:5000,
+        autoplayHoverPause:true,
+        responsiveClass:true,
+        responsive:{
+            300:{
+                items:1,
+            },
+            700:{
+                items:3,
+            },
+            1000:{
+                items:5,
+            }
+            
+        }
+    });
+});
+</script>
+
+<script>
+$(function () {
+    // HANYA untuk link parent "Gale OneFile"
+    $('.dropdown-submenu > a').on('click', function (e) {
+        var $submenu = $(this).next('.dropdown-menu');
+
+        // Toggle submenu
+        $submenu.toggle();
+
+        // Cegah dropdown utama langsung tertutup
+        e.stopPropagation();
+        e.preventDefault();
+    });
+
+    // Kalau dropdown utama ditutup, tutup semua submenu
+    $('.dropdown').on('hidden.bs.dropdown', function () {
+        $('.dropdown-submenu .dropdown-menu').hide();
+    });
+});
+</script>
+
+</body>
+</html>
