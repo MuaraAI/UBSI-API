@@ -64,3 +64,6 @@ class CacheManager:
         if key not in self._locks:
             self._locks[key] = asyncio.Lock()
         return self._locks[key]
+
+from app.config import settings
+cache = CacheManager(settings.REDIS_URL, default_ttl=settings.TTL_DEFAULT)

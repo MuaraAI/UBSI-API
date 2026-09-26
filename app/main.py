@@ -4,17 +4,16 @@ from fastapi import FastAPI, Request, status, HTTPException
 from fastapi.responses import JSONResponse
 
 from app.config import settings
-from app.cache import CacheManager
-from app.limiter import RateLimiter
+from app.cache import cache
+from app.limiter import limiter
 from app.envelope import error_response
-
-cache = CacheManager(settings.REDIS_URL, default_ttl=settings.TTL_DEFAULT)
-limiter = RateLimiter(settings.REDIS_URL, limit=60)
+from app.modules.studentv2 import router as studentv2_router, studentv2_client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
     try:
+        studentv2_client.close()
         client = await cache.get_client()
         await client.aclose()
     except Exception:
@@ -26,6 +25,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+app.include_router(studentv2_router)
 
 @app.middleware("http")
 async def rate_limiting_middleware(request: Request, call_next):

@@ -24,3 +24,6 @@ class RateLimiter:
             return count <= self.limit
         except (aioredis.RedisError, ConnectionError, OSError):
             return True
+
+from app.config import settings
+limiter = RateLimiter(settings.REDIS_URL, limit=60)
