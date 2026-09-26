@@ -5,6 +5,10 @@ class Settings(BaseSettings):
     PORT: int = 8300
     REDIS_URL: str = "redis://127.0.0.1:6379/2"
 
+    API_KEY: str = ""
+    ALLOWED_ORIGINS: str = "*"
+    TRUSTED_PROXIES: str = "127.0.0.1"
+
     STUDENTV2_NIM: str = ""
     STUDENTV2_PASS: str = ""
     ELEARNING_NIM: str = ""

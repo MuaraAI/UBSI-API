@@ -34,3 +34,12 @@ def test_settings_env_override(monkeypatch):
     assert s.REDIS_URL == "redis://localhost:6379/5"
     assert s.STUDENTV2_NIM == "15260767"
     assert s.STUDENTV2_PASS == "secretpass"
+
+def test_security_config_defaults(monkeypatch):
+    monkeypatch.delenv("API_KEY", raising=False)
+    monkeypatch.delenv("ALLOWED_ORIGINS", raising=False)
+    monkeypatch.delenv("TRUSTED_PROXIES", raising=False)
+    cfg = Settings(_env_file=None)
+    assert cfg.API_KEY == ""
+    assert cfg.ALLOWED_ORIGINS == "*"
+    assert cfg.TRUSTED_PROXIES == "127.0.0.1"
