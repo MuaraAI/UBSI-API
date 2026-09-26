@@ -14,7 +14,7 @@ This document outlines the copyright, intellectual property, and Digital Millenn
 
 ## 2. Fair Use & Academic Purpose
 
-This software is developed by **Yuken Velino** (NIM: **15260767**, Class: **15.1C.30**), an undergraduate student of **Program Studi Informatika, Fakultas Teknik & Informatika, Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak**, strictly for **educational, non-commercial, personal interoperability, and learning automation purposes** under Fair Use principles (17 U.S.C. § 107 and applicable Indonesian Copyright Law / UU Hak Cipta No. 28 Tahun 2014).
+This software is developed by undergraduate students of **Program Studi Informatika, Fakultas Teknik & Informatika, Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak**, strictly for **educational, non-commercial, personal interoperability, and learning automation purposes** under Fair Use principles (17 U.S.C. § 107 and applicable Indonesian Copyright Law / UU Hak Cipta No. 28 Tahun 2014).
 
 It is intended solely for personal study aid and personal notification bots (such as reminders for upcoming course schedules or assignment deadlines).
 
