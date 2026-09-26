@@ -143,6 +143,13 @@ UBSI-API/
 ├── scripts/
 │   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
 │   └── smoke.py               # Live verification CLI tool
+├── skills/
+│   └── SKILL.md               # Agent skill definition for AI assistants
+├── docs/
+│   ├── api.md                 # 17 Endpoints dictionary & JSON payloads
+│   ├── architecture.md        # Request lifecycle & cache flow
+│   ├── anti-ban.md            # Account security & safety protocols
+│   └── deploy.md              # VPS PM2 production operations
 ├── ecosystem.config.cjs       # PM2 production config untuk VPS
 ├── CONTRIBUTING.md            # Panduan kontribusi & layout tests
 ├── SECURITY.md                # Kebijakan etika & privasi akademik

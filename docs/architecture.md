@@ -84,3 +84,44 @@ key_hash = hashlib.sha256(f"{module}:{path}:{sorted_params}".encode()).hexdigest
 full_key = f"ubsi:{module}:{key_hash}"
 ```
 This isolates cache namespaces across modules and query parameters.
+
+---
+
+## 5. Repository Layout
+
+```text
+UBSI-API/
+├── app/
+│   ├── modules/
+│   │   ├── studentv2.py       # SIAKAD: Jadwal, Nilai, Berita, Pengumuman
+│   │   ├── elearning.py       # MyBest: Captcha solver, Courses, Absensi, Tugas, Materi, Kuis
+│   │   ├── elibrary.py        # Perpus: OPAC search, Book detail, 60s retry
+│   │   ├── news.py            # Portal: Native WP REST API (/wp-json/wp/v2/posts)
+│   │   ├── repository.py      # EPrints: Recent publications & search
+│   │   └── ejournal.py        # OJS: 16 Journal catalog via OAI bypass
+│   ├── cache.py               # Redis 2-tier cache (fresh + LGG) & single-flight mutex
+│   ├── config.py              # Pydantic Settings & tiered TTLs
+│   ├── deps.py                # Modular credential validation (Option B)
+│   ├── envelope.py            # Clean Minimalist JSON envelope
+│   ├── limiter.py             # Sliding window rate limiter (60 req/min)
+│   └── main.py                # Base FastAPI app & global middleware
+├── tests/
+│   ├── fixtures/              # Snapshot HTML offline (sv2_*.html, el_*.html)
+│   └── test_*.py              # 46 Automated unit & integration tests
+├── scripts/
+│   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
+│   └── smoke.py               # Live verification CLI tool
+├── skills/
+│   └── SKILL.md               # Agent skill definition for AI assistants
+├── docs/
+│   ├── api.md                 # 17 Endpoints dictionary & JSON payloads
+│   ├── architecture.md        # Request lifecycle & cache flow
+│   ├── anti-ban.md            # Account security & safety protocols
+│   └── deploy.md              # VPS PM2 production operations
+├── ecosystem.config.cjs       # PM2 production config untuk VPS
+├── CONTRIBUTING.md            # Panduan kontribusi & layout tests
+├── SECURITY.md                # Kebijakan etika & privasi akademik
+├── DMCA.md                    # Kebijakan hak cipta & takedown notice
+├── LICENSE                    # MIT License (c) 2026 Yuken Velino
+└── requirements.txt           # Project dependencies
+```
