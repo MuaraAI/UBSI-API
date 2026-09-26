@@ -367,7 +367,7 @@ async def get_courses(creds: tuple[str, str] = Depends(require_elearning_creds))
 
 @router.get("/assignments")
 async def get_assignments(
-    token: Optional[str] = Query(default=None, description="Encrypted course token from /courses"),
+    token: Optional[str] = Query(default=None, pattern=r"^[A-Za-z0-9+/=_-]+$", description="Encrypted course token from /courses"),
     creds: tuple[str, str] = Depends(require_elearning_creds)
 ):
     nim, password = creds
@@ -417,7 +417,7 @@ async def get_assignments(
 
 @router.get("/presence")
 async def get_presence(
-    token: Optional[str] = Query(default=None, description="Encrypted course token from /courses"),
+    token: Optional[str] = Query(default=None, pattern=r"^[A-Za-z0-9+/=_-]+$", description="Encrypted course token from /courses"),
     creds: tuple[str, str] = Depends(require_elearning_creds)
 ):
     nim, password = creds
@@ -466,7 +466,7 @@ async def get_presence(
 
 @router.get("/materials")
 async def get_materials(
-    token: Optional[str] = Query(default=None, description="Encrypted course token from /courses"),
+    token: Optional[str] = Query(default=None, pattern=r"^[A-Za-z0-9+/=_-]+$", description="Encrypted course token from /courses"),
     creds: tuple[str, str] = Depends(require_elearning_creds)
 ):
     nim, password = creds

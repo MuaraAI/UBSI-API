@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import re
+import urllib.parse
 from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException, Query, status
@@ -77,13 +78,14 @@ class RepositoryClient:
             )
 
     def fetch_search(self, q: str) -> str:
-        url = f"{self.BASE_URL}/cgi/search/simple?q={q}"
+        safe_q = urllib.parse.quote_plus(q)
+        url = f"{self.BASE_URL}/cgi/search/simple?q={safe_q}"
         try:
             res = Fetcher.get(url, timeout=30, impersonate="chrome")
             if res.status == 200:
                 return res.text if hasattr(res, "text") else res.body.decode("utf-8", "ignore")
             # fallback search path
-            fallback_url = f"{self.BASE_URL}/index.php/repo/search?q={q}"
+            fallback_url = f"{self.BASE_URL}/index.php/repo/search?q={safe_q}"
             res_fb = Fetcher.get(fallback_url, timeout=30, impersonate="chrome")
             if res_fb.status == 200:
                 return res_fb.text if hasattr(res_fb, "text") else res_fb.body.decode("utf-8", "ignore")

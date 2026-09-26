@@ -71,7 +71,7 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
 async def global_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content=error_response(code="INTERNAL_SERVER_ERROR", message=str(exc))
+        content=error_response(code="INTERNAL_SERVER_ERROR", message="Terjadi kesalahan internal pada server")
     )
 
 @app.get("/health", status_code=status.HTTP_200_OK)

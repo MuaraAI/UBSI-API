@@ -1,9 +1,10 @@
 import asyncio
 import re
 import time
+import urllib.parse
 from typing import Any, Optional
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Path, Query, status
 from scrapling.fetchers import Fetcher
 from scrapling.parser import Adaptor
 
@@ -107,7 +108,9 @@ class ElibraryClient:
 
     def fetch_search(self, q: str, opsi: str = "buku", page: int = 1) -> str:
         offset = (page - 1) * 10
-        url = f"{self.BASE_URL}/opac/pingresult?q={q}&opsi={opsi}&pg={offset}"
+        safe_q = urllib.parse.quote_plus(q)
+        safe_opsi = urllib.parse.quote_plus(opsi)
+        url = f"{self.BASE_URL}/opac/pingresult?q={safe_q}&opsi={safe_opsi}&pg={offset}"
         
         last_error: Optional[Exception] = None
         for attempt in range(3):
@@ -198,7 +201,7 @@ async def search_books(
             )
 
 @router.get("/book/{book_id}")
-async def get_book_detail(book_id: str):
+async def get_book_detail(book_id: str = Path(..., pattern=r"^[A-Za-z0-9_-]+$")):
     cache_key = cache.make_key("elibrary", "book", book_id=book_id)
 
     fresh = await cache.get_fresh(cache_key)

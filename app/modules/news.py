@@ -1,9 +1,10 @@
 import asyncio
 import json
 import re
+import urllib.parse
 from typing import Any, Optional
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Path, Query, status
 from scrapling.fetchers import Fetcher
 
 from app.config import settings
@@ -80,7 +81,8 @@ class NewsClient:
     def fetch_posts(self, search: Optional[str] = None, page: int = 1, per_page: int = 10) -> list[dict[str, Any]]:
         params = f"_embed=1&page={page}&per_page={per_page}"
         if search:
-            params += f"&search={search}"
+            safe_search = urllib.parse.quote_plus(search)
+            params += f"&search={safe_search}"
         url = f"{self.BASE_URL}/posts?{params}"
 
         try:
@@ -176,7 +178,7 @@ async def get_news(
             )
 
 @router.get("/{post_id}")
-async def get_news_detail(post_id: str):
+async def get_news_detail(post_id: str = Path(..., pattern=r"^[0-9]+$")):
     cache_key = cache.make_key("news", "detail", post_id=post_id)
 
     fresh = await cache.get_fresh(cache_key)
