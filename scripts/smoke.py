@@ -9,7 +9,7 @@ import sys
 import time
 from typing import Any
 
-import requests
+import httpx
 
 GREEN = "\033[92m"
 RED = "\033[91m"
@@ -19,7 +19,7 @@ BOLD = "\033[1m"
 def run_check(name: str, url: str, check_fn) -> bool:
     t0 = time.time()
     try:
-        r = requests.get(url, timeout=15)
+        r = httpx.get(url, timeout=25.0)
         elapsed = (time.time() - t0) * 1000
         ok, detail = check_fn(r)
         if ok:

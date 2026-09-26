@@ -86,7 +86,9 @@ class NewsClient:
         try:
             res = Fetcher.get(url, timeout=20, impersonate="chrome")
             if res.status == 200:
-                raw = res.text if hasattr(res, "text") else res.body.decode("utf-8", "ignore")
+                if hasattr(res, "json") and callable(res.json):
+                    return res.json()
+                raw = res.body.decode("utf-8", "ignore") if isinstance(res.body, bytes) else str(res.body)
                 return json.loads(raw)
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
@@ -109,7 +111,9 @@ class NewsClient:
         try:
             res = Fetcher.get(url, timeout=20, impersonate="chrome")
             if res.status == 200:
-                raw = res.text if hasattr(res, "text") else res.body.decode("utf-8", "ignore")
+                if hasattr(res, "json") and callable(res.json):
+                    return res.json()
+                raw = res.body.decode("utf-8", "ignore") if isinstance(res.body, bytes) else str(res.body)
                 return json.loads(raw)
             if res.status == 404:
                 raise HTTPException(
