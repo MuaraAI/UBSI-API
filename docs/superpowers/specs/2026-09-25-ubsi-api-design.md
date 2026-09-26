@@ -27,12 +27,16 @@ Sources:
 | Aspek | Keputusan |
 |---|---|
 | Audiens | Pribadi, 1 user |
-| Modul | 6 (semua sumber di atas) |
+| Modul | 6 (studentv2, elearning, elibrary, ejournal, repository, news) |
 | Stack | Python 3.12+, FastAPI, Scrapling (Fetcher / FetcherSession with curl_cffi Chrome impersonation) |
 | Dev | Laptop; deploy ke VPS Tencent via script |
 | Binding | 127.0.0.1:8300 (VPS dan lokal) — tidak pernah 0.0.0.0 |
-| Auth API | Tidak ada (localhost-only adalah boundary-nya) |
-| Cache | Redis lokal (sudah ada di VPS): fresh TTL ~60s + last-known-good tanpa TTL |
+| Route Prefix | `/v1/` (contoh: `/v1/studentv2/schedule`, `/v1/elearning/courses`) |
+| Domain / HTTPS | Skip di v1 (YAGNI) — evaluasi di v2 jika ada kebutuhan akses publik |
+| Auth API | Tanpa API key di v1 (localhost boundary murni) |
+| Rate Limit | 60 req/menit via Redis sliding window counter |
+| Response Format | Clean Minimalist JSON: `{"success": true, "data": ..., "cached": false}` |
+| Cache | Redis lokal: fresh TTL ~60s + last-known-good tanpa TTL |
 | Persistensi | Redis saja; tanpa SQLite, tanpa ORM |
 
 ## 4. Arsitektur
@@ -54,12 +58,28 @@ request → FastAPI route → cache get (redis)
 Komponen:
 
 - `app/cache.py` — wrapper redis.asyncio: `get_fresh`, `set_fresh`, `get_lgg`, `set_lgg`. Key = `sha256(modul + path + params)`. Dua key per entry: `ubsi:fresh:{h}` (EX 60), `ubsi:lgg:{h}` (no TTL).
-- `app/envelope.py` — satu bentuk respons:
+- `app/envelope.py` — satu bentuk respons bersih (Clean Minimalist JSON):
   ```json
-  { "ok": true, "data": ..., "source": "<url sumber>", "fetched_at": "<iso8601>", "stale_since": null }
+  {
+    "success": true,
+    "data": ...,
+    "cached": false
+  }
   ```
-  Error: `{ "ok": false, "error": { "module": "studentv2", "kind": "login_failed|upstream_error|parse_error", "detail": "..." } }` dengan status 502 (upstream) / 500 (bug kita).
-- `app/session.py` — AsyncClient per modul login-an (cookie jar persisten in-memory), helper re-login sekali saat redirect ke halaman login terdeteksi. Sleep acak kecil (0.5–1.5s) antar request ber-paginasi ke kampus.
+  Error:
+  ```json
+  {
+    "success": false,
+    "error": {
+      "code": "UPSTREAM_TIMEOUT",
+      "message": "Deskripsi error jelas",
+      "module": "studentv2"
+    }
+  }
+  ```
+  dengan HTTP status 502 (upstream error) / 429 (rate limit exceeded) / 500 (internal bug).
+- `app/limiter.py` — Redis sliding window rate limiter: max 60 req/menit per client IP/ID.
+- `app/session.py` — Scrapling FetcherSession per modul login-an (cookie jar persisten in-memory), helper re-login sekali saat redirect ke halaman login terdeteksi. Sleep acak kecil (0.5–1.5s) antar request ber-paginasi ke kampus.
 - `app/<modul>.py` — masing-masing: fungsi fetch + parser murni (parse(html) → dict) yang bisa dites tanpa jaringan.
 
 ## 5. Endpoint (v1) — dikunci dari hasil audit live 25 Sep 2026
@@ -73,46 +93,46 @@ token Laravel terenkripsi — diperlakukan opaque, selalu diambil dari `/sch`.
 GET /health                        → { status, redis: up/down }
 
 # studentv2 (login CSRF _token; terbukti di ubsi_sync.py)
-GET /studentv2/announcements       → beranda: pengumuman internal (PDF) + menu berita
-GET /studentv2/news                → /mahasiswa/berita (608 baris; pagination/cap)
-GET /studentv2/schedule            → /mahasiswa/jadwal-kuliah
+GET /v1/studentv2/announcements    → beranda: pengumuman internal (PDF) + menu berita
+GET /v1/studentv2/news             → /mahasiswa/berita (608 baris; pagination/cap)
+GET /v1/studentv2/schedule         → /mahasiswa/jadwal-kuliah
                                      [No,Hari,Jam,Kode Dosen,Kode,MK,SKS,Kel.Pratek,Ruang,Bahan Ajar]
-GET /studentv2/grades              → /mahasiswa/nilai-murni
+GET /v1/studentv2/grades           → /mahasiswa/nilai-murni
                                      [No,Kode,MK,SKS,UTS,UAS,Tugas,Absen,Total,Grade]
-GET /studentv2/khs                 → /mahasiswa/khs [No,Kode,MK,SKS,Nilai,Mutu,Ket]
-GET /studentv2/krs                 → /mahasiswa/krs [No,Kode,MK,SKS,Paraf]
+GET /v1/studentv2/khs              → /mahasiswa/khs [No,Kode,MK,SKS,Nilai,Mutu,Ket]
+GET /v1/studentv2/krs              → /mahasiswa/krs [No,Kode,MK,SKS,Paraf]
 
 # elearning MyBest (login CSRF + captcha matematika; terbukti di ubsi_sync.py)
-GET /elearning/courses             → /sch: kartu matkul (nama,kode dosen,kode mtk,
+GET /v1/elearning/courses          → /sch: kartu matkul (nama,kode dosen,kode mtk,
                                      sks,ruang,kel praktek,kode gabung,hari,jam) + token
-GET /elearning/presence            → /absen-mhs/{enc}
+GET /v1/elearning/presence         → /absen-mhs/{enc}
                                      [#,Status Absen,Tanggal,MK,Pertemuan,Rangkuman,Berita Acara]
-GET /elearning/assignments         → /assignment/{enc} (2 tabel):
+GET /v1/elearning/assignments      → /assignment/{enc} (2 tabel):
                                      tugas [No,Kode Mtk,Kelas,Judul,Des,Pertemuan,Mulai,Selesai,Aksi]
                                      submission [Judul,Link Tugas,Komentar Dosen,Nilai]
-GET /elearning/materials           → /learning/{enc} [No,Kode Mtk,Kelas,Judul,Deskripsi,File]
+GET /v1/elearning/materials        → /learning/{enc} [No,Kode Mtk,Kelas,Judul,Deskripsi,File]
                                      file host: students.bsi.ac.id (silabus/modul zip)
-GET /elearning/quiz                → /exercise [No,Kode Mtk,Paket,Dosen,Waktu,Mulai,Selesai,Aksi]
+GET /v1/elearning/quiz             → /exercise [No,Kode Mtk,Paket,Dosen,Waktu,Mulai,Selesai,Aksi]
 
 # elibrary (publik, custom PHP, server LAMBAT — timeout 60s + retry wajib)
-GET /elibrary/search?q=&opsi=buku|semua|ta|skripsi|jurnal|prosiding|ebook&page
+GET /v1/elibrary/search?q=&opsi=buku|semua|ta|skripsi|jurnal|prosiding|ebook&page
     → GET /opac/pingresult?q={q}&opsi={opsi}; "Ditemukan N hasil";
       paginasi /opac/result/?q=&o={opsi}&pg={offset}
-GET /elibrary/categories           → /opac/buku|ebook|jurnal|prosiding|referensi|skripsi|tugasakhir
-GET /elibrary/book/{id}            → /readbook/{id}/{slug}.html
+GET /v1/elibrary/categories        → /opac/buku|ebook|jurnal|prosiding|referensi|skripsi|tugasakhir
+GET /v1/elibrary/book/{id}         → /readbook/{id}/{slug}.html
                                      KV: kode, klasifikasi, judul, edisi, penulis,
                                      penerbit, bahasa, tahun, ISBN, tajuk subjek,
                                      deskripsi/sinopsis, eksemplar, stok
-GET /elibrary/news                 → /news (+ /readnews/{y}/{m}/{id}/slug)
+GET /v1/elibrary/news              → /news (+ /readnews/{y}/{m}/{id}/slug)
 
 # publik (audit menyusul saat modulnya dibangun)
-GET /ejournal/search?q=&page=      GET /ejournal/article/{id}
-GET /repository/search?q=&page=    GET /repository/item/{id}
+GET /v1/ejournal/search?q=&page=   GET /v1/ejournal/article/{id}
+GET /v1/repository/search?q=&page= GET /v1/repository/item/{id}
 # news portal (news.bsi.ac.id — terbukti punya WordPress REST API aktif)
-GET /news?page=1&per_page=10&search=   → proxy/transform ke https://news.bsi.ac.id/wp-json/wp/v2/posts?_embed=1
+GET /v1/news?page=1&per_page=10&search=   → proxy/transform ke https://news.bsi.ac.id/wp-json/wp/v2/posts?_embed=1
                                           (Native JSON, full content, author, featured image, no HTML scraping)
-GET /news/feed                         → https://news.bsi.ac.id/feed/ (RSS XML/JSON)
-GET /news/{id}                         → https://news.bsi.ac.id/wp-json/wp/v2/posts/{id}?_embed=1
+GET /v1/news/feed                         → https://news.bsi.ac.id/feed/ (RSS XML/JSON)
+GET /v1/news/{id}                         → https://news.bsi.ac.id/wp-json/wp/v2/posts/{id}?_embed=1
 ```
 
 `id` item = hash stabil dari URL/judul sumber (dipakai consumer untuk deteksi item baru).
