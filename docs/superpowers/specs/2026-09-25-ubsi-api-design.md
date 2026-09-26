@@ -307,3 +307,28 @@ UBSI-API/
 
 - Bentuk persis endpoint & parsing tiap modul dikunci saat modul dibangun (discovery terhadap situs asli).
 - Username/password elearning vs studentv2 diduga sama (SSO) — dikonfirmasi di M2.
+
+## 13. Roadmap Milestones
+
+### Version 1.2 (Upcoming)
+1. **iCal Calendar Feed (`.ics`)**:
+   - `GET /v1/studentv2/schedule.ics` untuk sinkronisasi otomatis jadwal kuliah ke Google Calendar / Apple Calendar.
+2. **Bulk Modul Downloader**:
+   - `GET /v1/elearning/materials/download-all` untuk mengunduh seluruh berkas silabus & modul perkuliahan 6 matkul sekaligus.
+3. **Kalkulator & Simulator IPK**:
+   - Kalkulasi IPK/IPS real-time berdasarkan riwayat nilai murni.
+
+### Version 2.0 (Planned)
+1. **Write Operations**:
+   - Otomatisasi klik presensi kuliah (`POST /v1/elearning/presence`).
+   - Unggah dan submit berkas tugas perkuliahan (`POST /v1/elearning/assignments/{id}/submit`).
+   - Forum diskusi interaktif kelas.
+2. **Dosen & Staff Mode (NIP Support)**:
+   - Dukungan kredensial dosen (`NIP_STUDENTV2` & `NIP_ELEARNING`).
+   - Penarikan jadwal mengajar dosen dan daftar peserta kelas per matkul.
+   - Rekap Berita Acara Perkuliahan (BAP).
+3. **Event Triggers & Webhooks**:
+   - Notifikasi otomatis ke WhatsApp / Telegram saat ada tugas baru atau pengumuman fakultas.
+4. **Remote Access & Public Domain (Optional)**:
+   - Cloudflare Tunnel (`api.example.com`) dengan enkripsi HTTPS otomatis.
+   - API Key security middleware (`X-API-Key`) untuk otentikasi request dari luar localhost.

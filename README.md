@@ -28,6 +28,7 @@
   <a href="#testing">Testing</a> ·
   <a href="#deployment">Deployment</a> ·
   <a href="#contributors">Contributors</a> ·
+  <a href="#roadmap">Roadmap</a> ·
   <a href="#license">License</a>
 </p>
 
@@ -237,6 +238,43 @@ Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Univ
 |:---:|---|---|---|
 | <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator** |
 | <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2, PR #3)** |
+
+---
+
+## <a id="roadmap"></a>🗺️ Roadmap
+
+Rencana pengembangan dan milestones UBSI API:
+
+### Version 1.x (Current — Stable)
+- [x] Read-Only aggregation untuk 6 modul resmi (`studentv2`, `elearning`, `elibrary`, `news`, `repository`, `ejournal`).
+- [x] Caching dua tingkat (Redis DB 2) dengan fallback offline Last-Known-Good (`stale: true`).
+- [x] Proteksi anti-ban (Chrome TLS signature, session cookie reuse, single-flight mutex).
+- [x] Localhost security boundary (`127.0.0.1:8300`).
+- [x] Session pool per-NIM dan parallel dashboard endpoint (`/v1/studentv2/dashboard`).
+- [x] Metrik operasional scraper real-time (`/metrics`).
+
+### Version 1.2 (Upcoming Features)
+- [ ] **Ekspor Kalender iCal (`.ics`)**:
+  - Endpoint `GET /v1/studentv2/schedule.ics` untuk auto-sinkronisasi jadwal kuliah langsung ke Google Calendar (Android) dan Apple Calendar (iOS).
+- [ ] **Bulk Downloader Modul & Silabus**:
+  - Endpoint `GET /v1/elearning/materials/download-all` untuk mengunduh seluruh berkas materi perkuliahan 6 matkul sekaligus.
+- [ ] **Kalkulator & Simulator IPK**:
+  - Estimasi dan kalkulasi IPK/IPS real-time berdasarkan riwayat nilai murni.
+
+### Version 2.0 (Planned)
+- [ ] **Write Operations (Otomatisasi Aksi & Interaksi)**:
+  - Presensi perkuliahan otomatis (`POST /v1/elearning/presence`).
+  - Pengunggahan & submit berkas tugas (`POST /v1/elearning/assignments/{id}/submit`).
+  - Forum diskusi interaktif kelas.
+- [ ] **Dosen & Staff Portal Mode (NIP Support)**:
+  - Dukungan kredensial akun dosen/staf (`NIP_STUDENTV2` & `NIP_ELEARNING`).
+  - Penarikan jadwal mengajar dosen & daftar peserta kelas per mata kuliah.
+  - Rekap BAP (Berita Acara Perkuliahan).
+- [ ] **Event Triggers & Webhooks**:
+  - Notifikasi otomatis ke WhatsApp / Telegram saat ada tugas baru atau pengumuman fakultas.
+- [ ] **Remote Access & Public Domain (Optional)**:
+  - Integrasi Cloudflare Tunnel (`api.example.com`) dengan enkripsi HTTPS otomatis.
+  - Middleware API Key (`X-API-Key`) untuk keamanan akses klien jarak jauh.
 
 ---
 
