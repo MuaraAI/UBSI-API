@@ -1,97 +1,155 @@
 # UBSI API
 
-Private, unofficial REST API yang mengagregasi layanan web kampus Universitas Bina Sarana Informatika (UBSI) ke dalam satu endpoint JSON terpadu dengan perlindungan anti-ban dan caching dua tingkat.
+Private REST API aggregating UBSI student, LMS, library, and research services into structured JSON.
+
+Personal automation backend for student bots and notification agents. Binds exclusively to localhost (`127.0.0.1:8300`).
 
 ---
 
-## Layanan & Cakupan Data
+## Why This
 
-| Modul | Sumber | Status Akses | Data yang Disediakan |
-|---|---|---|---|
-| `studentv2` | `studentv2.bsi.ac.id` | Autentikasi (NIM/Password) | Jadwal kuliah, nilai murni, pengumuman internal PDF, arsip berita |
-| `elearning` | `elearning.bsi.ac.id` (MyBest) | Autentikasi (NIM/Password + Math Captcha) | Kartu matkul, presensi perkuliahan, tugas & submission, materi zip, kuis online |
-| `elibrary` | `elibrary.bsi.ac.id` | Publik | OPAC search katalog, detail buku, eksemplar & stok |
-| `news` | `news.bsi.ac.id` | Publik (Native WP REST API) | Berita kampus resmi (judul, penulis, media gambar, konten lengkap) |
-| `repository` | `repository.bsi.ac.id` | Publik (EPrints) | Publikasi ilmiah terbaru & pencarian riset |
-| `ejournal` | `ejournal.bsi.ac.id` | Publik (OAI Bypass) | Katalog 16 jurnal ilmiah resmi UBSI |
+- **Two-tier Redis cache**: Tiered TTLs (schedules 2h, grades 30m, assignments 10m) with Last-Known-Good fallback (`stale: true`) when campus portals are down.
+- **Anti-ban protection**: In-memory session cookie re-use, single-flight mutex per resource, and Chrome TLS fingerprint impersonation via Scrapling.
+- **Normalized JSON**: Pervasive HTML cleanup; extracts clean integers, floats, ISO timestamps, and `null` values instead of raw table strings.
+- **Local boundary**: Zero open ingress ports; private single-user deployment.
 
 ---
 
-## Daftar Endpoint (Prefix `/v1/`)
+## Quick Start
 
-### 1. Sistem & Pemantauan
-- `GET /health` — Status server dan konektivitas Redis (`up`/`down`).
+```bash
+# Clone and setup
+git clone https://github.com/Curzyori/UBSI-API.git
+cd UBSI-API
 
-### 2. StudentV2 (SIAKAD)
-- `GET /v1/studentv2/schedule` — Jadwal kuliah semester aktif.
-- `GET /v1/studentv2/grades` — Rekap nilai murni per mata kuliah (UTS, UAS, Tugas, Absen, Total, Grade).
-- `GET /v1/studentv2/news` — Arsip berita pengumuman mahasiswa.
-- `GET /v1/studentv2/announcements` — Pengumuman edaran internal terbaru dari beranda.
+# Virtual environment and dependencies (Python 3.12+)
+uv venv .venv --python 3.12
+source .venv/bin/activate
+uv pip install -r requirements.txt
 
-### 3. Elearning (MyBest LMS)
-- `GET /v1/elearning/courses` — Daftar kartu mata kuliah aktif & token terenkripsi.
-- `GET /v1/elearning/assignments` — Daftar tugas aktif dan riwayat submission (nilai & komentar dosen).
-- `GET /v1/elearning/presence` — Rekap status presensi perkuliahan per pertemuan.
-- `GET /v1/elearning/materials` — Berkas silabus dan modul pembelajaran (ZIP/PDF).
-- `GET /v1/elearning/quiz` — Jadwal kuis latihan dan ujian online aktif.
+# Configure environment
+cp .env.example .env
+# Edit .env with your student NIM/password
 
-### 4. Perpustakaan (Elibrary)
-- `GET /v1/elibrary/search?q=&opsi=buku&page=1` — Pencarian katalog OPAC perpustakaan.
-- `GET /v1/elibrary/book/{book_id}` — Detail metadata buku lengkap beserta ketersediaan stok fisik.
-
-### 5. Publikasi Ilmiah & Berita
-- `GET /v1/news?search=&page=&per_page=` — Daftar berita resmi dari WordPress REST API BSI.
-- `GET /v1/news/{post_id}` — Detail artikel berita lengkap.
-- `GET /v1/repository/recent` — Publikasi karya ilmiah dan skripsi terbaru di EPrints repository.
-- `GET /v1/repository/search?q=` — Pencarian repositori karya ilmiah.
-- `GET /v1/ejournal/journals` — Katalog 16 jurnal ilmiah resmi UBSI.
+# Start local server
+.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8300
+```
 
 ---
 
-## Format Respons
+## Usage
 
-Semua respons menggunakan format Clean Minimalist JSON:
+Request active semester schedule:
+
+```bash
+curl -s http://127.0.0.1:8300/v1/studentv2/schedule | jq .
+```
+
+Real response payload:
 
 ```json
 {
   "success": true,
-  "data": [ ... ],
+  "data": [
+    {
+      "id": "e0a17f300c3b",
+      "kode": "104",
+      "nama": "BAHASA INGGRIS I",
+      "hari": "Selasa",
+      "jam": "09:10-10:50",
+      "sks": 2,
+      "kelompok_praktek": null,
+      "ruang": "EN2-P1",
+      "kode_dosen": "TDL"
+    },
+    {
+      "id": "7b88ec7b6a12",
+      "kode": "207",
+      "nama": "LOGIKA DAN ALGORITMA",
+      "hari": "Rabu",
+      "jam": "08:20-11:40",
+      "sks": 4,
+      "kelompok_praktek": null,
+      "ruang": "301-P1",
+      "kode_dosen": "ERX"
+    }
+  ],
   "cached": false
 }
 ```
 
-Format respons kesalahan:
-```json
-{
-  "success": false,
-  "error": {
-    "code": "UPSTREAM_TIMEOUT",
-    "message": "Deskripsi kesalahan",
-    "module": "elibrary"
-  }
-}
-```
+Interactive OpenAPI documentation is available at `http://127.0.0.1:8300/docs`.
 
 ---
 
-## Menjalankan Server
+## Endpoints
 
-```bash
-# Salin konfigurasi environment
-cp .env.example .env
-# Isi kredensial NIM/Password di .env
-
-# Jalankan server
-.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8300
-```
-
-Dokumentasi interaktif OpenAPI/Swagger dapat diakses di `http://127.0.0.1:8300/docs`.
+| Service | Method | Route | Description |
+|---|---|---|---|
+| **System** | `GET` | `/health` | Server and Redis connectivity status |
+| **StudentV2** | `GET` | `/v1/studentv2/schedule` | Active course schedule with room and lecturer |
+| | `GET` | `/v1/studentv2/grades` | Semester grade breakdown (UTS, UAS, Tugas, Grade) |
+| | `GET` | `/v1/studentv2/news` | Campus announcements archive |
+| | `GET` | `/v1/studentv2/announcements` | Latest portal circulars (PDF links) |
+| **Elearning** | `GET` | `/v1/elearning/courses` | LMS courses with encrypted action tokens |
+| | `GET` | `/v1/elearning/assignments` | Active tasks and lecturer grading feedback |
+| | `GET` | `/v1/elearning/presence` | Attendance logs per course meeting |
+| | `GET` | `/v1/elearning/materials` | Download links for course syllabus and modules (ZIP) |
+| | `GET` | `/v1/elearning/quiz` | Active online quizzes and practice exam schedules |
+| **Elibrary** | `GET` | `/v1/elibrary/search` | OPAC library catalog search |
+| | `GET` | `/v1/elibrary/book/{id}` | Book metadata, classification, and physical stock |
+| **News** | `GET` | `/v1/news` | Official university news via WordPress REST API |
+| | `GET` | `/v1/news/{id}` | Full article content and featured media |
+| **Repository** | `GET` | `/v1/repository/recent` | Recent institutional research publications |
+| | `GET` | `/v1/repository/search` | EPrints repository search |
+| **EJournal** | `GET` | `/v1/ejournal/journals` | Catalog of 16 university academic journals |
 
 ---
 
-## Tautan Dokumen
+## How It Works
 
-- **Panduan Kontribusi**: Lihat [`CONTRIBUTING.md`](CONTRIBUTING.md) untuk setup development, panduan pengujian TDD, dan struktur folder `tests/`.
-- **Kebijakan Keamanan & Etika**: Lihat [`SECURITY.md`](SECURITY.md) untuk batasan penggunaan pribadi dan proteksi anti-ban.
-- **Pemberitahuan Hak Cipta & DMCA**: Lihat [`DMCA.md`](DMCA.md).
-- **Lisensi**: MIT License — lihat [`LICENSE`](LICENSE).
+<details>
+<summary>Architecture & Upstream Request Lifecycle</summary>
+
+```
+Client Request -> Sliding Rate Limiter (Redis, 60 req/min)
+               -> Cache Manager (Redis DB 2)
+                    ├─ Fresh Cache Hit -> Return immediate JSON
+                    └─ Cache Miss -> Scrapling Client (Chrome TLS impersonation)
+                         ├─ In-memory cookie session -> Fetch upstream portal
+                         ├─ If redirect to /login -> Auto re-login 1x & retry
+                         ├─ Pure Parser -> Extract and sanitize data types
+                         ├─ Save to Redis: fresh (tiered TTL) + LGG (no TTL)
+                         └─ Return JSON
+Upstream Error -> Check LGG in Redis -> Return cached data with stale: true
+```
+
+Scraping runs through Scrapling's `FetcherSession` with `impersonate="chrome"`, matching desktop browser TLS handshakes and headers.
+
+</details>
+
+---
+
+## Testing & Deployment
+
+- Run unit & integration tests:
+  ```bash
+  .venv/bin/pytest -v
+  ```
+- Run live smoke test suite:
+  ```bash
+  .venv/bin/python scripts/smoke.py --base-url http://127.0.0.1:8300
+  ```
+- Deploy to remote server via PM2:
+  ```bash
+  ./scripts/deploy.sh
+  ```
+
+---
+
+## Documentation Links
+
+- Contribution guidelines and test directory structure: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Security policy and credential handling: [SECURITY.md](SECURITY.md)
+- Intellectual property and copyright disclaimer: [DMCA.md](DMCA.md)
+- License: [MIT License](LICENSE)
