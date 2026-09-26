@@ -23,15 +23,15 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
 ## 1. Project & Author Overview
 
 - **Repository**: [https://github.com/Curzyori/UBSI-API](https://github.com/Curzyori/UBSI-API) (Private)
-- **Author**: **Yuken Velino** ([@Curzyori](https://github.com/Curzyori))
-- **Identitas**: NIM: `15260767` · Kelas: `15.1C.30` · Program Studi: Informatika · Fakultas: Teknik & Informatika · UBSI Kampus Kota Pontianak.
+- **Author**: **Yuken Velino** ([@Curzyori](https://github.com/Curzyori)) — NIM: `15260767` · Kelas: `15.1C.30` · Informatika · FTI UBSI Pontianak.
+- **Contributor**: **Verzio** ([@MyKineID](https://github.com/MyKineID)) — NIM: `15260225` · Kelas: `15.1B.30` · Informatika · FTI UBSI Pontianak (PR #2).
 - **Tujuan**: Otomatisasi personal dan jembatan data terstruktur JSON (jadwal, nilai, tugas, materi) untuk bot asisten mahasiswa dan developer tanpa navigasi manual.
 - **Dokumentasi Lengkap**:
   - [`README.md`](../README.md) — Gambaran umum produk, ringkasan endpoint, dan quick start.
   - [`CONTRIBUTING.md`](../CONTRIBUTING.md) — Tata cara kontribusi, alur PR, dan struktur pengujian `tests/`.
   - [`SECURITY.md`](../SECURITY.md) — Kebijakan privasi, kredensial lokal, dan etika keamanan.
   - [`DMCA.md`](../DMCA.md) — Hak cipta kampus, landasan *Fair Use*, dan permohonan takedown resmi.
-  - [`docs/api.md`](../docs/api.md) — Kamus detail 17 endpoint beserta contoh payload JSON.
+  - [`docs/api.md`](../docs/api.md) — Kamus detail 18 endpoint beserta contoh payload JSON.
   - [`docs/architecture.md`](../docs/architecture.md) — Diagram siklus request, two-tier cache, dan mutex.
   - [`docs/anti-ban.md`](../docs/anti-ban.md) — Protokol proteksi akun kampus (TLS impersonation, session reuse, jitter).
   - [`docs/deploy.md`](../docs/deploy.md) — Panduan operasi dan pemeliharaan server production via PM2.
