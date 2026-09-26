@@ -5,9 +5,11 @@ Usage:
   python scripts/smoke.py [--base-url http://127.0.0.1:8300]
 """
 import argparse
+import os
 import sys
 import time
-from typing import Any
+from pathlib import Path
+from typing import Any, Optional
 
 import httpx
 
@@ -16,10 +18,23 @@ RED = "\033[91m"
 RESET = "\033[0m"
 BOLD = "\033[1m"
 
-def run_check(name: str, url: str, check_fn) -> bool:
+def load_env_api_key() -> str:
+    """Mencoba membaca API_KEY dari os.environ atau file .env."""
+    key = os.getenv("API_KEY", "")
+    if key:
+        return key
+    env_file = Path(".env")
+    if env_file.exists():
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line.startswith("API_KEY="):
+                return line.split("=", 1)[1].strip().strip('"').strip("'")
+    return ""
+
+def run_check(name: str, url: str, check_fn, headers: Optional[dict] = None) -> bool:
     t0 = time.time()
     try:
-        r = httpx.get(url, timeout=25.0)
+        r = httpx.get(url, timeout=25.0, headers=headers)
         elapsed = (time.time() - t0) * 1000
         ok, detail = check_fn(r)
         if ok:
@@ -36,15 +51,20 @@ def run_check(name: str, url: str, check_fn) -> bool:
 def main():
     parser = argparse.ArgumentParser(description="Live Smoke Test for UBSI API")
     parser.add_argument("--base-url", default="http://127.0.0.1:8300", help="Base URL of UBSI API")
+    parser.add_argument("--api-key", default="", help="UBSI API Key (defaults to API_KEY from .env/environment)")
     args = parser.parse_args()
 
+    api_key = args.api_key or load_env_api_key()
     base = args.base_url.rstrip("/")
+    auth_headers = {"X-API-Key": api_key} if api_key else None
+
     print(f"\n{BOLD}=== UBSI API Live Smoke Test ==={RESET}")
-    print(f"Target: {base}\n")
+    print(f"Target : {base}")
+    print(f"Auth   : {'X-API-Key set (' + api_key[:8] + '...)' if api_key else 'None'}\n")
 
     results = []
 
-    # 1. Health
+    # 1. Health (Should always bypass auth)
     def check_health(r):
         if r.status_code != 200:
             return False, f"Expected 200, got {r.status_code}"
@@ -53,7 +73,7 @@ def main():
             return True, f"status=ok, redis={data.get('redis')}"
         return False, f"Unexpected body: {data}"
 
-    results.append(run_check("Health Check", f"{base}/health", check_health))
+    results.append(run_check("Health Check", f"{base}/health", check_health, headers=None))
 
     # 2. News
     def check_news(r):
@@ -64,7 +84,7 @@ def main():
             return True, f"{len(body['data'])} posts"
         return False, "success is False or data not list"
 
-    results.append(run_check("News Posts", f"{base}/v1/news?page=1&per_page=3", check_news))
+    results.append(run_check("News Posts", f"{base}/v1/news?page=1&per_page=3", check_news, headers=auth_headers))
 
     # 3. Elibrary Search
     def check_elibrary(r):
@@ -75,7 +95,7 @@ def main():
             return True, f"total={body['data']['total_count']}, items={len(body['data']['items'])}"
         return False, "invalid elibrary envelope"
 
-    results.append(run_check("Elibrary Search", f"{base}/v1/elibrary/search?q=algoritma", check_elibrary))
+    results.append(run_check("Elibrary Search", f"{base}/v1/elibrary/search?q=algoritma", check_elibrary, headers=auth_headers))
 
     # 4. Repository
     def check_repo(r):
@@ -86,7 +106,7 @@ def main():
             return True, f"{len(body['data'])} recent items"
         return False, "invalid repository envelope"
 
-    results.append(run_check("Repository Recent", f"{base}/v1/repository/recent", check_repo))
+    results.append(run_check("Repository Recent", f"{base}/v1/repository/recent", check_repo, headers=auth_headers))
 
     # 5. EJournal
     def check_ejournal(r):
@@ -97,7 +117,7 @@ def main():
             return True, f"{len(body['data'])} journals in catalog"
         return False, "invalid ejournal envelope"
 
-    results.append(run_check("EJournal Catalog", f"{base}/v1/ejournal/journals", check_ejournal))
+    results.append(run_check("EJournal Catalog", f"{base}/v1/ejournal/journals", check_ejournal, headers=auth_headers))
 
     # 6. StudentV2 (Private)
     def check_studentv2(r):
@@ -108,7 +128,7 @@ def main():
             return True, "config missing (expected when env empty)"
         return False, f"status={r.status_code}, error={r.json().get('error')}"
 
-    results.append(run_check("StudentV2 Schedule", f"{base}/v1/studentv2/schedule", check_studentv2))
+    results.append(run_check("StudentV2 Schedule", f"{base}/v1/studentv2/schedule", check_studentv2, headers=auth_headers))
 
     # 7. StudentV2 Dashboard (Private)
     def check_dashboard(r):
@@ -120,7 +140,7 @@ def main():
             return True, "config missing (expected when env empty)"
         return False, f"status={r.status_code}, error={r.json().get('error')}"
 
-    results.append(run_check("StudentV2 Dashboard", f"{base}/v1/studentv2/dashboard", check_dashboard))
+    results.append(run_check("StudentV2 Dashboard", f"{base}/v1/studentv2/dashboard", check_dashboard, headers=auth_headers))
 
     # 8. Elearning (Private)
     def check_elearning(r):
@@ -131,7 +151,7 @@ def main():
             return True, "config missing (expected when env empty)"
         return False, f"status={r.status_code}, error={r.json().get('error')}"
 
-    results.append(run_check("Elearning Courses", f"{base}/v1/elearning/courses", check_elearning))
+    results.append(run_check("Elearning Courses", f"{base}/v1/elearning/courses", check_elearning, headers=auth_headers))
 
     total = len(results)
     passed = sum(1 for r in results if r)
