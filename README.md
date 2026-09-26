@@ -233,10 +233,10 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 
 Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak:
 
-| Foto | Kontributor | Identitas Mahasiswa | Peran & Kontribusi |
+| Foto | Kontributor | Identitas Mahasiswa | Peran |
 |:---:|---|---|---|
-| <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator**<br>- Arsitektur 6 modul aggregator<br>- 2-Tier Redis cache (fresh + LGG)<br>- Scrapling Chrome TLS impersonation<br>- Standarisasi JSON & testing TDD |
-| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2)**<br>- `SessionPool` per-NIM (isolasi sesi login)<br>- Endpoint `GET /v1/studentv2/dashboard` (paralel) |
+| <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator** |
+| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2, PR #3)** |
 
 ---
 
