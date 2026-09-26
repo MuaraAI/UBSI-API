@@ -6,6 +6,20 @@ Personal automation backend for student bots and notification agents. Binds excl
 
 ---
 
+> **PENTING / DISCLAIMER RESMI**:
+>
+> Proyek ini adalah **Unofficial API** independen yang dibuat semata-mata untuk tujuan riset edukasi, pembelajaran interoperabilitas perangkat lunak, dan mempermudah mahasiswa/developer UBSI mengakses data materi, jadwal, serta tugas perkuliahan milik mereka sendiri secara terstruktur tanpa perlu navigasi manual yang memakan waktu.
+>
+> **Batasan Tanggung Jawab**:
+> 1. Proyek ini sama sekali **tidak berafiliasi resmi, tidak didukung, dan tidak dikelola oleh pihak Universitas Bina Sarana Informatika (UBSI)**.
+> 2. Pembuat/maintainer repositori ini **tidak bertanggung jawab** atas segala bentuk penyalahgunaan, pelanggaran tata tertib, pemblokiran akun, atau kerugian apa pun yang diakibatkan oleh penggunaan tool ini. Penggunaan sepenuhnya menjadi risiko dan tanggung jawab masing-masing individu.
+> 3. Semua merek dagang, nama sistem, materi silabus, dan data akademik adalah hak cipta dan kepemilikan penuh dari **Universitas Bina Sarana Informatika** serta pemilik hak ciptanya masing-masing.
+>
+> **Permohonan Penghapusan / Pengarsipan (Takedown Notice)**:
+> Jika pihak otoritas universitas, pengelola sistem IT, atau dosen UBSI merasa keberatan atas keberadaan repositori ini, silakan hubungi maintainer langsung melalui GitHub ([@Curzyori](https://github.com/Curzyori)). Repositori ini akan dengan senang hati **diarsipkan, diubah, atau dihapus permanen secara kooperatif**.
+
+---
+
 ## Why This
 
 - **Two-tier Redis cache**: Tiered TTLs (schedules 2h, grades 30m, assignments 10m) with Last-Known-Good fallback (`stale: true`) when campus portals are down.
