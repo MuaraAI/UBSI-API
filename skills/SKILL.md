@@ -35,6 +35,7 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
   - [`docs/architecture.md`](../docs/architecture.md) — Diagram siklus request, two-tier cache, dan mutex.
   - [`docs/anti-ban.md`](../docs/anti-ban.md) — Protokol proteksi akun kampus (TLS impersonation, session reuse, jitter).
   - [`docs/deploy.md`](../docs/deploy.md) — Panduan operasi dan pemeliharaan server production via PM2.
+  - [`docs/remote-access.md`](../docs/remote-access.md) — Panduan setup reverse proxy (Caddy/Nginx), Cloudflare Tunnel, dan otentikasi X-API-Key.
 
 ---
 

@@ -27,6 +27,7 @@
   <a href="#quick-start">Quick Start</a> ·
   <a href="#testing">Testing</a> ·
   <a href="#deployment">Deployment</a> ·
+  <a href="#documentation">Documentation</a> ·
   <a href="#contributors">Contributors</a> ·
   <a href="#roadmap">Roadmap</a> ·
   <a href="#license">License</a>
@@ -189,16 +190,26 @@ uv pip install -r requirements.txt
 ### 2. Konfigurasi Environment
 ```bash
 cp .env.example .env
-# Edit .env dan masukkan NIM serta Password UBSI Anda
+# Edit .env: masukkan NIM, Password, dan buat API_KEY acak untuk keamanan
+# Contoh generate key: python3 -c "import secrets; print('ubsi_sec_' + secrets.token_hex(24))"
 ```
 
-### 3. Menjalankan Server
+### 3. Menjalankan Server & Contoh Request
 ```bash
 .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8300 --reload
 ```
 
 Dokumentasi interaktif OpenAPI/Swagger dapat diakses di:
 👉 **`http://127.0.0.1:8300/docs`**
+
+Contoh memanggil API dengan header autentikasi:
+```bash
+# Health check (tanpa auth)
+curl -s http://127.0.0.1:8300/health
+
+# Mengambil jadwal kuliah (wajib X-API-Key)
+curl -s -H "X-API-Key: ubsi_sec_xxxxxxxxxxxx" http://127.0.0.1:8300/v1/studentv2/schedule
+```
 
 ---
 
@@ -207,7 +218,7 @@ Dokumentasi interaktif OpenAPI/Swagger dapat diakses di:
 Semua parser diuji terhadap snapshot HTML offline tanpa melakukan request live ke kampus:
 
 ```bash
-# Menjalankan seluruh test suite (46 tests)
+# Menjalankan seluruh test suite (69 tests)
 .venv/bin/pytest -v
 
 # Menjalankan live smoke test terhadap server lokal
@@ -229,10 +240,11 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 
 ## <a id="documentation"></a>📚 Documentation
 
-- [API Reference](docs/api.md) — Kamus lengkap 18 endpoint beserta format request & response JSON.
+- [API Reference](docs/api.md) — Kamus lengkap 19 endpoint beserta format request & response JSON.
 - [System Architecture](docs/architecture.md) — Siklus request, two-tier cache, dan single-flight mutex.
 - [Anti-Ban Protocol](docs/anti-ban.md) — Protokol proteksi akun kampus (cookie re-use, TLS impersonation, jitter).
 - [Production Deployment](docs/deploy.md) — Panduan operasi dan pemeliharaan server VPS via PM2.
+- [Remote Access & Domain](docs/remote-access.md) — Panduan setup Caddy, Nginx, Cloudflare Tunnel, dan otentikasi X-API-Key.
 - [Agent Skill](skills/SKILL.md) — Panduan AI coding agent untuk konsumsi dan pengembangan otomatisasi UBSI API.
 
 ---
