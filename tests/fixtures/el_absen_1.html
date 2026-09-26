@@ -1,0 +1,1240 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Meta -->
+	<meta name="description" content="Responsive Bootstrap4 Dashboard Template">
+	<meta name="author" content="ParkerThemes">
+	<meta name="csrf-token" content="M8rTFco6oBI2GNvpUODLisnlfM5DwhDfW431n44i">
+	<link rel="shortcut icon" href="https://elearning.bsi.ac.id/assets/img/icon1.jfif" />
+	<!-- Title -->
+	<title>My Best</title>
+
+
+	<!-- *************
+			************ Common Css Files *************
+		************ -->
+	<!-- Bootstrap css -->
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/dist/sweetalert2.min.css">
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/dist/sweetalert2.css">
+
+	<!-- Icomoon Font Icons css -->
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/fonts/style.css">
+
+	<!-- Main css -->
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/css/main.css">
+	<!-- Data Tables -->
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/vendor/datatables/dataTables.bs4.css" />
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/vendor/datatables/dataTables.bs4-custom.css" />
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/vendor/datatables/buttons.bs.css" />
+
+
+
+	<!-- *************
+			************ Vendor Css Files *************
+		************ -->
+	<!-- DateRange css -->
+	<link rel="stylesheet" href="https://elearning.bsi.ac.id/assets/vendor/daterange/daterange.css" />
+	<style>
+		.dijawab {
+			background: #1980d4;
+			color: #fff;
+			padding: 5px 10px;
+			border-radius: 3px;
+		}
+
+		.pagination>li>a,
+		.pagination>li>span {
+			width: 38px;
+			text-align: center;
+			margin: 3px;
+		}
+
+		.timer {
+			border: solid thin #b9b2b2;
+			padding: 5px 15px;
+			font-size: 14pt;
+			color: #fff;
+			background: #291a71;
+		}
+
+		.soal {
+			margin: 0 0 15px 0;
+		}
+
+		.box-footer {
+			border-top: 1px solid #ebebeb !important;
+		}
+
+		.jawab {
+			cursor: pointer;
+			margin: 0 0 7px 0;
+		}
+
+		.pilihan p {
+			margin: 0;
+		}
+	</style>
+	<style>
+		/* Styling untuk ikon chat */
+		.chatx-icon {
+			position: fixed;
+			top: 50%;
+			right: 0;
+			transform: translateY(-50%);
+			cursor: pointer;
+			z-index: 1000;
+		}
+
+		/* Ukuran ikon chat */
+		.chatx-icon img {
+			width: 80px;
+			transition: transform 0.3s ease-in-out;
+			/* Efek animasi saat hover */
+		}
+
+		/* Efek animasi saat hover di ikon chat */
+		.chatx-icon img:hover {
+			transform: scale(1.1);
+			/* Membesar saat hover */
+		}
+
+		/* Styling untuk chat badge (jumlah pesan) */
+		.chatx-badge {
+			position: absolute;
+			top: -5px;
+			right: -5px;
+			background: red;
+			color: white;
+			font-size: 14px;
+			font-weight: bold;
+			width: 20px;
+			height: 20px;
+			text-align: center;
+			line-height: 20px;
+			border-radius: 50%;
+			box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+		}
+
+		/* Styling untuk chat box */
+		.chatx-box,
+		.private-chat {
+			position: fixed;
+			bottom: 80px;
+			right: 20px;
+			width: 300px;
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0px 0px 10px gray;
+			display: none;
+			z-index: 1000;
+		}
+
+		.chatx-box {
+			position: fixed;
+			bottom: 80px;
+			right: 20px;
+			width: 300px;
+			height: 400px;
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0px 0px 10px gray;
+			display: none;
+			z-index: 1000;
+			overflow: hidden;
+		}
+
+		.chatx-header {
+			background: #007bff;
+			color: white;
+			padding: 10px;
+			display: flex;
+			justify-content: space-between;
+			border-radius: 10px 10px 0 0;
+		}
+
+		/* HANYA bagian ini yang boleh scroll */
+		.chatx-body {
+			height: calc(100% - 50px);
+			/* sisa tinggi dari header */
+			overflow-y: auto;
+			padding: 10px;
+			box-sizing: border-box;
+		}
+
+
+		/* Styling footer chat box */
+		.chatx-footer {
+			padding: 10px;
+			display: flex;
+			align-items: center;
+		}
+
+		/* Styling input pesan */
+		.chatx-footer input {
+			flex: 1;
+			padding: 5px;
+			border-radius: 5px;
+			/* Membulatkan sudut input */
+			border: 1px solid #ccc;
+			margin-right: 10px;
+			font-size: 14px;
+		}
+
+		/* Styling tombol kirim */
+		.chatx-footer button {
+			background: #007bff;
+			color: white;
+			border: none;
+			padding: 5px 15px;
+			cursor: pointer;
+			border-radius: 5px;
+			/* Membulatkan sudut tombol */
+			transition: background 0.3s ease;
+		}
+
+		/* Efek hover pada tombol kirim */
+		.chatx-footer button:hover {
+			background: #0056b3;
+		}
+
+		/* Efek fokus pada input pesan */
+		.chatx-footer input:focus {
+			outline: none;
+			border-color: #007bff;
+		}
+
+		/* Styling untuk nama user yang bisa diklik */
+		.chatx-user-link {
+			cursor: pointer;
+			color: #007bff;
+			text-decoration: none;
+			display: inline-block;
+			padding: 5px;
+			border-radius: 8px;
+			transition: all 0.2s ease-in-out;
+		}
+
+		.chatx-user-link:hover {
+			background-color: #f0f8ff;
+		}
+
+		.chatx-user-link.selected {
+			background-color: #007bff;
+			color: white;
+			font-weight: bold;
+			box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+		}
+
+
+		.chatx-search-input {
+			width: 100%;
+			padding: 6px 10px;
+			margin-bottom: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 14px;
+		}
+
+		#chat-user-scroll {
+			max-height: 300px;
+			overflow-y: auto;
+		}
+
+		#private-chat-messages {
+			height: 300px;
+			overflow-y: auto;
+			padding: 10px;
+		}
+
+		#private-message:disabled::placeholder {
+			color: #888;
+			font-style: italic;
+		}
+
+		.badge-unread {
+			background-color: red;
+			color: white;
+			padding: 2px 6px;
+			border-radius: 12px;
+			font-size: 12px;
+			margin-left: 5px;
+			font-weight: bold;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<!-- Loading starts -->
+	
+	<!-- Loading ends -->
+
+
+	<!-- Page wrapper start -->
+	<div class="page-wrapper pinned">
+
+		<!-- Sidebar wrapper start -->
+		<nav id="sidebar" class="sidebar-wrapper">
+
+			<!-- Sidebar brand end  -->
+
+			<!-- Sidebar content start -->
+			<div class="sidebar-content">
+
+    <!-- sidebar menu start -->
+    <div class="sidebar-menu">
+        <ul>
+            <li class="header-menu">Menu</li>
+            <li class="sidebar">
+                <a href="https://elearning.bsi.ac.id/user/dashboard">
+                    <i class="icon-home"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+
+                <a href="https://elearning.bsi.ac.id/student-2">
+                    <i class="icon-sports-club"></i>
+                    <span class="menu-text">Student V2</span>
+                </a>
+                <a href="https://elearning.bsi.ac.id/profil">
+                    <i class="icon-account_circle"></i>
+                    <span class="menu-text">Profil</span>
+                </a>
+                <a href="https://elearning.bsi.ac.id/halaman-ujian">
+                    <i class="icon-sports-club"></i>
+                    <span class="menu-text">Ujian</span>
+                </a>
+                <!-- <a href="#" id="triggerUjian">
+                    <i class="icon-sports-club"></i>
+                    <span class="menu-text">Ujian</span>
+                </a> -->
+
+                <a href="https://elearning.bsi.ac.id/toefl">
+                    <i class="icon-book"></i>
+                    <span class="menu-text">TOEFL</span>
+                </a>
+
+            </li>
+
+            <li class="sidebar-dropdown">
+                <a href="#">
+                    <i class="icon-calendar1"></i>
+                    <span class="menu-text">MBKM</span>
+                </a>
+                <div class="sidebar-submenu">
+                    <ul>
+                        <li>
+                            <a href="https://elearning.bsi.ac.id/modul-mbkm">Modul MBKM</a>
+                        </li>
+
+                        <!--li>
+                            <a href="https://elearning.bsi.ac.id/rekap-mbkm">Rekap MBKM</a>
+                        </li-->
+                    </ul>
+                </div>
+            </li>
+
+            <li class="sidebar-dropdown">
+                <a href="#">
+                    <i class="icon-calendar"></i>
+                    <span class="menu-text">Jadwal </span>
+                </a>
+                <div class="sidebar-submenu">
+                    <ul>
+
+                        <li>
+                            <a href="https://elearning.bsi.ac.id/sch">Jadwal Kuliah</a>
+                        </li>
+                        <li>
+                            <a href="https://elearning.bsi.ac.id/kuliah-pengganti">Kuliah Pengganti</a>
+                        </li>
+                        <li>
+                            <a href="/exercise">Kuis</a>
+                        </li>
+
+
+
+                    </ul>
+                </div>
+            </li>
+            
+
+            
+            <li class="sidebar">
+                <form method="POST" action="https://elearning.bsi.ac.id/logout">
+                    <input type="hidden" name="_token" value="M8rTFco6oBI2GNvpUODLisnlfM5DwhDfW431n44i" autocomplete="off">                    <a class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" href="https://elearning.bsi.ac.id/logout" onclick="event.preventDefault();
+                                              this.closest('form').submit();"><i class="icon-log-out1"></i> <!-- Ikon logout ditambahkan di sini -->
+
+                        <span class="menu-text">Log Out</span></a>
+                </form>
+            </li>
+
+        </ul>
+    </div>
+    <!-- sidebar menu end -->
+
+</div>
+			<!-- Sidebar content end -->
+		</nav>
+		<!-- Sidebar wrapper end -->
+
+		<!-- Page content start  -->
+		<div class="page-content">
+
+			<!-- Header start -->
+			<header class="header">
+    <div class="toggle-btns">
+        <a id="toggle-sidebar" href="#">
+            <i class="icon-list"></i>
+        </a>
+        <a id="pin-sidebar" href="#">
+            <i class="icon-list"></i>
+        </a>
+    </div>
+    <div class="header-items">
+       
+
+        <!-- Header actions start -->
+        <ul class="header-actions">
+          
+       
+            <li class="dropdown">
+                <a href="#" id="userSettings" class="user-settings" data-toggle="dropdown" aria-haspopup="true">
+                    <span class="user-name">15260767</span>
+                    <span class="avatar"><i class="icon-user"></i><span class="status busy"></span></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userSettings">
+                    <div class="header-profile-actions">
+                        <div class="header-user-profile">
+                         
+                        </div>
+                        <a href="https://elearning.bsi.ac.id/profil"><i class="icon-user1"></i> My Profile</a>
+
+                        <form method="POST" action="https://elearning.bsi.ac.id/logout">
+                            <input type="hidden" name="_token" value="M8rTFco6oBI2GNvpUODLisnlfM5DwhDfW431n44i" autocomplete="off">                            <a class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" href="https://elearning.bsi.ac.id/logout" onclick="event.preventDefault();
+                                                      this.closest('form').submit();"><i class="icon-log-out1"></i> <!-- Ikon logout ditambahkan di sini -->
+                                Log Out</a>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        </ul>						
+        <!-- Header actions end -->
+    </div>
+</header>			<!-- Header end -->
+
+			<!-- Page header start -->
+			<div class="page-header">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">Elearning Universitas Bina Sarana Informatika </li>
+					
+					
+				</ol>
+
+				<ul class="app-actions">
+					<li>
+						<a href="#" id="reportrange">
+							<span class="range-text"></span>
+							<i class="icon-chevron-down"></i>
+						</a>
+					</li>
+
+				</ul>
+			</div>
+			<!-- Page header end -->
+
+			<!-- Main container start -->
+			<div class="main-container">
+				
+<div class="row gutters">
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-4">
+        <div class="info-tiles">
+            <div class="info-icon">
+                <i class="icon-account_circle"></i>
+            </div>
+            <div class="stats-detail">
+                <h5>BDM</h5>
+                <p>Dosen</p>
+            </div>
+        </div>
+        <div class="info-tiles">
+            <div class="info-icon">
+                <i class="icon-home2"></i>
+            </div>
+            <div class="stats-detail">
+                <h5>EL2-P1</h5>
+                <p>Ruang</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6">
+        <div class="info-tiles">
+            <div class="info-icon">
+                <i class="icon-documents"></i>
+            </div>
+            <div class="stats-detail">
+                <h5>PENDIDIKANPANCASILA</h5>
+                <p>Matakuliah</p>
+            </div>
+        </div>
+        <div class="info-tiles">
+            <div class="info-icon">
+                <i class="icon-layers"></i>
+            </div>
+            <div class="stats-detail">
+                <h5>KG.101.30.C</h5>
+                <p>Kelas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-4">
+        <div class="info-tiles">
+            <div class="info-icon">
+                <i class="icon-watch_later"></i>
+            </div>
+            <div class="stats-detail">
+                <h5>07:30</h5>
+                <p>Jam Masuk</p>
+            </div>
+        </div>
+        <div class="info-tiles">
+            <div class="info-icon">
+                <i class="icon-date_range"></i>
+            </div>
+            <div class="stats-detail">
+                <h5>Jumat</h5>
+                <p>Hari</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-4">
+        <div class="info-tiles">
+            <div class="info-icon">
+                <i class="icon-clock1"></i>
+            </div>
+            <div class="stats-detail">
+                <h5>09:10</h5>
+                <p>Jam Keluar</p>
+
+            </div>
+        </div>
+        <div class="info-tiles">
+            <div class="info-icon">
+                <i class="icon-dribbble-with-circle"></i>
+            </div>
+            <div class="stats-detail">
+                <h5>101</h5>
+                <p>Kode MTK</p>
+
+            </div>
+        </div>
+    </div>
+
+     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+        <div class="info-tiles">
+            
+
+                        
+                            
+                <center><button type="submit" class="btn btn-warning btn-rounded left mt-4">Sudah Selesai</button>
+                </center>
+                                
+        </div>
+</div>
+
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-4">
+    <!-- Row start -->
+    <div class="row gutters mt-3 mb-5">
+
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <!-- Modal Lebar -->
+        <div class="modal fade" id="exampleModalLarge" tabindex="-1" role="dialog" aria-labelledby="exampleModalLargeLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <!-- Perhatikan kelas 'modal-lg' di sini -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLargeLabel">FORM PERSEPSI MAHASISWA MENGENAI DOSEN</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="/store/kuisoner-mpd" enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="M8rTFco6oBI2GNvpUODLisnlfM5DwhDfW431n44i" autocomplete="off">                    <p><b>FORM PERSEPSI MAHASISWA MENGENAI DOSEN </b> (Diisi sebanyak Jumlah Dosen)</p>
+                    <!-- /.col-->
+                    <hr>
+                    <div class="tab-content rounded-bottom">
+                        <div><label class="form-label"><b> F1 PROFIL RESPONDEN </b></label> </div>
+                        <div class="tab-pane p-3 active preview" role="tabpanel" id="preview-1004">
+                            <div class="mb-8 row">
+                                <label class="col-sm-4 col-form-label" for="staticEmail"> <b> F1-1 </b> NIM</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="staticEmail" type="text" name="nim" readonly=""
+                                        value="15260767">
+                                </div>
+                            </div>
+                            <div class="mb-8 row">
+                                <label class="col-sm-4 col-form-label" for="staticEmail"> <b> F1-2 </b> Nama</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="staticEmail" type="text" name="name" readonly=""
+                                        value="YUKEN VELINO">
+                                </div>
+                            </div>
+                            <div class="mb-8 row">
+                                <label class="col-sm-4 col-form-label" for="staticEmail"> <b> F1-3 </b> Kelas</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="staticEmail" type="text" name="kelas" readonly=""
+                                        value="15.1C.30">
+                                </div>
+                            </div>
+                            <div class="mb-8 row">
+                                <label class="col-sm-4 col-form-label" for="inputPassword"><b> F1-4 </b>Program
+                                    Studi</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="staticEmail" type="text" name="prodi" readonly=""
+                                        value="Ilmu Komputer">
+                                </div>
+                            </div>
+                            <div class="mb-8 row">
+                                <label class="col-sm-4 col-form-label" for="inputPassword"><b> F1-5 </b>UPPS</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="staticEmail" type="text" name="upps" readonly=""
+                                        value="FAKULTAS TEKNIK DAN INFORMATIKA">
+                                </div>
+                            </div>
+                            <div class="mb-8 row">
+                                <label class="col-sm-4 col-form-label" for="inputPassword"><b> F2-1 </b>Dosen</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="staticEmail" type="text" name="nip_dosen"
+                                        readonly="" value="BDM">
+                                    <input class="form-control" id="staticEmail" type="text" name="mtk" readonly=""
+                                        value="101">
+                                </div>
+                            </div>
+
+                            <div class="mb-8 row">
+                                <label class="col-sm-4 col-form-label" for="inputPassword"><b> F2-2 </b>Periode</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="staticEmail" type="text" name="periode" readonly=""
+                                        value="Ganjil 2023/2024">
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+
+                        <label class="col-md-12 control-label">Jawablah dengan cara memilih salah satu jawaban yang
+                            tersedia, sesuai dengan persepsi anda terhadap dosen tersebut.</label>
+                        <section class="panel">
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped mb-none">
+                                        <thead>
+                                            <tr>
+                                                <th width='40%'>Pernyataan Mengenai Dosen</th>
+                                                <th width='20%' align='center'>Sangat Setuju<br></th>
+                                                <th width='10%' align='center'> Setuju<br></th>
+                                                <th width='15%' align='center'>Cukup Setuju<br></th>
+                                                <th width='15%' align='center'>Tidak Setuju<br></th>
+                                                <th width='20%' align='center'>Sangat Tidak Setuju<br></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="6"> <strong>(F3) Kemampuan Mengajar Dosen </strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Menguasai Materi yang Diajarkan (F3-1)</td>
+                                                <td><input type="radio" value='5' name='cf31' required></td>
+                                                <td><input type="radio" value='4' name='cf31'></td>
+                                                <td><input type="radio" value='3' name='cf31'></td>
+                                                <td><input type="radio" value='2' name='cf31'></td>
+                                                <td><input type="radio" value='1' name='cf31'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Menyampaikan Materi dengan Jelas (F3-2)</td>
+                                                <td><input type="radio" value='5' name='cf32' required></td>
+                                                <td><input type="radio" value='4' name='cf32'></td>
+                                                <td><input type="radio" value='3' name='cf32'></td>
+                                                <td><input type="radio" value='2' name='cf32'></td>
+                                                <td><input type="radio" value='1' name='cf32'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Materi yang diajarkan sesuai dengan RPS (F3-3)</td>
+                                                <td><input type="radio" value='5' name='cf33' required></td>
+                                                <td><input type="radio" value='4' name='cf33'></td>
+                                                <td><input type="radio" value='3' name='cf33'></td>
+                                                <td><input type="radio" value='2' name='cf33'></td>
+                                                <td><input type="radio" value='1' name='cf33'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cara Mengajar tidak Membosankan (F3-4)</td>
+                                                <td><input type="radio" value='5' name='cf34' required></td>
+                                                <td><input type="radio" value='4' name='cf34'></td>
+                                                <td><input type="radio" value='3' name='cf34'></td>
+                                                <td><input type="radio" value='2' name='cf34'></td>
+                                                <td><input type="radio" value='1' name='cf34'></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="6"><b>F4 Kemampuan Berkomunikasi Dosen dengan Mahasiswa
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Melakukan diskusi dengan mahasiswa (F4-1)</td>
+                                                <td><input type="radio" value='5' name='cf41' required></td>
+                                                <td><input type="radio" value='4' name='cf41'></td>
+                                                <td><input type="radio" value='3' name='cf41'></td>
+                                                <td><input type="radio" value='2' name='cf41'></td>
+                                                <td><input type="radio" value='1' name='cf41'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mampu memotivasi mahasiswa (F4-2)</td>
+                                                <td><input type="radio" value='5' name='cf42' required></td>
+                                                <td><input type="radio" value='4' name='cf42'></td>
+                                                <td><input type="radio" value='3' name='cf42'></td>
+                                                <td><input type="radio" value='2' name='cf42'></td>
+                                                <td><input type="radio" value='1' name='cf42'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Memberikan informasi akademik dengan tepat (F4-3)</td>
+                                                <td><input type="radio" value='5' name='cf43' required></td>
+                                                <td><input type="radio" value='4' name='cf43'></td>
+                                                <td><input type="radio" value='3' name='cf43'></td>
+                                                <td><input type="radio" value='2' name='cf43'></td>
+                                                <td><input type="radio" value='1' name='cf43'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tanggap terhadap permasalahan akademik Mahasiswa (F4-4)</td>
+                                                <td><input type="radio" value='5' name='cf44' required></td>
+                                                <td><input type="radio" value='4' name='cf44'></td>
+                                                <td><input type="radio" value='3' name='cf44'></td>
+                                                <td><input type="radio" value='2' name='cf44'></td>
+                                                <td><input type="radio" value='1' name='cf44'></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="6"><b>F5 Perilaku dan Sikap Dosen</td>
+
+                                            </tr>
+                                            <tr>
+                                                <td>Disiplin dalam waktu (memulai dan mengakhiri) perkuliahan (F5-1)
+                                                </td>
+                                                <td><input type="radio" value='5' name='cf51' required></td>
+                                                <td><input type="radio" value='4' name='cf51'></td>
+                                                <td><input type="radio" value='3' name='cf51'></td>
+                                                <td><input type="radio" value='2' name='cf51'></td>
+                                                <td><input type="radio" value='1' name='cf51'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mengenakan pakaian dengan rapi (F5-2)</td>
+                                                <td><input type="radio" value='5' name='cf52' required></td>
+                                                <td><input type="radio" value='4' name='cf52'></td>
+                                                <td><input type="radio" value='3' name='cf52'></td>
+                                                <td><input type="radio" value='2' name='cf52'></td>
+                                                <td><input type="radio" value='1' name='cf52'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jarang mengosongkan perkuliahan (F5-3)</td>
+                                                <td><input type="radio" value='5' name='cf53' required></td>
+                                                <td><input type="radio" value='4' name='cf53'></td>
+                                                <td><input type="radio" value='3' name='cf53'></td>
+                                                <td><input type="radio" value='2' name='cf53'></td>
+                                                <td><input type="radio" value='1' name='cf53'></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Memberikan contoh sikap yang baik kepada Mahasiswa (F5-4)</td>
+                                                <td><input type="radio" value='5' name='cf54' required></td>
+                                                <td><input type="radio" value='4' name='cf54'></td>
+                                                <td><input type="radio" value='3' name='cf54'></td>
+                                                <td><input type="radio" value='2' name='cf54'></td>
+                                                <td><input type="radio" value='1' name='cf54'></td>
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+                                    F6. Berikan Masukan Anda Untuk Program Studi Mengenai Matakuliah dan Dosen <br>
+                                    <textarea name="cf6" rows="5" cols="40" class="form-control"></textarea> <br>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-info">Kirim</button>
+                    </div>
+            </div>
+            </section>
+        </div>
+        </form>
+    </div>
+
+</div>    </div>
+</div>
+</div>
+
+<!-- Row end -->
+<div class="table-container">
+    <div class="t-header">Rekap Absen</div>
+    <div class="table-responsive">
+        
+            <table id="myTable" class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Status Absen</th>
+                        <th>Tanggal</th>
+                        <th>Matakuliah</th>
+                        <th>Pertemuan</th>
+                        <th>Rangkuman</th>
+                        <th>Berita Acara</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+    </div>
+</div>
+
+			</div>
+			<!-- Main container end -->
+
+		</div>
+		<!-- Page content end -->
+
+	</div>
+	<!-- Page wrapper end -->
+	<!-- Floating Chat Icon -->
+	<div id="chat-icon" class="chatx-icon">
+		<div class="chatx-user">
+			<img src="https://elearning.bsi.ac.id/assets/img/MyBest-chat.png" alt="Chat">
+			<span id="chat-user-count" class="chatx-badge">0</span>
+		</div>
+	</div>
+
+	<!-- Chat Box -->
+	<div id="chat-box" class="chatx-box">
+		<div class="chatx-header">
+			<h5>Users Online</h5>
+			<button id="close-chat" class="close">&times;</button>
+		</div>
+		<div class="chatx-body" id="chat-user-scroll">
+			<input type="text" id="search-user" placeholder="Cari user..." class="chatx-search-input">
+			<ul id="chat-user-list"></ul>
+		</div>
+	</div>
+
+	<!-- Private Chat Window -->
+	<div id="private-chat" class="private-chat hidden">
+		<div class="chatx-header">
+			<h5 id="private-chat-title">Chat</h5>
+			<button id="close-private-chat" class="close">&times;</button>
+		</div>
+		<div class="chatx-body" id="private-chat-messages"></div>
+		<div class="chatx-footer">
+			<input type="text" id="private-message" placeholder="Ketik pesan...">
+			<button onclick="sendPrivateMessage()">Kirim</button>
+		</div>
+	</div>
+
+
+	
+	<!-- Required jQuery first, then Bootstrap Bundle JS -->
+	<script src="https://elearning.bsi.ac.id/js/jquery-ui.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/js/jquery.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/js/bootstrap.bundle.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/js/moment.js"></script>
+	<script type="text/javascript" src="https://elearning.bsi.ac.id/assets/js/jquery.expander.js"></script>
+
+
+	<!-- *************
+			************ Vendor Js Files *************
+		************* -->
+	<!-- Slimscroll JS -->
+	<script src="https://elearning.bsi.ac.id/assets/vendor/slimscroll/slimscroll.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/slimscroll/custom-scrollbar.js"></script>
+	<!-- Daterange -->
+	<script src="https://elearning.bsi.ac.id/assets/vendor/daterange/daterange.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/daterange/custom-daterange.js"></script>
+	<!-- Custom Data tables -->
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/custom/custom-datatables.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/custom/fixedHeader.js"></script>
+	<!-- Data Tables -->
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/dataTables.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/dataTables.bootstrap.min.js"></script>
+	<!-- Download / CSV / Copy / Print -->
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/buttons.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/jszip.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/pdfmake.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/vfs_fonts.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/html5.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/vendor/datatables/buttons.print.min.js"></script>
+	<!-- Main JS -->
+	<script src="https://elearning.bsi.ac.id/assets/js/main.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/dist/sweetalert2.min.js"></script>
+	<script src="https://elearning.bsi.ac.id/assets/dist/script.js"></script>
+	<!-- Lobipanel -->
+	<script>
+			</script>
+	<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+	<script>
+		let selectedUserId = null;
+
+		document.getElementById("chat-icon").addEventListener("click", function() {
+			let chatBox = document.getElementById("chat-box");
+			chatBox.style.display = (chatBox.style.display === "block") ? "none" : "block";
+
+			if (chatBox.style.display === "block") {
+				offset = 0;
+				allLoaded = false;
+				fetchOnlineUsers(true); // reset data saat buka chat box
+			}
+		});
+
+		document.getElementById("close-chat").addEventListener("click", function() {
+			document.getElementById("chat-box").style.display = "none"; // Tutup daftar user online
+		});
+
+		document.getElementById("close-private-chat").addEventListener("click", function() {
+			document.getElementById("private-chat").style.display = "none"; // Tutup private chat
+		});
+
+		function toTitleCase(str) {
+			return str.toLowerCase().split(' ').map(word =>
+				word.charAt(0).toUpperCase() + word.slice(1)
+			).join(' ');
+		}
+		// Ambil user online dari backend
+		let offset = 0;
+		const limit = 20;
+		let isLoading = false;
+		let allLoaded = false;
+		let searchKeyword = "";
+		let isSearching = false;
+		let lastSendTime = 0;
+		const sendCooldown = 10; // dalam detik
+		let privateMessageOffset = 0;
+		const privateMessageLimit = 20;
+		let privateLoading = false;
+		let allPrivateLoaded = false;
+
+
+
+		function fetchOnlineUsers(reset = false) {
+			if (isLoading || (!isSearching && allLoaded)) return;
+
+			if (reset) {
+				offset = 0;
+				allLoaded = false;
+				document.getElementById("chat-user-list").innerHTML = "";
+			}
+
+			isLoading = true;
+
+			let url = isSearching ?
+				`/users-online?search=${encodeURIComponent(searchKeyword)}` :
+				`/users-online?limit=${limit}&offset=${offset}`;
+
+			fetch(url)
+				.then(response => response.json())
+				.then(response => {
+					const users = response.users || response; // fallback untuk non-paginated response
+					const total = response.total || users.length;
+
+					// ✅ Update badge total user online
+					document.getElementById("chat-user-count").innerText = total;
+
+					if (!isSearching && users.length < limit) {
+						allLoaded = true;
+					}
+
+					const userList = document.getElementById("chat-user-list");
+
+					users.forEach(user => {
+						let li = document.createElement("li");
+						let name = toTitleCase(user.name);
+						let kode = user.kode;
+						let unread = user.unread_count || 0;
+						li.innerHTML = `
+							<span class="chatx-user-link" data-user-id="${user.id}" data-user-name="${name}">
+								${name} (${kode}) 
+								${unread > 0 ? `<span class="badge-unread">${unread}</span>` : ''}
+							</span>
+						`;
+						userList.appendChild(li);
+					});
+
+					// Bind klik ke setiap user
+					document.querySelectorAll(".chatx-user-link").forEach(link => {
+						link.addEventListener("click", function() {
+							let userId = this.getAttribute("data-user-id");
+							let userName = this.getAttribute("data-user-name");
+							document.querySelectorAll(".chatx-user-link").forEach(item => {
+								item.classList.remove("selected");
+							});
+							this.classList.add("selected");
+							openPrivateChat(userId, userName);
+						});
+					});
+
+					if (!isSearching) {
+						offset += limit;
+					}
+
+					isLoading = false;
+				})
+				.catch(error => {
+					console.error("Error fetching users:", error);
+					isLoading = false;
+				});
+		}
+
+
+		// Membuka private chat dengan user tertentu
+		function openPrivateChat(userId, userName) {
+			selectedUserId = userId;
+			privateMessageOffset = 0;
+			allPrivateLoaded = false;
+
+			let chatBox = document.getElementById("private-chat");
+			let chatTitle = document.getElementById("private-chat-title");
+			let chatMessages = document.getElementById("private-chat-messages");
+
+			// ✅ Benar-benar hapus isi chat sebelumnya
+			if (chatMessages) {
+				chatMessages.innerHTML = '';
+			}
+
+			// Tampilkan nama user tujuan
+			if (chatTitle) {
+				chatTitle.innerText = `Chat dengan ${userName}`;
+			}
+
+			// Tampilkan chat box
+			chatBox.style.display = "block";
+
+			// Ambil pesan untuk user baru
+			fetchOldMessages(userId, true);
+		}
+
+
+		function fetchOldMessages(userId, isReset = true) {
+			if (privateLoading || allPrivateLoaded) return;
+			privateLoading = true;
+
+			if (isReset) {
+				privateMessageOffset = 0;
+				allPrivateLoaded = false;
+			}
+
+			const currentUserLock = selectedUserId;
+
+			fetch(`/get-messages/${userId}?offset=${privateMessageOffset}&limit=${privateMessageLimit}`)
+				.then(response => response.json())
+				.then(messages => {
+					// ✅ Cek: apakah masih chat dengan user yang sama?	
+					if (currentUserLock !== selectedUserId) {
+						console.warn("User berubah saat pesan datang, abaikan.");
+						privateLoading = false;
+						return;
+					}
+
+					if (messages.length < privateMessageLimit) {
+						allPrivateLoaded = true;
+					}
+
+					const chatBox = document.getElementById("private-chat-messages");
+
+					messages.forEach(message => {
+						let sender = (message.sender_id == "269441") ? "Anda" : message.sender_name;
+						const p = document.createElement("p");
+						p.innerHTML = `<strong>${sender}:</strong> ${escapeHtml(message.message)}<br><small>${message.created_at}</small><hr>`;
+						chatBox.appendChild(p); // atau prepend jika kamu pakai scroll atas
+					});
+
+					privateMessageOffset += privateMessageLimit;
+					privateLoading = false;
+
+					// Scroll ke bawah setelah pesan masuk (opsional)
+					if (isReset) {
+						chatBox.scrollTop = chatBox.scrollHeight;
+					}
+				})
+				.catch(error => {
+					console.error("Error fetching messages:", error);
+					privateLoading = false;
+				});
+		}
+
+
+		// Kirim pesan privat
+		function sendPrivateMessage() {
+			let input = document.getElementById("private-message");
+			let message = escapeHtml(input.value.trim());
+			const kirimButton = document.querySelector('#private-chat .chatx-footer button');
+
+			if (!selectedUserId) {
+				alert("Pilih user terlebih dahulu!");
+				return;
+			}
+
+			if (message === "") {
+				alert("Pesan tidak boleh kosong!");
+				return;
+			}
+
+			// Cegah spam: disable input & tombol
+			const cooldown = 10; // detik
+			let remaining = cooldown;
+
+			input.disabled = true;
+			kirimButton.disabled = true;
+			input.value = "";
+			input.placeholder = `Tunggu ${remaining} detik...`;
+
+			const countdownInterval = setInterval(() => {
+				remaining--;
+				if (remaining > 0) {
+					input.placeholder = `Tunggu ${remaining} detik...`;
+				} else {
+					clearInterval(countdownInterval);
+					input.disabled = false;
+					kirimButton.disabled = false;
+					input.placeholder = "Ketik pesan...";
+				}
+			}, 1000);
+
+			// Kirim pesan ke server
+			fetch('/send-private-message', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+					},
+					body: JSON.stringify({
+						receiver_id: selectedUserId,
+						message
+					})
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						alert(data.error); // Tampilkan pesan error
+					} else {
+						let chatBox = document.getElementById("private-chat-messages");
+						chatBox.innerHTML += `<p><strong>Anda:</strong> ${message}</p>`;
+						chatBox.scrollTop = chatBox.scrollHeight;
+					}
+				})
+				.catch(error => {
+					console.error("Error sending message:", error);
+				});
+		}
+
+
+		document.getElementById("search-user").addEventListener("keyup", function() {
+			searchKeyword = this.value.trim().toLowerCase();
+			isSearching = searchKeyword !== ""; // True kalau ada keyword pencarian
+
+			offset = 0;
+			allLoaded = false;
+			fetchOnlineUsers(true);
+		});
+
+		document.getElementById("chat-user-scroll").addEventListener("scroll", function() {
+			const scrollTop = this.scrollTop;
+			const scrollHeight = this.scrollHeight;
+			const offsetHeight = this.offsetHeight;
+
+			if (scrollTop + offsetHeight >= scrollHeight - 10) {
+				fetchOnlineUsers();
+			}
+		});
+
+		function escapeHtml(text) {
+			const div = document.createElement("div");
+			div.innerText = text;
+			return div.innerHTML;
+		}
+
+		// Realtime dengan Pusher untuk menerima pesan
+		Echo.channel('private-chat')
+			.listen('PrivateMessageSent', (e) => {
+				console.log("Pesan diterima:", e.message);
+
+				if (e.message.receiver_id == selectedUserId) {
+					let chatBox = document.getElementById("private-chat-messages");
+
+					// Membuat elemen baru untuk pesan
+					const p = document.createElement("p");
+					const sender = document.createElement("strong");
+					sender.textContent = `${e.message.sender.name}:`;
+
+					const messageText = document.createElement("span");
+					messageText.textContent = e.message.message;
+
+					p.appendChild(sender);
+					p.appendChild(messageText);
+					chatBox.appendChild(p);
+				}
+			});
+	</script>
+
+
+	<script type="text/javascript">
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            dom: 'Blfrtip',
+            lengthMenu: [
+                [10, 25, 50, 10000],
+                ['10', '25', '50', 'Show All']
+            ],
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            paging: true,
+            processing: true,
+            serverSide: true,
+            ajax: 'https://elearning.bsi.ac.id/rekap-side/eyJpdiI6InNUU3ErOEJLV1BKcmE0azF2L1djaEE9PSIsInZhbHVlIjoiNk12U0IraTBwaTRRZk5zbURka0xNZUhPL25VYzFRNklTNEZhd3NDOW1qTUc4cks2QlplSitONGJocDVWQVFvWkhvOG5PTmZWT2U1SkRzT0pJcnFlZkc4eVhNV2R2NnB3U1daamRJSW9GejA9IiwibWFjIjoiYzQyYjI1MDY0MGFlZjA1MThjMjM2YjdlMTRiMWRiZDM1NzA1NzhhZTBiNDhmMDQ2MDE1MWUwZGQzNjVlNjEzZSIsInRhZyI6IiJ9',
+            columns: [{
+                    name: 'nomer',
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: 'status_hadir',
+                    name: 'status_hadir'
+                },
+                {
+                    data: 'tgl_ajar_masuk',
+                    name: 'tgl_ajar_masuk'
+                },
+                {
+                    data: 'nm_mtk',
+                    name: 'nm_mtk'
+                },
+                {
+                    data: 'pertemuan',
+                    name: 'pertemuan'
+                },
+                {
+                    data: 'berita_acara',
+                    name: 'berita_acara'
+                },
+                {
+                    data: 'rangkuman',
+                    name: 'rangkuman'
+                }
+            ]
+        });
+    });
+</script>
+</body>
+
+</html>

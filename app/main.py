@@ -8,12 +8,14 @@ from app.cache import cache
 from app.limiter import limiter
 from app.envelope import error_response
 from app.modules.studentv2 import router as studentv2_router, studentv2_client
+from app.modules.elearning import router as elearning_router, elearning_client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
     try:
         studentv2_client.close()
+        elearning_client.close()
         client = await cache.get_client()
         await client.aclose()
     except Exception:
@@ -27,6 +29,7 @@ app = FastAPI(
 )
 
 app.include_router(studentv2_router)
+app.include_router(elearning_router)
 
 @app.middleware("http")
 async def rate_limiting_middleware(request: Request, call_next):
