@@ -37,14 +37,14 @@
 
 > **Pernyataan Penafian (Disclaimer)**:
 > 
-> Proyek **UBSI API** ini adalah software *unofficial* (tidak resmi) yang dikembangkan secara independen oleh **Yuken Velino** (NIM: **15260767**, Kelas: **15.1C.30**), mahasiswa **Program Studi Informatika, Fakultas Teknik & Informatika, Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak** semata-mata untuk **keperluan riset edukasi rekayasa perangkat lunak, otomatisasi personal, dan efisiensi waktu**. Proyek ini dibuat agar mahasiswa dan developer kampus dapat mengakses informasi jadwal, nilai, tugas, dan materi kuliah mereka sendiri secara terstruktur tanpa perlu melakukan navigasi manual yang memakan waktu setiap hari.
+> Proyek **UBSI API** adalah *unofficial software* (perangkat lunak tidak resmi) yang dikembangkan secara independen oleh mahasiswa **Universitas Bina Sarana Informatika (UBSI)** untuk keperluan riset rekayasa perangkat lunak, otomatisasi personal, dan efisiensi waktu dalam mengakses jadwal, tugas, nilai, serta materi perkuliahan tanpa navigasi manual berulang.
 >
-> 1. Proyek ini **sama sekali tidak berafiliasi resmi, tidak disponsori, dan tidak dikelola oleh Universitas Bina Sarana Informatika (UBSI)**.
-> 2. Pengembang/maintainer **tidak bertanggung jawab** atas segala bentuk penyalahgunaan, kerugian, atau pelanggaran ketentuan yang timbul akibat penggunaan software ini. Seluruh penggunaan menjadi tanggung jawab pribadi masing-masing pengguna.
-> 3. Seluruh nama, logo, merek dagang, materi perkuliahan, dan data akademik adalah hak cipta dan hak milik sah dari **Universitas Bina Sarana Informatika** serta pemilik hak ciptanya masing-masing.
+> 1. Proyek ini **tidak berafiliasi resmi, tidak disponsori, dan tidak dikelola oleh pihak Universitas Bina Sarana Informatika (UBSI)**.
+> 2. Pengembang **tidak bertanggung jawab** atas segala bentuk penyalahgunaan atau konsekuensi yang timbul dari penggunaan software ini. Seluruh risiko penggunaan berada pada pengguna masing-masing.
+> 3. Seluruh merek dagang, nama sistem, materi silabus, dan data akademik adalah hak cipta dan hak milik sah dari **Universitas Bina Sarana Informatika** serta pemilik hak ciptanya masing-masing.
 >
 > **Permohonan Penghapusan / Pengarsipan (Takedown Notice)**:
-> Jika pihak rektorat, dekanat, dosen, atau pengelola sistem IT UBSI yang berwenang merasa keberatan atas keberadaan repositori atau endpoint ini, silakan hubungi pengelola langsung via GitHub ([@Curzyori](https://github.com/Curzyori)). Repositori ini akan dengan senang hati **diarsipkan, diubah, atau dihapus secara kooperatif**.
+> Jika pihak otoritas universitas atau pengelola sistem IT UBSI berkeberatan atas repositori ini, silakan hubungi pengelola langsung via GitHub ([@Curzyori](https://github.com/Curzyori)). Repositori ini akan dengan senang hati **diarsipkan atau dihapus permanen secara kooperatif**.
 
 ---
 
@@ -230,10 +230,10 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 
 Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak:
 
-| Kontributor | Identitas Mahasiswa | Peran & Kontribusi |
-|---|---|---|
-| **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator**<br>- Arsitektur 6 modul aggregator<br>- 2-Tier Redis cache (fresh + LGG)<br>- Scrapling Chrome TLS impersonation<br>- Standarisasi JSON & testing TDD |
-| **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2)**<br>- `SessionPool` per-NIM (isolasi sesi login)<br>- Endpoint `GET /v1/studentv2/dashboard` (paralel) |
+| Foto | Kontributor | Identitas Mahasiswa | Peran & Kontribusi |
+|:---:|---|---|---|
+| <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator**<br>- Arsitektur 6 modul aggregator<br>- 2-Tier Redis cache (fresh + LGG)<br>- Scrapling Chrome TLS impersonation<br>- Standarisasi JSON & testing TDD |
+| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2)**<br>- `SessionPool` per-NIM (isolasi sesi login)<br>- Endpoint `GET /v1/studentv2/dashboard` (paralel) |
 
 ---
 
