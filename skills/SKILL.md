@@ -109,6 +109,17 @@ Format respons kesalahan:
 - **Jika** pihak berwenang kampus mengajukan keberatan:
   - Ikuti prosedur di [`DMCA.md`](../DMCA.md) untuk menonaktifkan endpoint atau mengarsipkan repositori secara kooperatif.
 
+### Skenario 6: Konfigurasi Middleware Autentikasi & Proxy Whitelist
+- **Aturan**: Jangan bypass auth berdasarkan `request.client.host == '127.0.0.1'` karena reverse proxy pada mesin yang sama meneruskan request dari localhost.
+- **Jika** menambahkan whitelist probe kesehatan (seperti `/health`):
+  - Selalu normalisasi path menggunakan `request.url.path.rstrip("/") == "/health"` agar request dengan trailing slash tidak tertolak 401 sebelum handler redirect Starlette berjalan.
+  - Untuk penentuan real IP, jangan percaya `X-Forwarded-For` atau `CF-Connecting-IP` kecuali koneksi socket berasal dari IP yang terdaftar di `TRUSTED_PROXIES`.
+
+### Skenario 7: Penggunaan Helper `cached_endpoint` & Pembersihan Sesi
+- **Aturan**: Gunakan `inspect.isawaitable()` (bukan `asyncio.iscoroutine()`) saat membungkus fungsi scraper yang dijalankan via `loop.run_in_executor()`, agar instance `Future` ter-await sempurna sebelum diparsing.
+- **Jika** menggunakan `SessionPool`:
+  - Pasang background worker di `lifespan` yang memanggil `await pool.evict_idle()` secara periodik (misal setiap 5 menit) untuk membuang sesi idle dan mencegah kebocoran memori.
+
 ---
 
 ## 5. Deployment & Operasional Lingkungan (VPS / Server)
