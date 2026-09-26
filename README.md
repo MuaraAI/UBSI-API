@@ -84,6 +84,7 @@ UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di 
 - `GET /health` — Status kesehatan aplikasi & koneksi Redis (`up`/`down`).
 
 ### StudentV2 (SIAKAD)
+- `GET /v1/studentv2/dashboard` — Ambil jadwal, nilai, berita, dan pengumuman sekaligus secara paralel.
 - `GET /v1/studentv2/schedule` — Jadwal kuliah semester aktif.
 - `GET /v1/studentv2/grades` — Rekap nilai murni lengkap per mata kuliah.
 - `GET /v1/studentv2/news` — Arsip pengumuman berita akademik.

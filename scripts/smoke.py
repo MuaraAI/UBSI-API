@@ -110,7 +110,19 @@ def main():
 
     results.append(run_check("StudentV2 Schedule", f"{base}/v1/studentv2/schedule", check_studentv2))
 
-    # 7. Elearning (Private)
+    # 7. StudentV2 Dashboard (Private)
+    def check_dashboard(r):
+        if r.status_code == 200:
+            body = r.json()
+            data = body.get("data", {})
+            return True, f"sections: {list(data.keys())}"
+        if r.status_code == 400 and r.json().get("error", {}).get("code") == "CONFIG_MISSING":
+            return True, "config missing (expected when env empty)"
+        return False, f"status={r.status_code}, error={r.json().get('error')}"
+
+    results.append(run_check("StudentV2 Dashboard", f"{base}/v1/studentv2/dashboard", check_dashboard))
+
+    # 8. Elearning (Private)
     def check_elearning(r):
         if r.status_code == 200:
             body = r.json()
