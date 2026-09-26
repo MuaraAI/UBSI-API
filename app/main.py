@@ -1,3 +1,5 @@
+import os
+import secrets
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 from fastapi import FastAPI, Request, status, HTTPException
@@ -29,6 +31,8 @@ def extract_client_ip(request: Request) -> str:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    if not settings.API_KEY and not os.getenv("PYTEST_CURRENT_TEST"):
+        raise RuntimeError("API_KEY wajib disetel di file .env!")
     yield
     try:
         studentv2_client.close()
@@ -45,25 +49,38 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS Middleware
-origins = [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
-if not origins or "*" in origins:
-    origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 app.include_router(studentv2_router)
 app.include_router(elearning_router)
 app.include_router(elibrary_router)
 app.include_router(news_router)
 app.include_router(repository_router)
 app.include_router(ejournal_router)
+
+@app.middleware("http")
+async def api_key_auth_middleware(request: Request, call_next):
+    # 1. Allow OPTIONS (CORS preflight)
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
+    # 2. Allow /health without auth
+    if request.url.path == "/health":
+        return await call_next(request)
+
+    # 3. Validate X-API-Key
+    api_key = request.headers.get("x-api-key")
+    configured_key = settings.API_KEY
+
+    if not api_key or not configured_key or not secrets.compare_digest(api_key, configured_key):
+        return JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content=error_response(
+                code="UNAUTHORIZED",
+                message="Akses ditolak: Header X-API-Key tidak valid atau tidak disertakan",
+                module="auth"
+            )
+        )
+
+    return await call_next(request)
 
 @app.middleware("http")
 async def rate_limiting_middleware(request: Request, call_next):
@@ -83,6 +100,19 @@ async def rate_limiting_middleware(request: Request, call_next):
             )
         )
     return await call_next(request)
+
+# CORS Middleware added after HTTP middlewares so it wraps outermost
+origins = [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
+if not origins or "*" in origins:
+    origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.exception_handler(HTTPException)
 async def custom_http_exception_handler(request: Request, exc: HTTPException):

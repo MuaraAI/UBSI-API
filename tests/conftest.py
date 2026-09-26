@@ -8,8 +8,10 @@ def _patched_init(self, *args, **kwargs):
     headers = kwargs.get("headers")
     if headers is None:
         headers = {}
-    if "X-API-Key" not in headers:
+    else:
         headers = dict(headers)
+    skip = headers.pop("_skip_auto_auth", None)
+    if not skip and "X-API-Key" not in headers:
         headers["X-API-Key"] = "test-secret-key-12345"
     kwargs["headers"] = headers
     _original_init(self, *args, **kwargs)
