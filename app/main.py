@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 from fastapi import FastAPI, Request, status, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.cache import cache
@@ -13,6 +14,18 @@ from app.modules.elibrary import router as elibrary_router
 from app.modules.news import router as news_router
 from app.modules.repository import router as repository_router
 from app.modules.ejournal import router as ejournal_router
+
+def extract_client_ip(request: Request) -> str:
+    """Ekstraksi IP klien dengan prioritas Cloudflare -> Forwarded Proxy -> socket host."""
+    cf_ip = request.headers.get("cf-connecting-ip")
+    if cf_ip:
+        return cf_ip.strip()
+    xff = request.headers.get("x-forwarded-for")
+    if xff:
+        return xff.split(",")[0].strip()
+    if request.client and request.client.host:
+        return request.client.host
+    return "127.0.0.1"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -28,8 +41,21 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(
     title="UBSI API",
     description="Private Unofficial API Aggregator for UBSI Services",
-    version="1.0.0",
+    version="1.1.0",
     lifespan=lifespan
+)
+
+# CORS Middleware
+origins = [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
+if not origins or "*" in origins:
+    origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(studentv2_router)
@@ -46,7 +72,7 @@ async def rate_limiting_middleware(request: Request, call_next):
     if path in ("/health", "/docs", "/openapi.json", "/redoc"):
         return await call_next(request)
 
-    client_ip = request.client.host if request.client else "127.0.0.1"
+    client_ip = extract_client_ip(request)
     is_allowed = await limiter.is_allowed(client_ip)
     if not is_allowed:
         return JSONResponse(
