@@ -138,17 +138,18 @@ UBSI-API/
 │   ├── deps.py                # Modular credential validation (Option B)
 │   ├── envelope.py            # Clean Minimalist JSON envelope
 │   ├── limiter.py             # Sliding window rate limiter (60 req/min)
+│   ├── session_pool.py        # Pool sesi per-NIM dengan idle TTL (15m)
 │   └── main.py                # Base FastAPI app & global middleware
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline
-│   └── test_*.py              # 46 Automated unit & integration tests
+│   └── test_*.py              # 51 Automated unit & integration tests
 ├── scripts/
 │   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
-│   └── smoke.py               # Live verification CLI tool
+│   └── smoke.py               # Live verification CLI tool (8 checks)
 ├── skills/
 │   └── SKILL.md               # Agent skill definition for AI assistants
 ├── docs/
-│   ├── api.md                 # 17 Endpoints dictionary & JSON payloads
+│   ├── api.md                 # 18 Endpoints dictionary & JSON payloads
 │   ├── architecture.md        # Request lifecycle & cache flow
 │   ├── anti-ban.md            # Account security & safety protocols
 │   └── deploy.md              # VPS PM2 production operations

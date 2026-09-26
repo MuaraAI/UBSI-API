@@ -87,13 +87,30 @@ This isolates cache namespaces across modules and query parameters.
 
 ---
 
-## 5. Repository Layout
+## 5. Session Pool & Parallel Aggregation
+
+### A. Per-NIM Session Isolation (`app/session_pool.py`)
+To prevent concurrent requests from different student credentials from overwriting each other's session cookies:
+- The scraper client wraps instances inside `SessionPool`.
+- Each unique NIM maintains its own independent authenticated HTTP client.
+- Idle sessions are automatically evicted after 15 minutes (`ttl_seconds=900`) to conserve VPS RAM.
+- Expired sessions trigger immediate invalidation so subsequent calls trigger a clean re-login.
+
+### B. Parallel Dashboard Endpoint (`/v1/studentv2/dashboard`)
+Retrieves 4 critical academic sections (`schedule`, `grades`, `news`, `announcements`) concurrently using `asyncio.gather(..., return_exceptions=True)`:
+- Total response latency equals the single slowest upstream section rather than the sum of all 4.
+- Sections with valid cached payloads are served immediately without hitting upstream servers.
+- A failure in one section (e.g. news maintenance) is isolated and does not fail the remaining sections.
+
+---
+
+## 6. Repository Layout
 
 ```text
 UBSI-API/
 ├── app/
 │   ├── modules/
-│   │   ├── studentv2.py       # SIAKAD: Jadwal, Nilai, Berita, Pengumuman
+│   │   ├── studentv2.py       # SIAKAD: Jadwal, Nilai, Berita, Pengumuman, Dashboard
 │   │   ├── elearning.py       # MyBest: Captcha solver, Courses, Absensi, Tugas, Materi, Kuis
 │   │   ├── elibrary.py        # Perpus: OPAC search, Book detail, 60s retry
 │   │   ├── news.py            # Portal: Native WP REST API (/wp-json/wp/v2/posts)
@@ -104,18 +121,19 @@ UBSI-API/
 │   ├── deps.py                # Modular credential validation (Option B)
 │   ├── envelope.py            # Clean Minimalist JSON envelope
 │   ├── limiter.py             # Sliding window rate limiter (60 req/min)
+│   ├── session_pool.py        # Pool sesi per-NIM dengan idle TTL (15m)
 │   └── main.py                # Base FastAPI app & global middleware
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline (sv2_*.html, el_*.html)
-│   └── test_*.py              # 46 Automated unit & integration tests
+│   └── test_*.py              # 51 Automated unit & integration tests
 ├── scripts/
 │   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
-│   └── smoke.py               # Live verification CLI tool
+│   └── smoke.py               # Live verification CLI tool (8 checks)
 ├── skills/
 │   └── SKILL.md               # Agent skill definition for AI assistants
 ├── docs/
-│   ├── api.md                 # 17 Endpoints dictionary & JSON payloads
-│   ├── architecture.md        # Request lifecycle & cache flow
+│   ├── api.md                 # 18 Endpoints dictionary & JSON payloads
+│   ├── architecture.md        # Request lifecycle, session pool, and cache flow
 │   ├── anti-ban.md            # Account security & safety protocols
 │   └── deploy.md              # VPS PM2 production operations
 ├── ecosystem.config.cjs       # PM2 production config untuk VPS
