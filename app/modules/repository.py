@@ -42,13 +42,13 @@ def parse_repository_items(html: str) -> list[dict[str, Any]]:
 
     # Fallback to any content links if ep_view_blurb is absent
     if not items:
-        for a in page.css('a[href*="/viewitem/"], a[href*="/view/"], a[href*="/id/eprint/"]'):
+        for a in page.css('a[href*="/viewitem/"], a[href*="/view/"], a[href*="/id/eprint/"], a[href*="/repo/"]'):
             href = a.attrib.get("href", "").strip()
             title = " ".join(a.text.split()).strip()
-            if href and title and len(title) > 5 and href not in seen_urls:
+            m_id = re.search(r"/repo/(\d+)/?", href) or re.search(r"/(\d+)/?", href)
+            if href and title and len(title) > 5 and href not in seen_urls and m_id:
                 seen_urls.add(href)
-                m_id = re.search(r"/(\d+)/?", href)
-                item_id = m_id.group(1) if m_id else hashlib.sha256(href.encode()).hexdigest()[:12]
+                item_id = m_id.group(1)
                 items.append({
                     "id": item_id,
                     "title": title,
