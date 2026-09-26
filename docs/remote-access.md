@@ -10,9 +10,9 @@ Semua akses remote diwajibkan menyertakan header keamanan **`X-API-Key`**.
 
 ---
 
-## 1. Persiapan Kunci Akses (`API_KEY`)
+## 1. Persiapan Konfigurasi Lingkungan (`.env`)
 
-Sebelum membuka akses remote, pastikan variabel `API_KEY` sudah terpasang di berkas `.env` server:
+Sebelum membuka akses remote, pastikan 3 variabel keamanan di berkas `.env` server sudah terpasang:
 
 ```bash
 # Generate kunci rahasia 48 karakter acak:
@@ -21,10 +21,34 @@ python3 -c "import secrets; print('ubsi_sec_' + secrets.token_hex(24))"
 
 Tempelkan ke berkas `.env`:
 ```bash
+# 1. Kunci akses utama (Wajib diisi di produksi)
 API_KEY=ubsi_sec_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# 2. Kebijakan Browser / CORS (Default: * — semua origin diizinkan)
+ALLOWED_ORIGINS=*
+
+# 3. IP Proxy Terpercaya untuk Real Client IP (Default: 127.0.0.1)
+TRUSTED_PROXIES=127.0.0.1
 ```
 
-> **Catatan Keamanan**: UBSI API menerapkan fail-fast startup. Jika `API_KEY` belum disetel, aplikasi akan menolak berjalan demi mencegah kebocoran data.
+### Rincian Fungsi Variabel:
+
+1. **`API_KEY` (Mandatory Authentication)**:
+   - Kunci gerbang utama. Semua endpoint non-health (`/v1/*`, `/metrics`, dll.) wajib menyertakan header `X-API-Key`.
+   - UBSI API menerapkan *fail-fast startup*: jika `API_KEY` belum disetel di `.env`, aplikasi menolak berjalan demi mencegah kebocoran data pribadi ke publik.
+
+2. **`ALLOWED_ORIGINS` (Izin Browser / CORS Policy)**:
+   - Mengatur website atau dashboard frontend mana saja yang diizinkan memanggil API ini lewat JavaScript di browser.
+   - Nilai `*` (*wildcard*, default): Memungkinkan frontend web dari domain apa pun memanggil API. Tetap aman karena setiap request tetap harus menyertakan `X-API-Key` yang valid.
+   - Nilai spesifik: Jika ingin mengunci hanya untuk website dashboard tertentu, masukkan URL asal dipisahkan koma, contoh:
+     ```bash
+     ALLOWED_ORIGINS=https://dashboard.example.com,http://localhost:3000
+     ```
+
+3. **`TRUSTED_PROXIES` (Pencegahan Spoofing Real Client IP)**:
+   - Mengatur alamat IP dari reverse proxy lokal yang dipercaya untuk membaca header forwarding (`CF-Connecting-IP` dari Cloudflare atau `X-Forwarded-For` dari Caddy/Nginx).
+   - Nilai `127.0.0.1` (default): Sangat ideal untuk Caddy, Nginx, atau daemon `cloudflared` yang berjalan di satu server fisik/VPS yang sama dengan Uvicorn.
+   - Memastikan kuota rate limiter (60 request/menit) dihitung berdasarkan IP asli pengunjung luar secara adil, serta mencegah pihak luar memalsukan header IP palsu.
 
 ---
 
