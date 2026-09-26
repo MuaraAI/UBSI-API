@@ -26,6 +26,7 @@ Sources:
 
 | Aspek | Keputusan |
 |---|---|
+| Scope Operasi | Read-Only di v1 (Write operations seperti auto-absen/submit tugas ditunda ke v2) |
 | Audiens | Pribadi, 1 user |
 | Modul | 6 (studentv2, elearning, elibrary, ejournal, repository, news) |
 | Stack | Python 3.12+, FastAPI, Scrapling (Fetcher / FetcherSession with curl_cffi Chrome impersonation) |
