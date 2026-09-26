@@ -9,8 +9,8 @@
 
 <div align="center">
 
-  <a href="https://github.com/Curzyori/UBSI-API"><img src="https://img.shields.io/badge/status-active-success?style=for-the-badge&color=374151" alt="Status" /></a>
-  <a href="https://github.com/Curzyori/UBSI-API/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Curzyori/UBSI-API?style=for-the-badge&color=374151" alt="License" /></a>
+  <a href="https://github.com/MuaraAI/UBSI-API"><img src="https://img.shields.io/badge/status-active-success?style=for-the-badge&color=374151" alt="Status" /></a>
+  <a href="https://github.com/MuaraAI/UBSI-API/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MuaraAI/UBSI-API?style=for-the-badge&color=374151" alt="License" /></a>
   <img src="https://img.shields.io/badge/python-3.12+-blue?style=for-the-badge&color=374151" alt="Python Version" />
   <img src="https://img.shields.io/badge/framework-FastAPI-teal?style=for-the-badge&color=374151" alt="FastAPI" />
   <img src="https://img.shields.io/badge/cache-Redis%20DB2-red?style=for-the-badge&color=374151" alt="Redis Cache" />
@@ -178,7 +178,7 @@ UBSI-API/
 
 ### 1. Kloning & Persiapan
 ```bash
-git clone https://github.com/Curzyori/UBSI-API.git
+git clone https://github.com/MuaraAI/UBSI-API.git
 cd UBSI-API
 
 # Buat virtual environment & install dependensi

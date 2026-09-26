@@ -8,7 +8,7 @@ Local setup, configuration, and architectural design live in [README.md](README.
 
 ```bash
 # Clone and setup environment (Python 3.12+)
-git clone https://github.com/Curzyori/UBSI-API.git
+git clone https://github.com/MuaraAI/UBSI-API.git
 cd UBSI-API
 
 uv venv .venv --python 3.12

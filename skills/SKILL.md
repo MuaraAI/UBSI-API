@@ -1,9 +1,9 @@
 ---
 name: ubsi-api
-version: 1.0.0
+version: 1.1.0
 description: Agent skill for consuming, extending, and operating the UBSI API (Unofficial BSI Campus Aggregator).
 metadata:
-  repository: https://github.com/Curzyori/UBSI-API
+  repository: https://github.com/MuaraAI/UBSI-API
   author: Yuken Velino (@Curzyori)
   nim: "15260767"
   class: 15.1C.30
@@ -22,7 +22,7 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
 
 ## 1. Project & Author Overview
 
-- **Repository**: [https://github.com/Curzyori/UBSI-API](https://github.com/Curzyori/UBSI-API) (Private)
+- **Repository**: [https://github.com/MuaraAI/UBSI-API](https://github.com/MuaraAI/UBSI-API) (Private)
 - **Author**: **Yuken Velino** ([@Curzyori](https://github.com/Curzyori)) — Lead Developer & Creator · NIM: `15260767` · Kelas: `15.1C.30` · Informatika · FTI UBSI Pontianak.
 - **Contributor**: **Verzio** ([@MyKineID](https://github.com/MyKineID)) — Contributor · NIM: `15260225` · Kelas: `15.1B.30` · Informatika · FTI UBSI Pontianak.
 - **Tujuan**: Otomatisasi personal dan jembatan data terstruktur JSON (jadwal, nilai, tugas, materi) untuk bot asisten mahasiswa dan developer tanpa navigasi manual.
