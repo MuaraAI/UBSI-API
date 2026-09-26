@@ -141,11 +141,12 @@ UBSI-API/
 │   ├── envelope.py            # Clean Minimalist JSON envelope
 │   ├── limiter.py             # Sliding window rate limiter (60 req/min)
 │   ├── retry.py               # Exponential backoff retry with jitter
+│   ├── router_helper.py       # Helper generik cache, lock, & SWR
 │   ├── session_pool.py        # Pool sesi per-NIM dengan idle TTL (15m)
 │   └── main.py                # Base FastAPI app & global middleware
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline
-│   └── test_*.py              # 55 Automated unit & integration tests
+│   └── test_*.py              # 58 Automated unit & integration tests
 ├── scripts/
 │   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
 │   └── smoke.py               # Live verification CLI tool (8 checks)
@@ -237,7 +238,7 @@ Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Univ
 | Foto | Kontributor | Identitas Mahasiswa | Peran |
 |:---:|---|---|---|
 | <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator** |
-| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2, PR #3)** |
+| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2, PR #3, PR #4)** |
 
 ---
 

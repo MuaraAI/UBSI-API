@@ -122,11 +122,12 @@ UBSI-API/
 │   ├── envelope.py            # Clean Minimalist JSON envelope
 │   ├── limiter.py             # Sliding window rate limiter (60 req/min)
 │   ├── retry.py               # Exponential backoff retry with jitter
+│   ├── router_helper.py       # Helper generik cache, lock, & SWR
 │   ├── session_pool.py        # Pool sesi per-NIM dengan idle TTL (15m)
 │   └── main.py                # Base FastAPI app & global middleware
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline (sv2_*.html, el_*.html)
-│   └── test_*.py              # 55 Automated unit & integration tests
+│   └── test_*.py              # 58 Automated unit & integration tests
 ├── scripts/
 │   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
 │   └── smoke.py               # Live verification CLI tool (8 checks)
