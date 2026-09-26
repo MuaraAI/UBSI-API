@@ -49,7 +49,7 @@ ssh "${VPS_HOST}" "
 "
 
 echo "=== 6. Verifying health check on VPS ==="
-sleep 2
+sleep 4
 ssh "${VPS_HOST}" "curl -s http://127.0.0.1:8300/health | grep -q '\"status\":\"ok\"' && echo 'Health Check: OK!' || (echo 'Health Check FAILED!'; pm2 logs ubsi-api --lines 20 --nostream; exit 1)"
 
 echo "=== Deployment Completed Successfully! ==="
