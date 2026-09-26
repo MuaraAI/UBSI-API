@@ -11,6 +11,13 @@ async def test_health_check_bypasses_auth():
     assert res.json()["status"] == "ok"
 
 @pytest.mark.asyncio
+async def test_health_check_trailing_slash_bypasses_auth():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test", headers={"_skip_auto_auth": "1"}, follow_redirects=True) as ac:
+        res = await ac.get("/health/")
+    assert res.status_code == 200
+    assert res.json()["status"] == "ok"
+
+@pytest.mark.asyncio
 async def test_cors_options_preflight_bypasses_auth():
     async with AsyncClient(
         transport=ASGITransport(app=app),

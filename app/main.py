@@ -1,3 +1,4 @@
+import asyncio
 import os
 import secrets
 from contextlib import asynccontextmanager
@@ -18,22 +19,50 @@ from app.modules.repository import router as repository_router
 from app.modules.ejournal import router as ejournal_router
 
 def extract_client_ip(request: Request) -> str:
-    """Ekstraksi IP klien dengan prioritas Cloudflare -> Forwarded Proxy -> socket host."""
-    cf_ip = request.headers.get("cf-connecting-ip")
-    if cf_ip:
-        return cf_ip.strip()
-    xff = request.headers.get("x-forwarded-for")
-    if xff:
-        return xff.split(",")[0].strip()
-    if request.client and request.client.host:
-        return request.client.host
-    return "127.0.0.1"
+    """Ekstraksi IP klien dengan prioritas Cloudflare -> Forwarded Proxy -> socket host.
+
+    Header forwarding hanya dipercaya jika request berasal dari host terpercaya (TRUSTED_PROXIES).
+    """
+    client_host = request.client.host if (request.client and request.client.host) else "127.0.0.1"
+    trusted = {p.strip() for p in settings.TRUSTED_PROXIES.split(",") if p.strip()}
+
+    if client_host in trusted:
+        cf_ip = request.headers.get("cf-connecting-ip")
+        if cf_ip:
+            return cf_ip.strip()
+        xff = request.headers.get("x-forwarded-for")
+        if xff:
+            return xff.split(",")[0].strip()
+
+    return client_host
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     if not settings.API_KEY and not os.getenv("PYTEST_CURRENT_TEST"):
         raise RuntimeError("API_KEY wajib disetel di file .env!")
+
+    async def _eviction_worker():
+        while True:
+            await asyncio.sleep(300)
+            try:
+                await studentv2_client.evict_idle()
+                await pooled_elearning_client.evict_idle()
+            except Exception:
+                pass
+
+    eviction_task = None
+    if not os.getenv("PYTEST_CURRENT_TEST"):
+        eviction_task = asyncio.create_task(_eviction_worker())
+
     yield
+
+    if eviction_task:
+        eviction_task.cancel()
+        try:
+            await eviction_task
+        except asyncio.CancelledError:
+            pass
+
     try:
         studentv2_client.close()
         pooled_elearning_client.close()
@@ -62,8 +91,8 @@ async def api_key_auth_middleware(request: Request, call_next):
     if request.method == "OPTIONS":
         return await call_next(request)
 
-    # 2. Allow /health without auth
-    if request.url.path == "/health":
+    # 2. Allow /health without auth (resilient to trailing slash)
+    if request.url.path.rstrip("/") == "/health":
         return await call_next(request)
 
     # 3. Validate X-API-Key

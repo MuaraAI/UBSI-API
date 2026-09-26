@@ -7,6 +7,7 @@ dengan flag stale sementara refresh upstream berjalan sebagai background
 task.
 """
 import asyncio
+import inspect
 from typing import Any, Callable, Optional
 
 from fastapi import HTTPException, status
@@ -54,7 +55,7 @@ async def cached_endpoint(
 
         try:
             html = fetch()
-            if asyncio.iscoroutine(html):
+            if inspect.isawaitable(html):
                 html = await html
             data = parse(html)
             await cache.set(cache_key, data, ttl=ttl)
@@ -81,7 +82,7 @@ def _schedule_revalidate(
     async def _revalidate():
         try:
             html = fetch()
-            if asyncio.iscoroutine(html):
+            if inspect.isawaitable(html):
                 html = await html
             data = parse(html)
             await cache.set(cache_key, data, ttl=ttl)

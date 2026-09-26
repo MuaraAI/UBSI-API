@@ -10,6 +10,7 @@ from scrapling.fetchers import Fetcher
 from app.config import settings
 from app.envelope import success_response, error_response
 from app.cache import cache
+from app.router_helper import cached_endpoint
 
 router = APIRouter(prefix="/v1/news", tags=["news"])
 
@@ -142,72 +143,24 @@ async def get_news(
     page: int = Query(default=1, ge=1, description="Nomor halaman"),
     per_page: int = Query(default=10, ge=1, le=50, description="Jumlah item per halaman")
 ):
-    cache_key = cache.make_key("news", "posts", search=search, page=page, per_page=per_page)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            loop = asyncio.get_running_loop()
-            raw_data = await loop.run_in_executor(
-                None,
-                news_client.fetch_posts,
-                search,
-                page,
-                per_page
-            )
-            data = parse_wp_posts(raw_data)
-            await cache.set(cache_key, data, ttl=settings.TTL_NEWS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="news")
-            )
+    loop = asyncio.get_running_loop()
+    return await cached_endpoint(
+        module="news",
+        name="posts",
+        fetch=lambda: loop.run_in_executor(None, news_client.fetch_posts, search, page, per_page),
+        parse=parse_wp_posts,
+        ttl=settings.TTL_NEWS,
+        cache_params={"search": search, "page": page, "per_page": per_page},
+    )
 
 @router.get("/{post_id}")
 async def get_news_detail(post_id: str = Path(..., pattern=r"^[0-9]+$")):
-    cache_key = cache.make_key("news", "detail", post_id=post_id)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            loop = asyncio.get_running_loop()
-            raw_data = await loop.run_in_executor(
-                None,
-                news_client.fetch_post_detail,
-                post_id
-            )
-            data = parse_wp_post_detail(raw_data)
-            await cache.set(cache_key, data, ttl=settings.TTL_NEWS)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="news")
-            )
+    loop = asyncio.get_running_loop()
+    return await cached_endpoint(
+        module="news",
+        name="detail",
+        fetch=lambda: loop.run_in_executor(None, news_client.fetch_post_detail, post_id),
+        parse=parse_wp_post_detail,
+        ttl=settings.TTL_NEWS,
+        cache_params={"post_id": post_id},
+    )

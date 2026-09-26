@@ -25,3 +25,10 @@ def test_extract_client_ip_none_client():
     req.headers = {}
     req.client = None
     assert extract_client_ip(req) == "127.0.0.1"
+
+def test_extract_client_ip_untrusted_proxy():
+    req = MagicMock()
+    req.headers = {"cf-connecting-ip": "203.0.113.195", "x-forwarded-for": "10.0.0.1"}
+    req.client.host = "192.168.1.50"
+    # Not in TRUSTED_PROXIES (127.0.0.1), so forwarded headers must be ignored
+    assert extract_client_ip(req) == "192.168.1.50"

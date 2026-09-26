@@ -11,6 +11,7 @@ from scrapling.parser import Adaptor
 from app.config import settings
 from app.envelope import success_response, error_response
 from app.cache import cache
+from app.router_helper import cached_endpoint
 
 router = APIRouter(prefix="/v1/repository", tags=["repository"])
 
@@ -105,62 +106,23 @@ repository_client = RepositoryClient()
 
 @router.get("/recent")
 async def get_recent_repository():
-    cache_key = cache.make_key("repository", "recent")
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(None, repository_client.fetch_recent)
-            data = parse_repository_items(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_LIBRARY)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="repository")
-            )
+    loop = asyncio.get_running_loop()
+    return await cached_endpoint(
+        module="repository",
+        name="recent",
+        fetch=lambda: loop.run_in_executor(None, repository_client.fetch_recent),
+        parse=parse_repository_items,
+        ttl=settings.TTL_LIBRARY,
+    )
 
 @router.get("/search")
 async def search_repository(q: str = Query(..., min_length=1, description="Kata kunci pencarian")):
-    cache_key = cache.make_key("repository", "search", q=q)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(None, repository_client.fetch_search, q)
-            data = parse_repository_items(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_LIBRARY)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="repository")
-            )
+    loop = asyncio.get_running_loop()
+    return await cached_endpoint(
+        module="repository",
+        name="search",
+        fetch=lambda: loop.run_in_executor(None, repository_client.fetch_search, q),
+        parse=parse_repository_items,
+        ttl=settings.TTL_LIBRARY,
+        cache_params={"q": q},
+    )

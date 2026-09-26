@@ -148,7 +148,7 @@ UBSI-API/
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline
 │   ├── conftest.py            # Fixture autouse & test auth client
-│   └── test_*.py              # 69 Automated unit & integration tests
+│   └── test_*.py              # 71 Automated unit & integration tests
 ├── templates/
 │   ├── Caddyfile.example      # Caddy reverse proxy template (HTTPS auto)
 │   ├── nginx.example.conf     # Nginx reverse proxy configuration template
@@ -218,7 +218,7 @@ curl -s -H "X-API-Key: ubsi_sec_xxxxxxxxxxxx" http://127.0.0.1:8300/v1/studentv2
 Semua parser diuji terhadap snapshot HTML offline tanpa melakukan request live ke kampus:
 
 ```bash
-# Menjalankan seluruh test suite (69 tests)
+# Menjalankan seluruh test suite (71 tests)
 .venv/bin/pytest -v
 
 # Menjalankan live smoke test terhadap server lokal

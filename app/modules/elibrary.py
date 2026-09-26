@@ -11,6 +11,7 @@ from scrapling.parser import Adaptor
 from app.config import settings
 from app.envelope import success_response, error_response
 from app.cache import cache
+from app.router_helper import cached_endpoint
 
 router = APIRouter(prefix="/v1/elibrary", tags=["elibrary"])
 
@@ -165,72 +166,24 @@ async def search_books(
     opsi: str = Query(default="buku", description="Kategori: semua, buku, ta, skripsi, jurnal, prosiding, ebook"),
     page: int = Query(default=1, ge=1, description="Nomor halaman")
 ):
-    cache_key = cache.make_key("elibrary", "search", q=q, opsi=opsi, page=page)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                elibrary_client.fetch_search,
-                q,
-                opsi,
-                page
-            )
-            data = parse_opac_search(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_LIBRARY)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="elibrary")
-            )
+    loop = asyncio.get_running_loop()
+    return await cached_endpoint(
+        module="elibrary",
+        name="search",
+        fetch=lambda: loop.run_in_executor(None, elibrary_client.fetch_search, q, opsi, page),
+        parse=parse_opac_search,
+        ttl=settings.TTL_LIBRARY,
+        cache_params={"q": q, "opsi": opsi, "page": page},
+    )
 
 @router.get("/book/{book_id}")
 async def get_book_detail(book_id: str = Path(..., pattern=r"^[A-Za-z0-9_-]+$")):
-    cache_key = cache.make_key("elibrary", "book", book_id=book_id)
-
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
-
-    async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
-
-        try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                elibrary_client.fetch_book,
-                book_id
-            )
-            data = parse_book_detail(html)
-            await cache.set(cache_key, data, ttl=settings.TTL_LIBRARY)
-            return success_response(data=data, cached=False)
-        except Exception as e:
-            lgg_result = await cache.get_lgg(cache_key)
-            if lgg_result:
-                lgg_data, _ = lgg_result
-                return success_response(data=lgg_data, cached=True, stale=True)
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=error_response(code="UPSTREAM_ERROR", message=str(e), module="elibrary")
-            )
+    loop = asyncio.get_running_loop()
+    return await cached_endpoint(
+        module="elibrary",
+        name="book",
+        fetch=lambda: loop.run_in_executor(None, elibrary_client.fetch_book, book_id),
+        parse=parse_book_detail,
+        ttl=settings.TTL_LIBRARY,
+        cache_params={"book_id": book_id},
+    )
