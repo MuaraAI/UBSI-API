@@ -1,116 +1,61 @@
-# Contributing to UBSI API
+# Contributing
 
-Thank you for your interest in contributing to UBSI API! Please review the guidelines below to maintain stability, security, and consistent code quality.
+Thanks for taking a look. This is a private, single-tenant personal automation API (one student account on your own localhost / VPS), so most contributions are campus parser fixes, new endpoint additions, or test coverage.
 
----
+Local setup, configuration, and architectural design live in [README.md](README.md) and [docs/superpowers/specs/2026-09-25-ubsi-api-design.md](docs/superpowers/specs/2026-09-25-ubsi-api-design.md) — one place, so they cannot drift apart.
 
-## 1. Development Setup
-
-This project uses Python 3.12+ and `uv` for fast environment and dependency management.
+## Development setup
 
 ```bash
-# Clone the repository
+# Clone and setup environment (Python 3.12+)
 git clone https://github.com/Curzyori/UBSI-API.git
 cd UBSI-API
 
-# Create virtual environment and install dependencies
 uv venv .venv --python 3.12
 source .venv/bin/activate
 uv pip install -r requirements.txt
 
-# Setup local environment configuration
+# Configure environment
 cp .env.example .env
-# Edit .env with your credentials if testing private endpoints
 ```
 
----
+## Pull requests
 
-## 2. Testing Guidelines (TDD Mandatory)
+- One logical change per PR, conventional-commit title (`fix(elearning): …`, `feat(studentv2): …`).
+- Say what you changed and why in the body; include the failing fixture or upstream HTML change you fixed when there is one.
+- **TDD Mandatory**: Parser unit tests must test against offline snapshot fixtures in `tests/fixtures/`. Never make live network requests to campus servers inside pytest. All 46+ tests must pass (`.venv/bin/pytest -v`).
+- **Zero Secrets Rule**: Never stage or commit `.env`, session cookies, credentials, or personal tokens. Always verify `git status` and `git diff` before pushing.
+- Upstream changes: mention which campus service was tested (`studentv2`, `elearning`, `elibrary`, `news`, `repository`, `ejournal`) and provide anonymized snapshot proof if layout changed.
 
-- **Pure Parser Isolation**: Unit tests for HTML parsers must strictly test against offline snapshot fixtures in `tests/fixtures/`. Never make live network requests inside pytest suites.
-- **Directory Structure of `tests/`**:
-  ```text
-  tests/
-  ├── fixtures/                 # Offline snapshot HTML fixtures (sv2_*.html, el_*.html)
-  ├── test_config.py            # Settings, env loading, and tiered TTLs
-  ├── test_envelope.py          # Response envelope standardization (clean JSON)
-  ├── test_cache.py             # Two-tier Redis cache (fresh + LGG) and mutex
-  ├── test_limiter.py           # Sliding-window rate limiter (60 req/min)
-  ├── test_main.py              # Base FastAPI app, /health, and middleware
-  ├── test_studentv2_parser.py  # Pure parsers for schedule, grades, news, announcements
-  ├── test_studentv2_router.py  # StudentV2 endpoint integration tests
-  ├── test_elearning_parser.py  # Pure parsers for MyBest courses, captcha, presence, tasks
-  ├── test_elearning_router.py  # Elearning endpoint integration tests
-  ├── test_elibrary_parser.py   # Elibrary OPAC search & book detail parsers
-  ├── test_elibrary_router.py   # Elibrary endpoint integration & retry tests
-  ├── test_public_modules.py    # News (WP REST API), Repository, and EJournal parsers
-  ├── test_public_routers.py    # Public endpoints integration tests
-  └── test_integration.py       # End-to-end full pipeline integration test
-  ```
-- **Run the Test Suite**:
-  ```bash
-  .venv/bin/pytest -v
-  ```
-- All pull requests and changes must have 100% passing tests before submission.
+## Tests structure
 
----
+```text
+tests/
+├── fixtures/                 # Offline snapshot HTML fixtures (sv2_*.html, el_*.html)
+├── test_config.py            # Settings, env loading, and tiered TTLs
+├── test_envelope.py          # Response envelope standardization (clean JSON)
+├── test_cache.py             # Two-tier Redis cache (fresh + LGG) and mutex
+├── test_limiter.py           # Sliding-window rate limiter (60 req/min)
+├── test_main.py              # Base FastAPI app, /health, and middleware
+├── test_studentv2_parser.py  # Pure parsers for schedule, grades, news, announcements
+├── test_studentv2_router.py  # StudentV2 endpoint integration tests
+├── test_elearning_parser.py  # Pure parsers for MyBest courses, captcha, presence, tasks
+├── test_elearning_router.py  # Elearning endpoint integration tests
+├── test_elibrary_parser.py   # Elibrary OPAC search & book detail parsers
+├── test_elibrary_router.py   # Elibrary endpoint integration & retry tests
+├── test_public_modules.py    # News (WP REST API), Repository, and EJournal parsers
+├── test_public_routers.py    # Public endpoints integration tests
+└── test_integration.py       # End-to-end full pipeline integration test
+```
 
-## 3. Code Standards & Architecture
+## Security
 
-1. **Clean Minimalist JSON**: All endpoints must return standard responses via `app.envelope`:
-   ```json
-   {
-     "success": true,
-     "data": [...],
-     "cached": false
-   }
-   ```
-2. **Resilience & Fault Tolerance**:
-   - Cache operations must fail gracefully if Redis is temporarily unreachable (safe cache miss and fail-open rate limiting).
-   - Upstream network errors should fall back to Last-Known-Good (`lgg`) cached data when available.
-3. **Anti-Ban Protections**:
-   - Always reuse session cookies in client instances; never submit login credentials unnecessarily on every request.
-   - Respect tiered cache TTLs and maintain the single-flight mutex on upstream requests.
-4. **Data Sanitization**:
-   - Pervasively sanitize strings (remove extraneous newlines and spaces).
-   - Ensure clean typing (`int` for SKS/counts, `float` for grades, ISO-8601 strings for dates, `null` for absent values).
+Please do not open a public issue for vulnerabilities or credential leaks — see [SECURITY.md](SECURITY.md).
 
----
+## Intellectual property & DMCA
 
-## 4. Git & Commit Message Discipline
+All university trademarks, materials, and portal assets belong to Universitas Bina Sarana Informatika — see [DMCA.md](DMCA.md).
 
-We follow **Conventional Commits**:
-- `feat(scope): ...` for new features or endpoints.
-- `fix(scope): ...` for bug fixes.
-- `refactor(scope): ...` for code refactoring without behavior changes.
-- `test(scope): ...` for adding or updating tests.
-- `docs(scope): ...` for documentation changes.
+## License
 
-**Zero Secrets Rule**:
-- Never stage or commit `.env`, session files, credentials, or personal tokens. Always verify `git status` and `git diff` before committing.
-
----
-
-## 5. Submitting a Pull Request (PR)
-
-1. Create a dedicated feature branch from `main`:
-   ```bash
-   git checkout main
-   git pull origin main
-   git checkout -b feat/your-feature-name
-   ```
-2. Make your targeted code changes and write corresponding unit tests.
-3. Ensure all tests pass:
-   ```bash
-   .venv/bin/pytest -v
-   ```
-4. Commit your changes with Conventional Commits message:
-   ```bash
-   git add <modified-files>
-   git commit -m "feat(scope): your descriptive change"
-   ```
-5. Push the branch and open a Pull Request:
-   ```bash
-   git push -u origin feat/your-feature-name
-   gh pr create --base main --head feat/your-feature-name --title "feat: ..." --body "Summary of changes"
-   ```
+By contributing you agree that your work is licensed under the [MIT License](LICENSE).
