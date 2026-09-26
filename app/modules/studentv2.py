@@ -12,6 +12,7 @@ from app.deps import require_studentv2_creds
 from app.envelope import success_response, error_response
 from app.cache import cache
 from app.session_pool import SessionPool
+from app.retry import retry_async
 
 router = APIRouter(prefix="/v1/studentv2", tags=["studentv2"])
 
@@ -210,13 +211,18 @@ class PooledStudentV2Client:
     def __init__(self, ttl_seconds: int = 900):
         self._pool = SessionPool(lambda: StudentV2Client(), ttl_seconds=ttl_seconds)
 
-    def fetch_page(self, path: str, nim: str, password: str) -> str:
+    async def fetch_page(self, path: str, nim: str, password: str) -> str:
         client = self._pool.get(nim)
-        try:
+
+        def _fetch_once() -> str:
             return client.fetch_page(path, nim, password)
+
+        try:
+            return await retry_async(_fetch_once, attempts=3, base_delay=1.0)
         except HTTPException as exc:
             # Login expired → buang sesi supaya request berikutnya login ulang
-            if exc.detail and getattr(exc.detail, "code", None) == "AUTH_EXPIRED":
+            detail = getattr(exc, "detail", None)
+            if isinstance(detail, dict) and detail.get("code") == "AUTH_EXPIRED":
                 self._pool.invalidate(nim)
             raise
 
@@ -247,10 +253,7 @@ async def get_schedule(creds: tuple[str, str] = Depends(require_studentv2_creds)
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                studentv2_client.fetch_page,
+            html = await studentv2_client.fetch_page(
                 "/mahasiswa/jadwal-kuliah",
                 nim,
                 password
@@ -286,10 +289,7 @@ async def get_grades(creds: tuple[str, str] = Depends(require_studentv2_creds)):
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                studentv2_client.fetch_page,
+            html = await studentv2_client.fetch_page(
                 "/mahasiswa/nilai-murni",
                 nim,
                 password
@@ -327,10 +327,7 @@ async def get_news(
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                studentv2_client.fetch_page,
+            html = await studentv2_client.fetch_page(
                 "/mahasiswa/berita",
                 nim,
                 password
@@ -365,10 +362,7 @@ async def get_announcements(creds: tuple[str, str] = Depends(require_studentv2_c
             return success_response(data=fresh, cached=True)
 
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                studentv2_client.fetch_page,
+            html = await studentv2_client.fetch_page(
                 "/mahasiswa/beranda",
                 nim,
                 password
@@ -404,10 +398,7 @@ async def get_dashboard(creds: tuple[str, str] = Depends(require_studentv2_creds
         if fresh is not None:
             return name, success_response(data=fresh, cached=True), cache_key
         try:
-            loop = asyncio.get_running_loop()
-            html = await loop.run_in_executor(
-                None,
-                studentv2_client.fetch_page,
+            html = await studentv2_client.fetch_page(
                 path,
                 nim,
                 password,
