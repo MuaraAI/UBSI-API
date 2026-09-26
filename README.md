@@ -207,6 +207,15 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 
 ---
 
+## <a id="documentation"></a>📚 Documentation
+
+- [API Reference](docs/api.md) — Kamus lengkap 17 endpoint beserta format request & response JSON.
+- [System Architecture](docs/architecture.md) — Siklus request, two-tier cache, dan single-flight mutex.
+- [Anti-Ban Protocol](docs/anti-ban.md) — Protokol proteksi akun kampus (cookie re-use, TLS impersonation, jitter).
+- [Production Deployment](docs/deploy.md) — Panduan operasi dan pemeliharaan server VPS via PM2.
+
+---
+
 ## <a id="license"></a>⚖️ License & Legal
 
 - **Lisensi**: MIT License — lihat berkas [LICENSE](LICENSE).
