@@ -4,12 +4,12 @@ Private, unofficial REST API yang mengagregasi layanan web kampus Universitas Bi
 
 ---
 
-## 1. Sumber Layanan
+## Layanan & Cakupan Data
 
-| Modul | Sumber | Status Akses | Scope Data |
+| Modul | Sumber | Status Akses | Data yang Disediakan |
 |---|---|---|---|
 | `studentv2` | `studentv2.bsi.ac.id` | Autentikasi (NIM/Password) | Jadwal kuliah, nilai murni, pengumuman internal PDF, arsip berita |
-| `elearning` | `elearning.bsi.ac.id` (MyBest) | Autentikasi (NIM/Password + Math Captcha) | Kartu matkul, presensi per pertemuan, tugas & submission, materi zip, kuis |
+| `elearning` | `elearning.bsi.ac.id` (MyBest) | Autentikasi (NIM/Password + Math Captcha) | Kartu matkul, presensi perkuliahan, tugas & submission, materi zip, kuis online |
 | `elibrary` | `elibrary.bsi.ac.id` | Publik | OPAC search katalog, detail buku, eksemplar & stok |
 | `news` | `news.bsi.ac.id` | Publik (Native WP REST API) | Berita kampus resmi (judul, penulis, media gambar, konten lengkap) |
 | `repository` | `repository.bsi.ac.id` | Publik (EPrints) | Publikasi ilmiah terbaru & pencarian riset |
@@ -17,82 +17,80 @@ Private, unofficial REST API yang mengagregasi layanan web kampus Universitas Bi
 
 ---
 
-## 2. Arsitektur & Keamanan
+## Daftar Endpoint (Prefix `/v1/`)
 
-- **Localhost Boundary**: Aplikasi hanya mengikat ke `127.0.0.1:8300` (tidak pernah diekspos ke publik di v1).
-- **Anti-Ban Protections**:
-  - Re-use cookie sesi in-memory (tidak mengirim request login berulang).
-  - Single-Flight Mutex: Request konkuren untuk endpoint yang sama tidak akan menembak server kampus secara paralel.
-  - Browser Fingerprint: Scrapling dengan `curl_cffi` Chrome TLS impersonation (identik 100% dengan Google Chrome di desktop).
-- **Caching Dua Tingkat (Redis DB 2)**:
-  - *Cache Segar* dengan TTL berjenjang (Jadwal: 2 jam, Nilai: 30 menit, Tugas: 10 menit, Berita: 15 menit, Perpus: 1 jam).
-  - *Last-Known-Good (LGG)* tanpa batas waktu: Jika server kampus down, API tetap menyajikan data terakhir yang sukses dengan penanda `"stale": true`.
-- **Response Format**: Clean Minimalist JSON:
-  ```json
-  {
-    "success": true,
-    "data": [...],
-    "cached": false
+### 1. Sistem & Pemantauan
+- `GET /health` — Status server dan konektivitas Redis (`up`/`down`).
+
+### 2. StudentV2 (SIAKAD)
+- `GET /v1/studentv2/schedule` — Jadwal kuliah semester aktif.
+- `GET /v1/studentv2/grades` — Rekap nilai murni per mata kuliah (UTS, UAS, Tugas, Absen, Total, Grade).
+- `GET /v1/studentv2/news` — Arsip berita pengumuman mahasiswa.
+- `GET /v1/studentv2/announcements` — Pengumuman edaran internal terbaru dari beranda.
+
+### 3. Elearning (MyBest LMS)
+- `GET /v1/elearning/courses` — Daftar kartu mata kuliah aktif & token terenkripsi.
+- `GET /v1/elearning/assignments` — Daftar tugas aktif dan riwayat submission (nilai & komentar dosen).
+- `GET /v1/elearning/presence` — Rekap status presensi perkuliahan per pertemuan.
+- `GET /v1/elearning/materials` — Berkas silabus dan modul pembelajaran (ZIP/PDF).
+- `GET /v1/elearning/quiz` — Jadwal kuis latihan dan ujian online aktif.
+
+### 4. Perpustakaan (Elibrary)
+- `GET /v1/elibrary/search?q=&opsi=buku&page=1` — Pencarian katalog OPAC perpustakaan.
+- `GET /v1/elibrary/book/{book_id}` — Detail metadata buku lengkap beserta ketersediaan stok fisik.
+
+### 5. Publikasi Ilmiah & Berita
+- `GET /v1/news?search=&page=&per_page=` — Daftar berita resmi dari WordPress REST API BSI.
+- `GET /v1/news/{post_id}` — Detail artikel berita lengkap.
+- `GET /v1/repository/recent` — Publikasi karya ilmiah dan skripsi terbaru di EPrints repository.
+- `GET /v1/repository/search?q=` — Pencarian repositori karya ilmiah.
+- `GET /v1/ejournal/journals` — Katalog 16 jurnal ilmiah resmi UBSI.
+
+---
+
+## Format Respons
+
+Semua respons menggunakan format Clean Minimalist JSON:
+
+```json
+{
+  "success": true,
+  "data": [ ... ],
+  "cached": false
+}
+```
+
+Format respons kesalahan:
+```json
+{
+  "success": false,
+  "error": {
+    "code": "UPSTREAM_TIMEOUT",
+    "message": "Deskripsi kesalahan",
+    "module": "elibrary"
   }
-  ```
+}
+```
 
 ---
 
-## 3. Instalasi & Menjalankan Lokal
+## Menjalankan Server
 
-### Prasyarat
-- Python 3.12+
-- `uv` (Fast Python package manager)
-- Redis Server aktif lokal atau remote (`redis://127.0.0.1:6379/2`)
-
-### Langkah Menjalankan
 ```bash
-# 1. Clone repository
-git clone https://github.com/Curzyori/UBSI-API.git
-cd UBSI-API
-
-# 2. Buat virtual environment & install dependensi
-uv venv .venv --python 3.12
-source .venv/bin/activate
-uv pip install -r requirements.txt
-
-# 3. Konfigurasi environment
+# Salin konfigurasi environment
 cp .env.example .env
-# Edit .env dengan kredensial NIM/Password kampus Anda
+# Isi kredensial NIM/Password di .env
 
-# 4. Jalankan server
-.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8300 --reload
+# Jalankan server
+.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8300
 ```
+
+Dokumentasi interaktif OpenAPI/Swagger dapat diakses di `http://127.0.0.1:8300/docs`.
 
 ---
 
-## 4. Pengujian (Testing)
+## Tautan Dokumen
 
-Semua parser HTML diuji terhadap snapshot fixture offline di `tests/fixtures/` tanpa melakukan request live ke server kampus saat pengujian otomatis.
-
-```bash
-# Menjalankan seluruh test suite
-.venv/bin/pytest -v
-
-# Menjalankan live smoke test terhadap server lokal
-.venv/bin/python scripts/smoke.py --base-url http://127.0.0.1:8300
-```
-
----
-
-## 5. Deployment ke VPS (PM2)
-
-Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder `/home/ubuntu/ubsi-api`:
-
-```bash
-# Deploy otomatis 1-perintah via rsync & PM2
-./scripts/deploy.sh
-```
-
----
-
-## 6. Lisensi & Etika
-
-- **Lisensi**: MIT License (lihat berkas `LICENSE`).
-- **Kebijakan Keamanan**: Lihat berkas `SECURITY.md`.
-- **Panduan Kontribusi**: Lihat berkas `CONTRIBUTING.md`.
+- **Panduan Kontribusi**: Lihat [`CONTRIBUTING.md`](CONTRIBUTING.md) untuk setup development, panduan pengujian TDD, dan struktur folder `tests/`.
+- **Kebijakan Keamanan & Etika**: Lihat [`SECURITY.md`](SECURITY.md) untuk batasan penggunaan pribadi dan proteksi anti-ban.
+- **Lisensi**: MIT License — lihat [`LICENSE`](LICENSE).

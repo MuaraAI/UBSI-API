@@ -88,3 +88,29 @@ We follow **Conventional Commits**:
 
 **Zero Secrets Rule**:
 - Never stage or commit `.env`, session files, credentials, or personal tokens. Always verify `git status` and `git diff` before committing.
+
+---
+
+## 5. Submitting a Pull Request (PR)
+
+1. Create a dedicated feature branch from `main`:
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feat/your-feature-name
+   ```
+2. Make your targeted code changes and write corresponding unit tests.
+3. Ensure all tests pass:
+   ```bash
+   .venv/bin/pytest -v
+   ```
+4. Commit your changes with Conventional Commits message:
+   ```bash
+   git add <modified-files>
+   git commit -m "feat(scope): your descriptive change"
+   ```
+5. Push the branch and open a Pull Request:
+   ```bash
+   git push -u origin feat/your-feature-name
+   gh pr create --base main --head feat/your-feature-name --title "feat: ..." --body "Summary of changes"
+   ```
