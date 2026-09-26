@@ -351,6 +351,10 @@ class PooledElearningClient:
     async def evict_idle(self) -> int:
         return await self._pool.evict_idle()
 
+    def close(self) -> None:
+        for nim in list(self._pool._sessions.keys()):
+            self._pool.invalidate(nim)
+
 
 pooled_elearning_client = PooledElearningClient()
 

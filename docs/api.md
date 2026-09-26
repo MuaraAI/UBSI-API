@@ -43,6 +43,21 @@ Returns runtime status and Redis connectivity.
   }
   ```
 
+### `GET /metrics`
+Returns operational metrics regarding active login session pools and cache status.
+- **Access**: Public
+- **Response**:
+  ```json
+  {
+    "status": "ok",
+    "redis": "up",
+    "active_sessions": 2,
+    "studentv2_sessions": 1,
+    "elearning_sessions": 1,
+    "uptime_note": "sessions are per-NIM with 15 min idle TTL"
+  }
+  ```
+
 ---
 
 ## 2. StudentV2 (SIAKAD)

@@ -83,6 +83,7 @@ UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di 
 
 ### Sistem
 - `GET /health` — Status kesehatan aplikasi & koneksi Redis (`up`/`down`).
+- `GET /metrics` — Metrik operasional scraper (jumlah sesi pool aktif & status Redis).
 
 ### StudentV2 (SIAKAD)
 - `GET /v1/studentv2/dashboard` — Ambil jadwal, nilai, berita, dan pengumuman sekaligus secara paralel.
@@ -138,18 +139,19 @@ UBSI-API/
 │   ├── deps.py                # Modular credential validation (Option B)
 │   ├── envelope.py            # Clean Minimalist JSON envelope
 │   ├── limiter.py             # Sliding window rate limiter (60 req/min)
+│   ├── retry.py               # Exponential backoff retry with jitter
 │   ├── session_pool.py        # Pool sesi per-NIM dengan idle TTL (15m)
 │   └── main.py                # Base FastAPI app & global middleware
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline
-│   └── test_*.py              # 51 Automated unit & integration tests
+│   └── test_*.py              # 55 Automated unit & integration tests
 ├── scripts/
 │   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
 │   └── smoke.py               # Live verification CLI tool (8 checks)
 ├── skills/
 │   └── SKILL.md               # Agent skill definition for AI assistants
 ├── docs/
-│   ├── api.md                 # 18 Endpoints dictionary & JSON payloads
+│   ├── api.md                 # 19 Endpoints dictionary & JSON payloads
 │   ├── architecture.md        # Request lifecycle & cache flow
 │   ├── anti-ban.md            # Account security & safety protocols
 │   └── deploy.md              # VPS PM2 production operations

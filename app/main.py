@@ -8,7 +8,7 @@ from app.cache import cache
 from app.limiter import limiter
 from app.envelope import error_response
 from app.modules.studentv2 import router as studentv2_router, studentv2_client
-from app.modules.elearning import router as elearning_router, elearning_client
+from app.modules.elearning import router as elearning_router, pooled_elearning_client
 from app.modules.elibrary import router as elibrary_router
 from app.modules.news import router as news_router
 from app.modules.repository import router as repository_router
@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
     try:
         studentv2_client.close()
-        elearning_client.close()
+        pooled_elearning_client.close()
         client = await cache.get_client()
         await client.aclose()
     except Exception:
@@ -89,13 +89,12 @@ async def health():
 
 @app.get("/metrics", status_code=status.HTTP_200_OK)
 async def metrics():
-    """Ringkasan kesehatan scraper: ukuran pool sesi dan status Redis.
+    """Ringkasan kesehatan scraper: ukuran pool sesi dan status Redis."""
+    sv2_pool = getattr(studentv2_client, "_pool", None)
+    sv2_sessions = len(sv2_pool) if sv2_pool is not None else 0
+    el_pool = getattr(pooled_elearning_client, "_pool", None)
+    el_sessions = len(el_pool) if el_pool is not None else 0
 
-    Dipanggil berkala (mis. cron/monitor) untuk mendeteksi kebocoran sesi
-    dan menurunnya ketersediaan cache tanpa membuka log server.
-    """
-    pool_size = getattr(studentv2_client, "_pool", None)
-    session_count = len(pool_size) if pool_size is not None else 0
     redis_status = "down"
     try:
         client = await cache.get_client()
@@ -107,6 +106,8 @@ async def metrics():
     return {
         "status": "ok",
         "redis": redis_status,
-        "active_sessions": session_count,
+        "active_sessions": sv2_sessions + el_sessions,
+        "studentv2_sessions": sv2_sessions,
+        "elearning_sessions": el_sessions,
         "uptime_note": "sessions are per-NIM with 15 min idle TTL",
     }

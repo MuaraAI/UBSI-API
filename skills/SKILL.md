@@ -31,7 +31,7 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
   - [`CONTRIBUTING.md`](../CONTRIBUTING.md) — Tata cara kontribusi, alur PR, dan struktur pengujian `tests/`.
   - [`SECURITY.md`](../SECURITY.md) — Kebijakan privasi, kredensial lokal, dan etika keamanan.
   - [`DMCA.md`](../DMCA.md) — Hak cipta kampus, landasan *Fair Use*, dan permohonan takedown resmi.
-  - [`docs/api.md`](../docs/api.md) — Kamus detail 18 endpoint beserta contoh payload JSON.
+  - [`docs/api.md`](../docs/api.md) — Kamus detail 19 endpoint beserta contoh payload JSON.
   - [`docs/architecture.md`](../docs/architecture.md) — Diagram siklus request, two-tier cache, dan mutex.
   - [`docs/anti-ban.md`](../docs/anti-ban.md) — Protokol proteksi akun kampus (TLS impersonation, session reuse, jitter).
   - [`docs/deploy.md`](../docs/deploy.md) — Panduan operasi dan pemeliharaan server production via PM2.
@@ -42,7 +42,7 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
 
 | Domain | Key Endpoints | Deskripsi & Scope |
 |---|---|---|
-| **Sistem** | `GET /health` | Status server dan konektivitas Redis (`status: "ok"`) |
+| **Sistem** | `GET /health`<br>`GET /metrics` | Status server, konektivitas Redis, dan metrik ukuran session pool |
 | **SIAKAD** | `GET /v1/studentv2/dashboard`<br>`GET /v1/studentv2/schedule`<br>`GET /v1/studentv2/grades`<br>`GET /v1/studentv2/announcements`<br>`GET /v1/studentv2/news` | Dashboard paralel (4 seksi sekaligus), jadwal kuliah aktif, nilai murni lengkap (UTS/UAS/Tugas/Grade), edaran PDF, dan arsip berita |
 | **MyBest LMS** | `GET /v1/elearning/courses`<br>`GET /v1/elearning/assignments`<br>`GET /v1/elearning/presence`<br>`GET /v1/elearning/materials`<br>`GET /v1/elearning/quiz` | Kartu matkul & token terenkripsi, deadline tugas & nilai dosen, rekap presensi hadir, tautan ZIP silabus/modul, kuis online |
 | **Perpustakaan** | `GET /v1/elibrary/search?q={query}&opsi={buku}`<br>`GET /v1/elibrary/book/{book_id}` | Pencarian OPAC katalog, metadata buku, klasifikasi, dan stok fisik di rak |
