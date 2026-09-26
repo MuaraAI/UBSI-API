@@ -1,0 +1,12 @@
+# UBSI API — Caddy Reverse Proxy Template
+# Lokasi file di server biasanya: /etc/caddy/Caddyfile
+
+api.example.com {
+    # Otomatis Let's Encrypt HTTPS / TLS & HTTP-to-HTTPS redirect
+    reverse_proxy 127.0.0.1:8300 {
+        header_up Host {upstream_hostport}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}

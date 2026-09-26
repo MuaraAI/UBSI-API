@@ -1,0 +1,10 @@
+# UBSI API — Cloudflare Tunnel Ingress Configuration Template
+# Lokasi file biasanya: ~/.cloudflared/config.yml
+
+tunnel: <TUNNEL_UUID_OR_NAME>
+credentials-file: /home/ubuntu/.cloudflared/<TUNNEL_UUID>.json
+
+ingress:
+  - hostname: api.example.com
+    service: http://127.0.0.1:8300
+  - service: http_status:404
