@@ -10,7 +10,7 @@ This project uses Python 3.12+ and `uv` for fast environment and dependency mana
 
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/Curzyori/UBSI-API.git
 cd UBSI-API
 
 # Create virtual environment and install dependencies
