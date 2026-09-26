@@ -118,7 +118,8 @@ class ElibraryClient:
             try:
                 res = Fetcher.get(url, timeout=60, impersonate="chrome")
                 if res.status == 200:
-                    return res.text if hasattr(res, "text") else res.body.decode("utf-8", "ignore")
+                    body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
+                    return body.decode("utf-8", "ignore")
             except Exception as e:
                 last_error = e
                 time.sleep(1.5 * (attempt + 1))
@@ -140,7 +141,8 @@ class ElibraryClient:
             try:
                 res = Fetcher.get(url, timeout=60, impersonate="chrome")
                 if res.status == 200:
-                    return res.text if hasattr(res, "text") else res.body.decode("utf-8", "ignore")
+                    body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
+                    return body.decode("utf-8", "ignore")
             except Exception as e:
                 last_error = e
                 time.sleep(1.5 * (attempt + 1))

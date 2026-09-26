@@ -62,10 +62,12 @@ class RepositoryClient:
     BASE_URL = "https://repository.bsi.ac.id"
 
     def fetch_recent(self) -> str:
+        url = f"{self.BASE_URL}/"
         try:
-            res = Fetcher.get(f"{self.BASE_URL}/", timeout=30, impersonate="chrome")
+            res = Fetcher.get(url, timeout=30, impersonate="chrome")
             if res.status == 200:
-                return res.text if hasattr(res, "text") else res.body.decode("utf-8", "ignore")
+                body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
+                return body.decode("utf-8", "ignore")
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
                 detail=error_response(code="UPSTREAM_ERROR", message=f"Status {res.status}", module="repository")
@@ -84,12 +86,14 @@ class RepositoryClient:
         try:
             res = Fetcher.get(url, timeout=30, impersonate="chrome")
             if res.status == 200:
-                return res.text if hasattr(res, "text") else res.body.decode("utf-8", "ignore")
+                body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
+                return body.decode("utf-8", "ignore")
             # fallback search path
             fallback_url = f"{self.BASE_URL}/index.php/repo/search?q={safe_q}"
             res_fb = Fetcher.get(fallback_url, timeout=30, impersonate="chrome")
             if res_fb.status == 200:
-                return res_fb.text if hasattr(res_fb, "text") else res_fb.body.decode("utf-8", "ignore")
+                body_fb = res_fb.body if isinstance(res_fb.body, bytes) else str(res_fb.body).encode("utf-8")
+                return body_fb.decode("utf-8", "ignore")
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
                 detail=error_response(code="UPSTREAM_ERROR", message="Repository search error", module="repository")

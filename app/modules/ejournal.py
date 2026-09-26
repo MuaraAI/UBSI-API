@@ -44,7 +44,8 @@ class EJournalClient:
         try:
             res = Fetcher.get(url, timeout=30, impersonate="chrome")
             if res.status == 200:
-                return res.text if hasattr(res, "text") else res.body.decode("utf-8", "ignore")
+                body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
+                return body.decode("utf-8", "ignore")
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
                 detail=error_response(code="UPSTREAM_ERROR", message=f"Status {res.status}", module="ejournal")
