@@ -244,17 +244,34 @@ studentv2_client = PooledStudentV2Client()
 async def get_schedule(creds: tuple[str, str] = Depends(require_studentv2_creds)):
     nim, password = creds
     cache_key = cache.make_key("studentv2", "schedule", nim=nim)
-    
-    # 1. Check fresh cache
-    fresh = await cache.get_fresh(cache_key)
-    if fresh is not None:
-        return success_response(data=fresh, cached=True)
+
+    # 1. Stale-while-revalidate: LGG dikirim instan, refresh jalan di belakang
+    cached = await cache.fresh_or_stale(cache_key)
+    if cached is not None:
+        data, is_stale = cached
+        if is_stale:
+            async def _revalidate():
+                try:
+                    html = await studentv2_client.fetch_page(
+                        "/mahasiswa/jadwal-kuliah", nim, password
+                    )
+                    parsed = parse_schedule(html)
+                    await cache.set(cache_key, parsed, ttl=settings.TTL_SCHEDULE)
+                except Exception:
+                    pass
+
+            asyncio.create_task(_revalidate())
+            return success_response(data=data, cached=True, stale=True)
+        return success_response(data=data, cached=True)
 
     # 2. Mutex single-flight lock
     async with cache.get_lock(cache_key):
-        fresh = await cache.get_fresh(cache_key)
-        if fresh is not None:
-            return success_response(data=fresh, cached=True)
+        cached = await cache.fresh_or_stale(cache_key)
+        if cached is not None:
+            data, is_stale = cached
+            if is_stale:
+                return success_response(data=data, cached=True, stale=True)
+            return success_response(data=data, cached=True)
 
         try:
             html = await studentv2_client.fetch_page(

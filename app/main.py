@@ -85,3 +85,28 @@ async def health():
     except Exception:
         redis_status = "down"
     return {"status": "ok", "redis": redis_status}
+
+
+@app.get("/metrics", status_code=status.HTTP_200_OK)
+async def metrics():
+    """Ringkasan kesehatan scraper: ukuran pool sesi dan status Redis.
+
+    Dipanggil berkala (mis. cron/monitor) untuk mendeteksi kebocoran sesi
+    dan menurunnya ketersediaan cache tanpa membuka log server.
+    """
+    pool_size = getattr(studentv2_client, "_pool", None)
+    session_count = len(pool_size) if pool_size is not None else 0
+    redis_status = "down"
+    try:
+        client = await cache.get_client()
+        pong = await client.ping()
+        if pong:
+            redis_status = "up"
+    except Exception:
+        redis_status = "down"
+    return {
+        "status": "ok",
+        "redis": redis_status,
+        "active_sessions": session_count,
+        "uptime_note": "sessions are per-NIM with 15 min idle TTL",
+    }
