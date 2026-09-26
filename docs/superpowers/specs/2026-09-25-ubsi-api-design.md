@@ -310,7 +310,26 @@ UBSI-API/
 
 ## 13. Roadmap Milestones
 
-### Version 1.2 (Upcoming)
+### Version 1.0 (Current — Stable)
+- Read-Only aggregation 6 modul resmi UBSI (`studentv2`, `elearning`, `elibrary`, `news`, `repository`, `ejournal`).
+- Caching dua tingkat Redis DB 2 + Last-Known-Good fallback (`stale: true`).
+- Proteksi anti-ban Scrapling + Session pool per-NIM.
+- 19 endpoint aktif dan 58 automated unit/integration tests lulus.
+
+### Version 1.1 (In Progress — Security & Remote Access)
+1. **Mandatory API Key Authentication**:
+   - `X-API-Key` middleware dengan constant-time comparison (`secrets.compare_digest`).
+   - Whitelist tunggal `GET /health` untuk health probe monitoring.
+   - Fail-Fast startup jika `API_KEY` kosong di `.env`.
+2. **Dual-Path Remote Access**:
+   - Reverse Proxy (Caddy / Nginx) untuk VPS ber-IP publik dengan SSL otomatis.
+   - Cloudflare Tunnel (`cloudflared`) untuk homelab / NAT tanpa IP publik.
+3. **Real Client IP Rate Limiting**:
+   - Deteksi IP asli lewat `CF-Connecting-IP` / `X-Forwarded-For`.
+4. **CORS Support**:
+   - `CORSMiddleware` terintegrasi untuk integrasi dashboard web frontend.
+
+### Version 1.2 (Planned — Feeds & Productivity)
 1. **iCal Calendar Feed (`.ics`)**:
    - `GET /v1/studentv2/schedule.ics` untuk sinkronisasi otomatis jadwal kuliah ke Google Calendar / Apple Calendar.
 2. **Bulk Modul Downloader**:
@@ -318,7 +337,7 @@ UBSI-API/
 3. **Kalkulator & Simulator IPK**:
    - Kalkulasi IPK/IPS real-time berdasarkan riwayat nilai murni.
 
-### Version 2.0 (Planned)
+### Version 2.0 (Planned — Automation & Institutional)
 1. **Write Operations**:
    - Otomatisasi klik presensi kuliah (`POST /v1/elearning/presence`).
    - Unggah dan submit berkas tugas perkuliahan (`POST /v1/elearning/assignments/{id}/submit`).
@@ -329,6 +348,94 @@ UBSI-API/
    - Rekap Berita Acara Perkuliahan (BAP).
 3. **Event Triggers & Webhooks**:
    - Notifikasi otomatis ke WhatsApp / Telegram saat ada tugas baru atau pengumuman fakultas.
-4. **Remote Access & Public Domain (Optional)**:
-   - Cloudflare Tunnel (`api.example.com`) dengan enkripsi HTTPS otomatis.
-   - API Key security middleware (`X-API-Key`) untuk otentikasi request dari luar localhost.
+
+---
+
+## 14. Spesifikasi Desain Remote Access & Autentikasi (Diskusi & Perancangan)
+
+### 14.1. Filosofi & Batasan
+- Aplikasi UBSI API **secara fundamental tetap mengikat pada `127.0.0.1:8300` (Localhost)**. Tidak ada pembukaan port aplikasi langsung ke `0.0.0.0`.
+- **Mandatory Authentication**: Seluruh endpoint (termasuk `/v1/*`, `/metrics`, dan dokumentasi) **wajib menyertakan header `X-API-Key`**. Tidak ada celah tanpa kunci.
+- **Whitelist Tunggal**: Satu-satunya endpoint publik tanpa auth adalah `/health` (untuk health check monitoring Caddy / Uptime Kuma / Cloudflare / deploy script).
+- Dua jalur remote access didukung secara setara:
+  1. **Jalur Reverse Proxy (Caddy / Nginx)**: Untuk deployment VPS ber-IP publik dengan TLS/HTTPS otomatis.
+  2. **Jalur Cloudflare Tunnel (`cloudflared`)**: Untuk deployment di balik CGNAT / laptop / homelab tanpa IP publik / tanpa buka port firewall.
+
+### 14.2. Konfigurasi Lingkungan (`.env` & `app/config.py`)
+Variabel konfigurasi keamanan baru:
+- `API_KEY: str` — Wajib diisi (Fail-Fast Startup). Jika kosong saat aplikasi dijalankan, aplikasi melempar `RuntimeError("API_KEY wajib diisi di .env!")`.
+- `ALLOWED_ORIGINS: str = "*"` — Daftar origin yang diizinkan untuk CORS (Cross-Origin Resource Sharing).
+- `TRUSTED_PROXIES: str = "127.0.0.1"` — Daftar IP proxy lokal terpercaya untuk pembacaan header forwarding.
+
+Contoh di `.env`:
+```bash
+# Security & Remote Access (Mandatory)
+API_KEY=ubsi_sec_9f8a7b6c5d4e3f2a1011121314151617
+ALLOWED_ORIGINS=*
+```
+
+### 14.3. Logika Kondisional (If-Else Matrix)
+Logika eksekusi request pada middleware:
+
+```text
+Request Masuk
+  │
+  ├── 1. Apakah method == "OPTIONS" (CORS Preflight)?
+  │      └── YA  ──> Izinkan langsung via CORSMiddleware (Status 200 OK)
+  │
+  ├── 2. Apakah path == "/health"?
+  │      └── YA  ──> Bypass Autentikasi (Status 200 OK, monitoring health probe aman)
+  │
+  ├── 3. Verifikasi Wajib `X-API-Key`
+  │      │
+  │      ├── Ambil header `X-API-Key` dari request
+  │      │
+  │      ├── secrets.compare_digest(header_key, settings.API_KEY)?
+  │      │      ├── SALAH / KOSONG ──> Tolak (Status 401 Unauthorized, format Envelope)
+  │      │      └── BENAR           ──> Lolos Autentikasi, lanjut ke Rate Limiter
+  │
+  ├── 4. Deteksi Real Client IP untuk Rate Limiter
+  │      │
+  │      ├── 1. Baca `CF-Connecting-IP` (dari Cloudflare Tunnel)
+  │      ├── 2. Jika tidak ada, baca `X-Forwarded-For` (ambil IP pertama sebelum koma)
+  │      └── 3. Fallback ke `request.client.host` (127.0.0.1)
+  │      │
+  │      └── Periksa kuota Redis (Maks 60 req/menit per Real Client IP)
+  │             ├── MELEBIHI  ──> Tolak (Status 429 Too Many Requests)
+  │             └── LOLOS     ──> Eksekusi Handler Endpoint / Cache
+```
+
+### 14.4. Analisis Kompatibilitas ("Nabrak Ga?")
+- **Unit & Integration Tests**:
+  - Test client diatur dengan fixture di `tests/conftest.py` yang otomatis menyuntikkan header default `{"X-API-Key": settings.API_KEY}`. Seluruh 58 test eksisting tetap 100% hijau.
+  - Tambahan test suite baru `tests/test_auth.py` khusus untuk memverifikasi penolakan request tanpa key (401), key salah (401), dan lolosnya `/health` tanpa key.
+- **Bot Ciel & Skrip Lokal di VPS**:
+  - Mengambil nilai `API_KEY` dari `.env` dan menyertakannya di header setiap request.
+  - Health check di `scripts/deploy.sh` memverifikasi `/health` (tanpa perlu token rahasia).
+  - Skrip verifikasi `scripts/smoke.py` menyertakan header `X-API-Key`.
+- **Rate Limiting**: Tidak lagi mengalami *IP collision* (semua pengunjung dianggap 127.0.0.1) berkat deteksi header `CF-Connecting-IP` / `X-Forwarded-For`.
+
+### 14.5. Analisis Risiko & Mitigasi Keamanan
+1. **Risiko Timing Attack**:
+   - *Bahaya*: Perbandingan string biasa `key == settings.API_KEY` rentan terhadap analisis waktu respons untuk menebak karakter kunci.
+   - *Mitigasi*: Menggunakan `secrets.compare_digest()` dari Python stdlib yang beroperasi dalam *constant time*.
+2. **Risiko IP Spoofing**:
+   - *Bahaya*: Pengguna luar mengirim header palsu `X-Forwarded-For: 8.8.8.8` untuk mengelabui rate limiter.
+   - *Mitigasi*: Caddy dan Cloudflare Tunnel secara otomatis menimpa/menetapkan header `CF-Connecting-IP` dan `X-Forwarded-For` dari koneksi TCP asli sebelum diteruskan ke Uvicorn.
+3. **Risiko Kebocoran Informasi Internal**:
+   - *Bahaya*: Endpoint `/metrics` dan dokumentasi Swagger `/docs` diakses oleh publik luar.
+   - *Mitigasi*: Karena semua endpoint non-health wajib `X-API-Key`, `/metrics` dan `/docs` terlindungi otomatis di belakang autentikasi.
+
+### 14.6. Struktur File & Lokasi
+- **Modifikasi Kode Eksisting**:
+  - `app/config.py`: Penambahan parameter `API_KEY: str`, `ALLOWED_ORIGINS`, `TRUSTED_PROXIES`.
+  - `app/main.py`: Penambahan `CORSMiddleware`, fungsi `extract_client_ip()`, dan middleware autentikasi `X-API-Key` wajib.
+  - `.env.example`: Penambahan template variabel remote access.
+  - `scripts/smoke.py`: Penambahan pengiriman header `X-API-Key`.
+- **Berkas Pengujian Baru**:
+  - `tests/test_auth.py`: Pengujian komprehensif mode auth aktif, request tanpa key (401), key salah (401), key benar (200), dan bypass `/health` (200).
+- **Berkas Template & Panduan Baru**:
+  - `docs/remote-access.md`: Panduan lengkap setup domain via Caddy, Nginx, dan Cloudflare Tunnel.
+  - `templates/Caddyfile.example`: Konfigurasi reverse proxy 3 baris siap pakai untuk Caddy.
+  - `templates/nginx.example.conf`: Konfigurasi proxy pass untuk Nginx.
+  - `templates/cloudflared.example.yml`: Konfigurasi tunnel zero-port untuk Cloudflare Tunnel.

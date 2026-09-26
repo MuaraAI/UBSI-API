@@ -146,17 +146,23 @@ UBSI-API/
 │   └── main.py                # Base FastAPI app & global middleware
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline
-│   └── test_*.py              # 58 Automated unit & integration tests
+│   ├── conftest.py            # Fixture autouse & test auth client
+│   └── test_*.py              # 69 Automated unit & integration tests
+├── templates/
+│   ├── Caddyfile.example      # Caddy reverse proxy template (HTTPS auto)
+│   ├── nginx.example.conf     # Nginx reverse proxy configuration template
+│   └── cloudflared.example.yml# Cloudflare Tunnel ingress template
 ├── scripts/
 │   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
-│   └── smoke.py               # Live verification CLI tool (8 checks)
+│   └── smoke.py               # Live verification CLI tool (8 checks, auth-aware)
 ├── skills/
 │   └── SKILL.md               # Agent skill definition for AI assistants
 ├── docs/
 │   ├── api.md                 # 19 Endpoints dictionary & JSON payloads
 │   ├── architecture.md        # Request lifecycle & cache flow
 │   ├── anti-ban.md            # Account security & safety protocols
-│   └── deploy.md              # VPS PM2 production operations
+│   ├── deploy.md              # VPS PM2 production operations
+│   └── remote-access.md       # Caddy, Nginx, & Cloudflare Tunnel guide
 ├── ecosystem.config.cjs       # PM2 production config untuk VPS
 ├── CONTRIBUTING.md            # Panduan kontribusi & layout tests
 ├── SECURITY.md                # Kebijakan etika & privasi akademik
@@ -246,15 +252,29 @@ Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Univ
 
 Rencana pengembangan dan milestones UBSI API:
 
-### Version 1.x (Current — Stable)
+### Version 1.0 (Current — Stable)
 - [x] Read-Only aggregation untuk 6 modul resmi (`studentv2`, `elearning`, `elibrary`, `news`, `repository`, `ejournal`).
 - [x] Caching dua tingkat (Redis DB 2) dengan fallback offline Last-Known-Good (`stale: true`).
 - [x] Proteksi anti-ban (Chrome TLS signature, session cookie reuse, single-flight mutex).
 - [x] Localhost security boundary (`127.0.0.1:8300`).
 - [x] Session pool per-NIM dan parallel dashboard endpoint (`/v1/studentv2/dashboard`).
 - [x] Metrik operasional scraper real-time (`/metrics`).
+- [x] Helper generik `cached_endpoint` (PR #4) dan 58 pengujian otomatis lulus.
 
-### Version 1.2 (Upcoming Features)
+### Version 1.1 (Current — Security & Remote Access)
+- [x] **Mandatory API Key Authentication**:
+  - Middleware `X-API-Key` dengan constant-time comparison (`secrets.compare_digest`).
+  - Whitelist tunggal: `GET /health` untuk health probe monitoring.
+  - Fail-Fast startup jika `API_KEY` kosong di `.env`.
+- [x] **Dual-Path Remote Access**:
+  - Dukungan Reverse Proxy (Caddy / Nginx) dengan HTTPS otomatis.
+  - Dukungan Cloudflare Tunnel (`cloudflared`) untuk homelab / NAT tanpa IP publik.
+- [x] **Real Client IP Rate Limiting**:
+  - Ekstraksi IP asli via `CF-Connecting-IP` / `X-Forwarded-For` untuk mencegah tabrakan kuota di belakang proxy.
+- [x] **CORS Support**:
+  - `CORSMiddleware` terintegrasi untuk integrasi dashboard web frontend.
+
+### Version 1.2 (Planned — Feeds & Productivity)
 - [ ] **Ekspor Kalender iCal (`.ics`)**:
   - Endpoint `GET /v1/studentv2/schedule.ics` untuk auto-sinkronisasi jadwal kuliah langsung ke Google Calendar (Android) dan Apple Calendar (iOS).
 - [ ] **Bulk Downloader Modul & Silabus**:
@@ -262,7 +282,7 @@ Rencana pengembangan dan milestones UBSI API:
 - [ ] **Kalkulator & Simulator IPK**:
   - Estimasi dan kalkulasi IPK/IPS real-time berdasarkan riwayat nilai murni.
 
-### Version 2.0 (Planned)
+### Version 2.0 (Planned — Automation & Institutional)
 - [ ] **Write Operations (Otomatisasi Aksi & Interaksi)**:
   - Presensi perkuliahan otomatis (`POST /v1/elearning/presence`).
   - Pengunggahan & submit berkas tugas (`POST /v1/elearning/assignments/{id}/submit`).
@@ -273,9 +293,6 @@ Rencana pengembangan dan milestones UBSI API:
   - Rekap BAP (Berita Acara Perkuliahan).
 - [ ] **Event Triggers & Webhooks**:
   - Notifikasi otomatis ke WhatsApp / Telegram saat ada tugas baru atau pengumuman fakultas.
-- [ ] **Remote Access & Public Domain (Optional)**:
-  - Integrasi Cloudflare Tunnel (`api.example.com`) dengan enkripsi HTTPS otomatis.
-  - Middleware API Key (`X-API-Key`) untuk keamanan akses klien jarak jauh.
 
 ---
 

@@ -127,17 +127,23 @@ UBSI-API/
 │   └── main.py                # Base FastAPI app & global middleware
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline (sv2_*.html, el_*.html)
-│   └── test_*.py              # 58 Automated unit & integration tests
+│   ├── conftest.py            # Fixture autouse & test auth client
+│   └── test_*.py              # 69 Automated unit & integration tests
+├── templates/
+│   ├── Caddyfile.example      # Caddy reverse proxy template (HTTPS auto)
+│   ├── nginx.example.conf     # Nginx reverse proxy configuration template
+│   └── cloudflared.example.yml# Cloudflare Tunnel ingress template
 ├── scripts/
 │   ├── deploy.sh              # 1-klik deploy ke VPS Tencent via rsync & PM2
-│   └── smoke.py               # Live verification CLI tool (8 checks)
+│   └── smoke.py               # Live verification CLI tool (8 checks, auth-aware)
 ├── skills/
 │   └── SKILL.md               # Agent skill definition for AI assistants
 ├── docs/
 │   ├── api.md                 # 19 Endpoints dictionary & JSON payloads
 │   ├── architecture.md        # Request lifecycle, session pool, and cache flow
 │   ├── anti-ban.md            # Account security & safety protocols
-│   └── deploy.md              # VPS PM2 production operations
+│   ├── deploy.md              # VPS PM2 production operations
+│   └── remote-access.md       # Caddy, Nginx, & Cloudflare Tunnel guide
 ├── ecosystem.config.cjs       # PM2 production config untuk VPS
 ├── CONTRIBUTING.md            # Panduan kontribusi & layout tests
 ├── SECURITY.md                # Kebijakan etika & privasi akademik
