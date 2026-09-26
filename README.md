@@ -36,7 +36,7 @@
 
 > **Pernyataan Penafian (Disclaimer)**:
 > 
-> Proyek **UBSI API** ini adalah software *unofficial* (tidak resmi) yang dikembangkan semata-mata untuk **keperluan riset edukasi rekayasa perangkat lunak, otomatisasi personal, dan efisiensi waktu**. Proyek ini dibuat agar mahasiswa dan developer kampus dapat mengakses informasi jadwal, nilai, tugas, dan materi kuliah mereka sendiri secara terstruktur tanpa perlu melakukan navigasi manual yang memakan waktu setiap hari.
+> Proyek **UBSI API** ini adalah software *unofficial* (tidak resmi) yang dikembangkan secara independen oleh mahasiswa **Program Studi Informatika (Semester 1), Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak** semata-mata untuk **keperluan riset edukasi rekayasa perangkat lunak, otomatisasi personal, dan efisiensi waktu**. Proyek ini dibuat agar mahasiswa dan developer kampus dapat mengakses informasi jadwal, nilai, tugas, dan materi kuliah mereka sendiri secara terstruktur tanpa perlu melakukan navigasi manual yang memakan waktu setiap hari.
 >
 > 1. Proyek ini **sama sekali tidak berafiliasi resmi, tidak disponsori, dan tidak dikelola oleh Universitas Bina Sarana Informatika (UBSI)**.
 > 2. Pengembang/maintainer **tidak bertanggung jawab** atas segala bentuk penyalahgunaan, kerugian, atau pelanggaran ketentuan yang timbul akibat penggunaan software ini. Seluruh penggunaan menjadi tanggung jawab pribadi masing-masing pengguna.
@@ -215,5 +215,5 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 - **Panduan Kontribusi**: Lihat berkas [CONTRIBUTING.md](CONTRIBUTING.md).
 
 <p align="center">
-  <sub>Built with passion for productivity by <b>@Curzyori</b></sub>
+  <sub>Developed by <b>@Curzyori</b> — Mahasiswa Program Studi Informatika (Semester 1), Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak</sub>
 </p>
