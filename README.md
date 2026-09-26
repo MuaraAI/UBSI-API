@@ -256,7 +256,7 @@ Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Univ
 | Foto | Kontributor | Identitas Mahasiswa | Peran | Commit |
 |:---:|---|---|---|:---:|
 | <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator** | [`85+ commits`](https://github.com/Curzyori/UBSI-API/commits?author=Curzyori) |
-| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor (PR #2, PR #3, PR #4)** | [`5 commits`](https://github.com/Curzyori/UBSI-API/commits?author=MyKineID) |
+| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor** | [`5 commits`](https://github.com/Curzyori/UBSI-API/commits?author=MyKineID) |
 
 ---
 

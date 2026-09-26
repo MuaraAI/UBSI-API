@@ -24,7 +24,7 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
 
 - **Repository**: [https://github.com/Curzyori/UBSI-API](https://github.com/Curzyori/UBSI-API) (Private)
 - **Author**: **Yuken Velino** ([@Curzyori](https://github.com/Curzyori)) — Lead Developer & Creator (85+ commits) · NIM: `15260767` · Kelas: `15.1C.30` · Informatika · FTI UBSI Pontianak.
-- **Contributor**: **Verzio** ([@MyKineID](https://github.com/MyKineID)) — Contributor (PR #2, PR #3, PR #4 · 5 commits) · NIM: `15260225` · Kelas: `15.1B.30` · Informatika · FTI UBSI Pontianak.
+- **Contributor**: **Verzio** ([@MyKineID](https://github.com/MyKineID)) — Contributor (5 commits) · NIM: `15260225` · Kelas: `15.1B.30` · Informatika · FTI UBSI Pontianak.
 - **Tujuan**: Otomatisasi personal dan jembatan data terstruktur JSON (jadwal, nilai, tugas, materi) untuk bot asisten mahasiswa dan developer tanpa navigasi manual.
 - **Dokumentasi Lengkap**:
   - [`README.md`](../README.md) — Gambaran umum produk, ringkasan endpoint, dan quick start.
