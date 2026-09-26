@@ -2,6 +2,7 @@ import asyncio
 import re
 from typing import Any
 
+from lxml import html
 from fastapi import APIRouter, HTTPException, status
 from scrapling.fetchers import Fetcher
 from scrapling.parser import Adaptor
@@ -13,25 +14,52 @@ from app.router_helper import cached_endpoint
 
 router = APIRouter(prefix="/v1/ejournal", tags=["ejournal"])
 
-def parse_journal_catalog(html: str) -> list[dict[str, Any]]:
-    page = Adaptor(html)
+def parse_journal_catalog(html_str: str) -> list[dict[str, Any]]:
+    tree = html.fromstring(html_str)
+    h3_nodes = tree.xpath("//h3")
+
     journals = []
     seen_slugs = set()
 
-    for a in page.css('a[href*="/ejurnal/index.php/"]'):
-        href = a.attrib.get("href", "").strip()
-        title = " ".join(a.text.split()).strip()
-        m = re.search(r"/ejurnal/index.php/([^/#\?]+)/?", href)
-        if m:
-            slug = m.group(1).lower()
-            if slug not in seen_slugs and slug not in ("index", "about", "search"):
-                seen_slugs.add(slug)
-                display_name = title if title and len(title) > 2 else f"Jurnal {slug.capitalize()}"
-                journals.append({
-                    "name": display_name,
-                    "slug": slug,
-                    "url": href if href.startswith("http") else f"https://ejournal.bsi.ac.id{href}",
-                })
+    if h3_nodes:
+        content = h3_nodes[0].getparent()
+        current_title = None
+
+        for elem in content:
+            if elem.tag == "h3":
+                current_title = elem.text_content().strip()
+            elif current_title:
+                for a in elem.xpath(".//a/@href"):
+                    m = re.search(r"(?:ejournal\.bsi\.ac\.id|jurnal\.bsi\.ac\.id)/(?:ejurnal/)?(?:index\.php/)?([a-zA-Z0-9_\-]+)/?$", a)
+                    if m:
+                        slug = m.group(1).lower()
+                        if slug not in ("index", "user", "about", "search", "login", "register", "help") and slug not in seen_slugs:
+                            seen_slugs.add(slug)
+                            journals.append({
+                                "name": current_title,
+                                "slug": slug,
+                                "url": a if a.startswith("http") else f"https://ejournal.bsi.ac.id{a}",
+                            })
+                            current_title = None
+                            break
+
+    # Fallback for simple link lists or fixture HTML
+    if not journals:
+        page = Adaptor(html_str)
+        for a in page.css('a[href*="/ejurnal/index.php/"]'):
+            href = a.attrib.get("href", "").strip()
+            title = " ".join(a.text.split()).strip()
+            m = re.search(r"/ejurnal/index.php/([^/#\?]+)/?", href)
+            if m:
+                slug = m.group(1).lower()
+                if slug not in seen_slugs and slug not in ("index", "about", "search"):
+                    seen_slugs.add(slug)
+                    display_name = title if title and len(title) > 2 else f"Jurnal {slug.capitalize()}"
+                    journals.append({
+                        "name": display_name,
+                        "slug": slug,
+                        "url": href if href.startswith("http") else f"https://ejournal.bsi.ac.id{href}",
+                    })
 
     return journals
 
