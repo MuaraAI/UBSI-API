@@ -49,6 +49,23 @@ Returns runtime status and Redis connectivity.
 
 All StudentV2 endpoints require `STUDENTV2_NIM` and `STUDENTV2_PASS` configured in `.env`.
 
+### `GET /v1/studentv2/dashboard`
+Retrieves course schedule, raw grades, news, and circular announcements in parallel within a single request.
+- **Cache**: Re-uses existing fresh cache per section; section failure does not break the entire response.
+- **Response Sample**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "schedule": [...],
+      "grades": [...],
+      "news": [...],
+      "announcements": [...]
+    },
+    "cached": false
+  }
+  ```
+
 ### `GET /v1/studentv2/schedule`
 Retrieves the official course schedule for the active semester.
 - **Cache TTL**: 2 hours (7200 seconds)
