@@ -44,16 +44,45 @@ Sources:
 Satu app FastAPI, satu file per modul, tanpa database:
 
 ```
-request → FastAPI route → cache get (redis)
-                            ├─ hit fresh → return
-                            └─ miss → modul: login (jika perlu, cookie jar
-                                      AutoLogin: re-login diam-diam saat
-                                      cookie mati) → fetch httpx → parse
-                                      selectolax → SET fresh (EX 60)
-                                      + SET lgg (no TTL) → return
-        scrape/parse gagal → baca lgg → return data + stale_since
-        lgg juga kosong   → 502 envelope
+request → Rate Limiter (Redis 60 req/min)
+            └─ if exceeded → 429 Too Many Requests
+            └─ if allowed  → Route Handler → Cache Manager
+                                ├─ Cache Hit (fresh, TTL 60s) → return {"success": true, "data": ..., "cached": true}
+                                └─ Cache Miss → Fetcher Module
+                                      ├─ Fetch live (Scrapling session)
+                                      ├─ if redirect to /login → Auto re-login 1x & retry
+                                      ├─ Parse & Sanitize (clean types: int, float, null, stripped str)
+                                      ├─ Save to Redis: fresh (EX 60s) AND lgg (no TTL)
+                                      └─ Return {"success": true, "data": ..., "cached": false}
+                                
+        Scrape / Upstream Gagal:
+            ├─ Cek LGG (Last-Known-Good) di Redis
+            ├─ Ada LGG → return {"success": true, "data": lgg, "cached": true, "stale": true}
+            └─ Tidak ada LGG → return 502 {"success": false, "error": {"code": "UPSTREAM_DOWN", ...}}
 ```
+
+### Aturan Logika & Percabangan (Control Flow Rules)
+
+1. **Cache Fallback Logic (LGG)**:
+   - Cache Segar (TTL 60s): Menahan spamming request ke server kampus.
+   - Last-Known-Good (Tanpa TTL): Jika kampus timeout/down/maintenance, balikan data terakhir yang pernah sukses dengan status `"stale": true` agar consumer (Ciel / bot) tidak pernah crash atau blank.
+
+2. **Auto Re-Login Logic**:
+   - Jika response URL mengarah kembali ke `*/login`, session mendeteksi cookie kedaluwarsa.
+   - Lakukan `session.login()` ulang otomatis sebanyak 1 kali.
+   - Jika login ulang sukses, ulangi request ke URL target.
+   - Jika login ulang gagal, baru lemparkan error `AUTH_FAILED`.
+
+3. **Empty Data vs Layout Changed**:
+   - Jika tabel/data bernilai kosong (`len(rows) == 0`):
+     - Jika penanda halaman resmi ada (misal judul "Jadwal Kuliah"): dianggap sah memang sedang tidak ada jadwal/tugas → return `{"success": true, "data": []}`.
+     - Jika penanda halaman resmi hilang: struktur HTML kampus diasumsikan berubah → lemparkan `HTML_STRUCTURE_CHANGED`.
+
+4. **Data Sanitization Rules**:
+   - String: selalu pangkas whitespace ganda (`" ".join(val.split()).strip()`).
+   - Angka/SKS: parse ke `int`, jika bernilai `"-"` atau kosong → default `0`.
+   - Nilai/Grade: parse ke `float`, jika bernilai `"-"` atau belum dinilai → `null`.
+   - Waktu/Tanggal: format standar ISO-8601 string.
 
 Komponen:
 
