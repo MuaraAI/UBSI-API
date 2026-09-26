@@ -223,6 +223,10 @@ class PooledStudentV2Client:
     async def evict_idle(self) -> int:
         return await self._pool.evict_idle()
 
+    def close(self) -> None:
+        for nim in list(self._pool._sessions.keys()):
+            self._pool.invalidate(nim)
+
 
 studentv2_client = PooledStudentV2Client()
 
