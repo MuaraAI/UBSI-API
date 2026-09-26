@@ -213,7 +213,7 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 - [System Architecture](docs/architecture.md) — Siklus request, two-tier cache, dan single-flight mutex.
 - [Anti-Ban Protocol](docs/anti-ban.md) — Protokol proteksi akun kampus (cookie re-use, TLS impersonation, jitter).
 - [Production Deployment](docs/deploy.md) — Panduan operasi dan pemeliharaan server VPS via PM2.
-- [Agent Skill](skills/ubsi-api/SKILL.md) — Panduan AI coding agent untuk konsumsi dan pengembangan otomatisasi UBSI API.
+- [Agent Skill](skills/SKILL.md) — Panduan AI coding agent untuk konsumsi dan pengembangan otomatisasi UBSI API.
 
 ---
 
