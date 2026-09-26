@@ -166,6 +166,7 @@ UBSI-API/
 │   └── remote-access.md       # Caddy, Nginx, & Cloudflare Tunnel guide
 ├── ecosystem.config.cjs       # PM2 production config untuk VPS
 ├── CONTRIBUTING.md            # Panduan kontribusi & layout tests
+├── CODE_OF_CONDUCT.md         # Norma komunitas & etika rekayasa perangkat lunak
 ├── SECURITY.md                # Kebijakan etika & privasi akademik
 ├── DMCA.md                    # Kebijakan hak cipta & takedown notice
 ├── LICENSE                    # MIT License (c) 2026 Yuken Velino
@@ -311,6 +312,7 @@ Rencana pengembangan dan milestones UBSI API:
 ## <a id="license"></a>⚖️ License & Legal
 
 - **Lisensi**: MIT License — lihat berkas [LICENSE](LICENSE).
+- **Kode Etik & Norma Komunitas**: Lihat berkas [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 - **Kebijakan Keamanan**: Lihat berkas [SECURITY.md](SECURITY.md).
 - **Pemberitahuan Hak Cipta & DMCA**: Lihat berkas [DMCA.md](DMCA.md).
 - **Panduan Kontribusi**: Lihat berkas [CONTRIBUTING.md](CONTRIBUTING.md).

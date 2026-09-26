@@ -29,6 +29,7 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
 - **Dokumentasi Lengkap**:
   - [`README.md`](../README.md) — Gambaran umum produk, ringkasan endpoint, dan quick start.
   - [`CONTRIBUTING.md`](../CONTRIBUTING.md) — Tata cara kontribusi, alur PR, dan struktur pengujian `tests/`.
+  - [`CODE_OF_CONDUCT.md`](../CODE_OF_CONDUCT.md) — Norma komunitas & etika rekayasa perangkat lunak Muara AI.
   - [`SECURITY.md`](../SECURITY.md) — Kebijakan privasi, kredensial lokal, dan etika keamanan.
   - [`DMCA.md`](../DMCA.md) — Hak cipta kampus, landasan *Fair Use*, dan permohonan takedown resmi.
   - [`docs/api.md`](../docs/api.md) — Kamus detail 19 endpoint beserta contoh payload JSON.
