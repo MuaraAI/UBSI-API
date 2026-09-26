@@ -40,3 +40,19 @@ async def test_cache_get_lgg():
         data, stale_since = await cache.get_lgg("ubsi:studentv2:123")
         assert data == {"foo": "bar"}
         assert stale_since == "2026-09-26T10:00:00"
+
+@pytest.mark.asyncio
+async def test_cache_graceful_on_redis_error():
+    mock_redis = AsyncMock()
+    mock_redis.get.side_effect = ConnectionError("Redis down")
+    mock_redis.set.side_effect = ConnectionError("Redis down")
+    with patch("redis.asyncio.from_url", return_value=mock_redis):
+        cache = CacheManager("redis://127.0.0.1:6379/2")
+        fresh = await cache.get_fresh("any_key")
+        assert fresh is None
+        lgg = await cache.get_lgg("any_key")
+        assert lgg is None
+        # set should not raise
+        await cache.set("any_key", {"foo": "bar"})
+
+

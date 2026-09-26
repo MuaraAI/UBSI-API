@@ -14,10 +14,13 @@ class RateLimiter:
         return self._client
 
     async def is_allowed(self, client_id: str) -> bool:
-        client = await self.get_client()
-        minute_bucket = datetime.now().strftime("%Y%m%d%H%M")
-        key = f"ubsi:ratelimit:{client_id}:{minute_bucket}"
-        count = await client.incr(key)
-        if count == 1:
-            await client.expire(key, 65)
-        return count <= self.limit
+        try:
+            client = await self.get_client()
+            minute_bucket = datetime.now().strftime("%Y%m%d%H%M")
+            key = f"ubsi:ratelimit:{client_id}:{minute_bucket}"
+            count = await client.incr(key)
+            if count == 1:
+                await client.expire(key, 65)
+            return count <= self.limit
+        except (aioredis.RedisError, ConnectionError, OSError):
+            return True

@@ -23,3 +23,12 @@ async def test_rate_limiter_exceeded():
         assert allowed is False
         mock_redis.incr.assert_called_once()
         mock_redis.expire.assert_not_called()
+
+@pytest.mark.asyncio
+async def test_rate_limiter_graceful_on_redis_error():
+    mock_redis = AsyncMock()
+    mock_redis.incr.side_effect = ConnectionError("Redis down")
+    with patch("redis.asyncio.from_url", return_value=mock_redis):
+        limiter = RateLimiter("redis://127.0.0.1:6379/2", limit=60)
+        allowed = await limiter.is_allowed("127.0.0.1")
+        assert allowed is True
