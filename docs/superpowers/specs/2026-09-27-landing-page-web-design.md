@@ -119,22 +119,50 @@ Highlighting backend reliability and speed:
 - **Zero-Secret Storage:** Encrypted session pooling with no persistent credential logging.
 - **23 Official Journals:** Full OJS portal scraper capturing native academic publication titles.
 
-### 4.6. Contributors Section (`Contributors.tsx`)
+### 4.6. Contributors Section (`Contributors.tsx`) & Realtime GitHub Stats
 Headline: `Dibangun oleh Mahasiswa, untuk Komunitas.`  
 Subtitle: `Dikembangkan secara independen oleh mahasiswa Informatika UBSI Pontianak di bawah inisiatif Muara AI.`
+- **Realtime GitHub Stats Integration:**
+  - Route handler / Server Component fetch ke GitHub REST API (`https://api.github.com/repos/MuaraAI/UBSI-API` dan `/contributors`) dengan `revalidate: 3600` (SWR caching).
+  - Fallback data statis terpasang jika repo masih private atau rate-limit tercapai.
+  - Total Stars live counter di Navbar & Hero button.
+  - Realtime Commit counter di tiap kartu kontributor (`contributions` count dari GitHub API).
 - **Card 1 — Yuken Velino (@Curzyori):**
   - Avatar: `https://github.com/Curzyori.png`
   - Role: Lead Maintainer & System Architect
   - Student Info: Informatika (S1), NIM 15260767, Kelas 15.1C.30
+  - Live Metric: `{contributions} Commits` (Auto-synced via GitHub API)
   - GitHub Link: `https://github.com/Curzyori`
 - **Card 2 — Verzio (@MyKineID):**
   - Avatar: `https://github.com/MyKineID.png`
   - Role: Core Contributor & Endpoint Specialist
   - Student Info: Informatika (S1), NIM 15260225, Kelas 15.1B.30
+  - Live Metric: `{contributions} Commits` (Auto-synced via GitHub API)
   - GitHub Link: `https://github.com/MyKineID`
 - **Contribution Callout:** `Ingin berkontribusi pada pengembangan UBSI API? Baca panduan di CONTRIBUTING.md.`
 
-### 4.7. Footer (`Footer.tsx`)
+### 4.7. Quickstart & Installation Guide (`Quickstart.tsx`)
+Section tutorial instalasi cepat 3 langkah untuk developer:
+- **Step 1: Clone & Setup Virtual Environment**
+  ```bash
+  git clone https://github.com/MuaraAI/UBSI-API.git
+  cd UBSI-API && python -m venv .venv && source .venv/bin/activate
+  pip install -r requirements.txt
+  ```
+- **Step 2: Konfigurasi `.env`**
+  ```bash
+  cp .env.example .env
+  # Isi kredensial SIAKAD & Redis
+  ```
+- **Step 3: Jalankan Local Server**
+  ```bash
+  uvicorn app.main:app --port 8300 --reload
+  ```
+- **Link Dokumentasi Lengkap:**
+  - Button ke Swagger Interactive UI (`https://ubsi-api.curzy.dev/docs`)
+  - Link ke panduan Remote / Ingress (`docs/remote-access.md`)
+
+### 4.8. Footer (`Footer.tsx`)
 - Muara AI Monogram and tagline: *"Deep Water — Local craft flows global."*
 - **Legal Disclaimer:** *"UBSI API adalah proyek riset independen non-komersial oleh komunitas Muara AI dan tidak berafiliasi secara resmi dengan Universitas Bina Sarana Informatika."*
 - License: MIT License • Rilis v1.1.0.
