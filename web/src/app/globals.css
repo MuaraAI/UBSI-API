@@ -28,6 +28,30 @@ body {
   outline-offset: 2px;
 }
 
+/* Custom dark scrollbar for code blocks & pre elements */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1E2D42 transparent;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E2D42;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2DD4BF;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

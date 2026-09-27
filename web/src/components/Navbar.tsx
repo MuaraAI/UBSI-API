@@ -1,10 +1,14 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import { Monogram } from "./Monogram";
 
 export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0A1220]/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0A1220]/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-3 group focus:outline-none">
@@ -20,7 +24,7 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
         </Link>
 
         {/* Navigation & Action */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6">
           <nav className="hidden md:flex items-center gap-6 text-sm text-[#94A7BC]">
             <a href="#showcase" className="hover:text-[#E6EDF3] transition-colors">
               Showcase
@@ -53,8 +57,59 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
             <span className="font-semibold">Star</span>
             <span className="text-[#2DD4BF] font-bold">★ {starsCount}</span>
           </a>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-md bg-[#111C2E] border border-white/10 text-[#E6EDF3] hover:text-[#2DD4BF] transition-colors"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Drawer Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-b border-white/5 bg-[#0D1624] px-4 py-3 space-y-2">
+          <a
+            href="#showcase"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm font-medium text-[#94A7BC] hover:text-[#2DD4BF] py-1 transition-colors"
+          >
+            Showcase
+          </a>
+          <a
+            href="#modules"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm font-medium text-[#94A7BC] hover:text-[#2DD4BF] py-1 transition-colors"
+          >
+            Modul Layanan
+          </a>
+          <a
+            href="#quickstart"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm font-medium text-[#94A7BC] hover:text-[#2DD4BF] py-1 transition-colors"
+          >
+            Quickstart (Instalasi)
+          </a>
+          <a
+            href="#contributors"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm font-medium text-[#94A7BC] hover:text-[#2DD4BF] py-1 transition-colors"
+          >
+            Kontributor Mahasiswa
+          </a>
+        </div>
+      )}
     </header>
   );
 }

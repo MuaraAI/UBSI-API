@@ -38,7 +38,7 @@ export function CodeShowcase() {
       {/* Terminal Window */}
       <div className="rounded-lg bg-[#111C2E] border border-white/10 shadow-float overflow-hidden">
         {/* macOS Window Title Bar */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#0D1624] border-b border-white/5">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#0D1624] border-b border-white/5">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[#F87171]/80 inline-block" />
             <span className="w-3 h-3 rounded-full bg-[#FBBF24]/80 inline-block" />
@@ -48,31 +48,33 @@ export function CodeShowcase() {
             </span>
           </div>
 
-          {/* Language Selector Tabs */}
-          <div className="flex items-center gap-1 bg-[#0A1220] p-1 rounded-md border border-white/5">
-            {(["curl", "python", "typescript"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-3 py-1 rounded text-xs font-mono transition-colors ${
-                  activeTab === tab
-                    ? "bg-[#111C2E] text-[#2DD4BF] font-semibold"
-                    : "text-[#94A7BC] hover:text-[#E6EDF3]"
-                }`}
-              >
-                {tab === "curl" ? "cURL" : tab === "python" ? "Python" : "TypeScript"}
-              </button>
-            ))}
-          </div>
+          <div className="flex items-center gap-2 ml-auto sm:ml-0">
+            {/* Language Selector Tabs */}
+            <div className="flex items-center gap-1 bg-[#0A1220] p-1 rounded-md border border-white/5">
+              {(["curl", "python", "typescript"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-2.5 py-1 rounded text-xs font-mono transition-colors ${
+                    activeTab === tab
+                      ? "bg-[#111C2E] text-[#2DD4BF] font-semibold"
+                      : "text-[#94A7BC] hover:text-[#E6EDF3]"
+                  }`}
+                >
+                  {tab === "curl" ? "cURL" : tab === "python" ? "Python" : "TypeScript"}
+                </button>
+              ))}
+            </div>
 
-          {/* Copy Button */}
-          <button
-            onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#17263D] hover:bg-[#1C2F4C] text-xs font-mono text-[#E6EDF3] transition-colors border border-white/5"
-            aria-label="Salin snippet kode"
-          >
-            <span>{copied ? "Disalin!" : "Salin"}</span>
-          </button>
+            {/* Copy Button */}
+            <button
+              onClick={handleCopy}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#17263D] hover:bg-[#1C2F4C] text-xs font-mono text-[#E6EDF3] transition-colors border border-white/5 shrink-0"
+              aria-label="Salin snippet kode"
+            >
+              <span>{copied ? "Disalin!" : "Salin"}</span>
+            </button>
+          </div>
         </div>
 
         {/* Code & Response Grid */}

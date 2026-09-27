@@ -26,7 +26,7 @@ export function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative pt-20 pb-16 md:pt-28 md:pb-24 px-4 sm:px-6 max-w-7xl mx-auto text-center flex flex-col items-center"
+      className="relative pt-10 pb-12 sm:pt-16 sm:pb-16 md:pt-24 md:pb-20 px-4 sm:px-6 max-w-7xl mx-auto text-center flex flex-col items-center"
     >
       {/* Decorative background glow */}
       <div
