@@ -10,7 +10,7 @@ export const CONTRIBUTORS: Contributor[] = [
     kelas: "15.1C.30",
     avatarUrl: "https://github.com/Curzyori.png",
     profileUrl: "https://github.com/Curzyori",
-    fallbackCommits: 28,
+    fallbackCommits: 114,
   },
   {
     name: "Verzio",
@@ -21,6 +21,6 @@ export const CONTRIBUTORS: Contributor[] = [
     kelas: "15.1B.30",
     avatarUrl: "https://github.com/MyKineID.png",
     profileUrl: "https://github.com/MyKineID",
-    fallbackCommits: 6,
+    fallbackCommits: 5,
   },
 ];

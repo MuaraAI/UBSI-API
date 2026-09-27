@@ -1,6 +1,6 @@
 <h1 align="center">UBSI API</h1>
 <p align="center">
-  <strong>Private Unofficial REST API Aggregator for UBSI Services</strong>
+  <strong>Unofficial REST API Aggregator for 6 UBSI University Services</strong>
 </p>
 
 <p align="center">
@@ -9,10 +9,11 @@
 
 <div align="center">
 
+  <a href="https://ubsi-api.muaraai.com"><img src="https://img.shields.io/badge/website-ubsi--api.muaraai.com-2DD4BF?style=for-the-badge&logo=vercel&logoColor=white" alt="Website" /></a>
   <a href="https://github.com/MuaraAI/UBSI-API"><img src="https://img.shields.io/badge/status-active-success?style=for-the-badge&color=374151" alt="Status" /></a>
   <a href="https://github.com/MuaraAI/UBSI-API/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MuaraAI/UBSI-API?style=for-the-badge&color=374151" alt="License" /></a>
   <img src="https://img.shields.io/badge/python-3.12+-blue?style=for-the-badge&color=374151" alt="Python Version" />
-  <img src="https://img.shields.io/badge/framework-FastAPI-teal?style=for-the-badge&color=374151" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/next.js-15-black?style=for-the-badge&logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/cache-Redis%20DB2-red?style=for-the-badge&color=374151" alt="Redis Cache" />
 
 </div>
@@ -110,17 +111,18 @@ UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di 
 - `GET /v1/news/{post_id}` — Detail artikel berita lengkap.
 - `GET /v1/repository/recent` — Publikasi karya ilmiah dan tugas akhir terbaru di EPrints.
 - `GET /v1/repository/search?q=` — Pencarian repositori karya ilmiah.
-- `GET /v1/ejournal/journals` — Katalog 16 jurnal ilmiah resmi UBSI.
+- `GET /v1/ejournal/journals` — Katalog lengkap 23 jurnal ilmiah resmi UBSI.
 
 ---
 
 ## <a id="tech-stack"></a>🛠️ Tech Stack
 
-- **Runtime & Web**: Python 3.12+, FastAPI, Uvicorn (uvloop).
+- **Backend API**: Python 3.12+, FastAPI, Uvicorn (uvloop).
+- **Frontend Landing Page**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui, Anime.js (`animejs`).
 - **Scraping & TLS**: Scrapling (FetcherSession), `curl_cffi` (Chrome impersonation), lxml.
 - **Caching & Limiter**: Redis DB 2 (asyncio), Single-flight Mutex, Sliding Window Limiter.
-- **Testing & Quality**: Pytest, Pytest-Asyncio, HTTPX (ASGITransport).
-- **Process Manager**: PM2 (`ecosystem.config.cjs`).
+- **Testing & Quality**: Pytest (71 passed), Pytest-Asyncio, HTTPX (ASGITransport).
+- **Deployment & Hosting**: Vercel (`ubsi-api.muaraai.com`), Tencent Cloud VPS + PM2 + Caddy HTTPS.
 
 ---
 
@@ -128,14 +130,14 @@ UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di 
 
 ```
 UBSI-API/
-├── app/
+├── app/                       # Backend FastAPI service (127.0.0.1:8300)
 │   ├── modules/
 │   │   ├── studentv2.py       # SIAKAD: Jadwal, Nilai, Berita, Pengumuman
 │   │   ├── elearning.py       # MyBest: Captcha solver, Courses, Absensi, Tugas, Materi, Kuis
 │   │   ├── elibrary.py        # Perpus: OPAC search, Book detail, 60s retry
 │   │   ├── news.py            # Portal: Native WP REST API (/wp-json/wp/v2/posts)
-│   │   ├── repository.py      # EPrints: Recent publications & search
-│   │   └── ejournal.py        # OJS: 16 Journal catalog via OAI bypass
+│   │   ├── repository.py      # EPrints: Recent publications & search (/repo/{id}/)
+│   │   └── ejournal.py        # OJS: 23 Active journals catalog with real titles
 │   ├── cache.py               # Redis 2-tier cache (fresh + LGG) & single-flight mutex
 │   ├── config.py              # Pydantic Settings & tiered TTLs
 │   ├── deps.py                # Modular credential validation (Option B)
@@ -145,6 +147,15 @@ UBSI-API/
 │   ├── router_helper.py       # Helper generik cache, lock, & SWR
 │   ├── session_pool.py        # Pool sesi per-NIM dengan idle TTL (15m)
 │   └── main.py                # Base FastAPI app & global middleware
+├── web/                       # Frontend Landing Page (ubsi-api.muaraai.com)
+│   ├── public/fonts/          # Self-hosted woff2 (Space Grotesk, Inter, JetBrains Mono)
+│   ├── src/
+│   │   ├── app/               # App Router, Layout, dynamic OG image, sitemap, robots
+│   │   ├── components/        # Hero, CodeShowcase, ModulesGrid, Architecture, Quickstart
+│   │   ├── data/              # Static datasets, code examples, roadmap
+│   │   └── lib/               # Realtime GitHub stats & Health probe client
+│   ├── tailwind.config.ts     # Deep Water design tokens (#0A1220, #2DD4BF)
+│   └── package.json
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline
 │   ├── conftest.py            # Fixture autouse & test auth client
@@ -254,10 +265,10 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 
 Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak:
 
-| Foto | Kontributor | Identitas Mahasiswa | Peran |
-|:---:|---|---|---|
-| <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator** |
-| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor** |
+| Foto | Kontributor | Identitas Mahasiswa | Peran | Commits |
+|:---:|---|---|---|:---:|
+| <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator** | [![Commits](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B0%5D.contributions&label=Commits&color=2DD4BF&logo=git)](https://github.com/MuaraAI/UBSI-API/commits?author=Curzyori) |
+| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor** | [![Commits](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B1%5D.contributions&label=Commits&color=2DD4BF&logo=git)](https://github.com/MuaraAI/UBSI-API/commits?author=MyKineID) |
 
 ---
 
