@@ -170,19 +170,32 @@ Section tutorial instalasi cepat 3 langkah untuk developer:
   - Button ke Swagger Interactive UI (`https://ubsi-api.curzy.dev/docs`)
   - Link ke panduan Remote / Ingress (`docs/remote-access.md`)
 
-### 4.8. Footer (`Footer.tsx`)
+### 4.8. Upcoming Roadmap Teaser v1.2 (`RoadmapTeaser.tsx`)
+Grid card interaktif menampilkan fitur produktivitas yang sedang disiapkan:
+1. 📅 **Ekspor Kalender iCal (`.ics`)**: Auto-sync jadwal kuliah langsung ke Google/Apple Calendar.
+2. 📝 **Rekap Nilai Tugas & Kuis Elearning**: Tracking nilai tugas 6 mata kuliah aktif per setiap pertemuan.
+3. 📦 **Bulk Downloader Materi Perkuliahan**: Unduh seluruh modul kuliah semester berjalan dalam 1 arsip zip.
+4. 📊 **Simulator & Kalkulator IPK**: Simulasi target nilai dan predikat kelulusan mahasiswa.
+
+### 4.9. Footer (`Footer.tsx`)
 - Muara AI Monogram and tagline: *"Deep Water — Local craft flows global."*
 - **Legal Disclaimer:** *"UBSI API adalah proyek riset independen non-komersial oleh komunitas Muara AI dan tidak berafiliasi secara resmi dengan Universitas Bina Sarana Informatika."*
 - License: MIT License • Rilis v1.1.0.
 
 ---
 
-## 5. Accessibility, Performance & Design Token Adherence
+## 5. SEO, Metadata, Accessibility & Performance
 
-1. **WCAG AA Compliance:** All text combinations satisfy AA contrast (minimum 4.5:1 on dark surfaces). `#94A7BC` on `#0A1220` is 5.5:1. `#2DD4BF` on `#0A1220` is 9.8:1.
-2. **Keyboard Navigation:** Explicit visible focus rings (`outline: 2px solid #2DD4BF; outline-offset: 2px`).
-3. **Motion Safety:** All animations respect `prefers-reduced-motion: reduce`.
-4. **Touch Target Size:** All buttons and interactive tabs have minimum dimensions of 44x44px.
+1. **OpenGraph & Social Cards:**
+   - Title: `UBSI API — Unofficial REST API Aggregator 6 Layanan Kampus UBSI`
+   - Description: `Agregator data modern berkecepatan tinggi untuk SIAKAD, Elearning, Jurnal, E-Library, dan Repository UBSI.`
+   - Dynamic OG image matching Deep Water dark aesthetic.
+2. **Live Health Ping:**
+   - Real-time client polling/fetch ke `https://ubsi-api.curzy.dev/health` dengan dot indicator berkedip halus (pulse).
+3. **WCAG AA Compliance:** All text combinations satisfy AA contrast (minimum 4.5:1 on dark surfaces). `#94A7BC` on `#0A1220` is 5.5:1. `#2DD4BF` on `#0A1220` is 9.8:1.
+4. **Keyboard Navigation:** Explicit visible focus rings (`outline: 2px solid #2DD4BF; outline-offset: 2px`).
+5. **Motion Safety:** All anime.js animations respect `prefers-reduced-motion: reduce`.
+6. **Touch Target Size:** All buttons and interactive tabs have minimum dimensions of 44x44px.
 
 ---
 

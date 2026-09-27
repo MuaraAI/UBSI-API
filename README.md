@@ -290,6 +290,8 @@ Rencana pengembangan dan milestones UBSI API:
 ### Version 1.2 (Planned — Feeds & Productivity)
 - [ ] **Ekspor Kalender iCal (`.ics`)**:
   - Endpoint `GET /v1/studentv2/schedule.ics` untuk auto-sinkronisasi jadwal kuliah langsung ke Google Calendar (Android) dan Apple Calendar (iOS).
+- [ ] **Rekap Nilai Tugas & Kuis Elearning (Per Pertemuan)**:
+  - Endpoint `GET /v1/elearning/grades` dan `GET /v1/elearning/courses/{id}/grades` untuk tracking status dan rekapitulasi nilai tugas, kuis, dan evaluasi 6 mata kuliah aktif per setiap pertemuan.
 - [ ] **Bulk Downloader Modul & Silabus**:
   - Endpoint `GET /v1/elearning/materials/download-all` untuk mengunduh seluruh berkas materi perkuliahan 6 matkul sekaligus.
 - [ ] **Kalkulator & Simulator IPK**:

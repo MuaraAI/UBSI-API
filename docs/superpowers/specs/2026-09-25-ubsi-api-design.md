@@ -332,9 +332,11 @@ UBSI-API/
 ### Version 1.2 (Planned — Feeds & Productivity)
 1. **iCal Calendar Feed (`.ics`)**:
    - `GET /v1/studentv2/schedule.ics` untuk sinkronisasi otomatis jadwal kuliah ke Google Calendar / Apple Calendar.
-2. **Bulk Modul Downloader**:
+2. **Rekap Nilai Tugas & Kuis Elearning (Per Pertemuan)**:
+   - `GET /v1/elearning/grades` dan `GET /v1/elearning/courses/{id}/grades` untuk tracking status dan rekapitulasi nilai tugas, kuis, dan evaluasi 6 mata kuliah aktif per setiap pertemuan.
+3. **Bulk Modul Downloader**:
    - `GET /v1/elearning/materials/download-all` untuk mengunduh seluruh berkas silabus & modul perkuliahan 6 matkul sekaligus.
-3. **Kalkulator & Simulator IPK**:
+4. **Kalkulator & Simulator IPK**:
    - Kalkulasi IPK/IPS real-time berdasarkan riwayat nilai murni.
 
 ### Version 2.0 (Planned — Automation & Institutional)
