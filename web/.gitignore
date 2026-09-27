@@ -3,5 +3,6 @@ node_modules
 out
 .DS_Store
 *.pem
+*.tsbuildinfo
 .env.local
 .env.*.local
