@@ -34,6 +34,9 @@ This project establishes the official landing page for the project inside the `/
   - SVG path draw/flow animation for Muara Monogram "M" (representing "arus bertemu").
   - Tab switch smooth cross-fades.
   - Full respect for `prefers-reduced-motion` (disabled when requested by system).
+- **Analytics:** `@vercel/analytics` integrated into Root Layout (zero cookie, privacy-compliant).
+- **Environment Policy:**
+  - `NEXT_PUBLIC_API_URL`: Mandatory variable for live health ping; **tanpa fallback hardcode** (diatur manual oleh user di dashboard Vercel / `.env.local`). Jika variabel ini belum diset, indikator health menampilkan status netral/standby tanpa error fatal.
 - **Deployment:** Vercel (Monorepo setup: Root Directory set to `web`)
 - **Font Strategy:** Self-hosted `.woff2` files copied from `/home/curzy/workspace/Fonts/Google/` into `web/public/fonts/` loaded via `next/font/local`:
   - Display/Heading: **Space Grotesk** (weights 600, 700)
@@ -106,9 +109,10 @@ web/
 
 ### 4.3. Interactive Code Showcase (`CodeShowcase.tsx`)
 - **Layout:** Two-column split or stacked responsive card on `bg-[#111C2E]` surface with macOS window decoration (red/yellow/green pills).
+- **Default Module:** **MyBest Elearning (`GET /v1/elearning/courses`)** — menampilkan daftar 6 mata kuliah aktif semester ini.
 - **Language Tabs:** `cURL`, `Python (requests)`, `TypeScript (fetch)`.
-- **Left Panel (Request):** Syntax-highlighted code calling `GET /v1/studentv2/schedule` or `GET /v1/ejournal/journals` with `X-API-Key` headers.
-- **Right Panel (Response):** Beautified real JSON payload with status `200 OK` badge and response time indicator (`~198ms`).
+- **Left Panel (Request):** Syntax-highlighted code calling `GET /v1/elearning/courses` with `X-API-Key` headers.
+- **Right Panel (Response):** Beautified real JSON payload (6 mata kuliah lengkap dengan kode, nama matkul, SKS, dan dosen pengampu) with status `200 OK` badge and response time indicator (`~240ms`).
 - **Interactive Action:** "Copy Snippet" button with feedback tooltip ("Disalin!").
 
 ### 4.4. Campus Services Grid (`ModulesGrid.tsx`)
