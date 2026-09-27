@@ -40,9 +40,3 @@ export interface GitHubStats {
   stars: number;
   contributors: { [username: string]: number };
 }
-
-export interface HealthStatus {
-  status: "ok" | "degraded" | "standby" | "down";
-  redis: "up" | "down" | "unknown";
-  latencyMs?: number;
-}

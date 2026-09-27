@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { Monogram } from "./Monogram";
-import { HealthBadge } from "./HealthBadge";
 
 export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
   return (
@@ -20,14 +19,9 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
           </div>
         </Link>
 
-        {/* Center Status */}
-        <div className="hidden md:flex items-center">
-          <HealthBadge />
-        </div>
-
         {/* Navigation & Action */}
-        <div className="flex items-center gap-4">
-          <nav className="hidden lg:flex items-center gap-6 text-sm text-[#94A7BC]">
+        <div className="flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-6 text-sm text-[#94A7BC]">
             <a href="#showcase" className="hover:text-[#E6EDF3] transition-colors">
               Showcase
             </a>
