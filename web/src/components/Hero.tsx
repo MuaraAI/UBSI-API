@@ -26,31 +26,26 @@ export function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative pt-10 pb-12 sm:pt-16 sm:pb-16 md:pt-24 md:pb-20 px-4 sm:px-6 max-w-7xl mx-auto text-center flex flex-col items-center"
+      className="relative overflow-hidden pt-10 pb-12 sm:pt-16 sm:pb-16 md:pt-24 md:pb-20 px-4 sm:px-6 max-w-7xl mx-auto text-center flex flex-col items-center"
     >
-      {/* Decorative background glow */}
       <div
         className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#2DD4BF]/10 rounded-full blur-3xl pointer-events-none -z-10"
         aria-hidden="true"
       />
 
-      {/* Eyebrow */}
-      <div className="anime-reveal inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#111C2E] border border-white/5 text-[11px] font-mono tracking-widest text-[#2DD4BF] uppercase mb-6">
+      <div className="anime-reveal inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#2DD4BF] uppercase mb-4 font-semibold">
         <span>UNOFFICIAL CAMPUS GATEWAY</span>
       </div>
 
-      {/* H1 Heading */}
       <h1 className="anime-reveal font-display text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#E6EDF3] max-w-4xl leading-[1.1] mb-6">
         Satu Antarmuka REST API untuk Seluruh Layanan Kampus UBSI.
       </h1>
 
-      {/* Subtitle */}
       <p className="anime-reveal text-[#94A7BC] text-base sm:text-lg md:text-xl max-w-2xl leading-relaxed mb-10 font-sans">
         Agregator data modern berkecepatan tinggi untuk SIAKAD, MyBest Elearning, E-Library,
         Repository, dan E-Journal dengan format JSON terstandarisasi dan Redis cache sub-250ms.
       </p>
 
-      {/* CTA Buttons */}
       <div className="anime-reveal flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
         <a
           href="#showcase"
@@ -68,7 +63,6 @@ export function Hero() {
         </a>
       </div>
 
-      {/* Trust & Architecture Pills */}
       <div className="anime-reveal mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono text-[#94A7BC]">
         <div className="px-4 py-2.5 rounded-md bg-[#111C2E]/60 border border-white/5">
           <span className="text-[#2DD4BF] font-bold">6 Layanan</span> Terintegrasi

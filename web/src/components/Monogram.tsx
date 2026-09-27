@@ -10,7 +10,6 @@ export function Monogram({ className = "w-7 h-7" }: { className?: string }) {
       aria-hidden="true"
     >
       <rect width="32" height="32" rx="6" fill="#111C2E" />
-      {/* Wave flow current meeting */}
       <path
         d="M8 24V11L16 19L24 11V24"
         stroke="#2DD4BF"

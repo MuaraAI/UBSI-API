@@ -9,7 +9,7 @@ export function RoadmapTeaser() {
           WHAT'S NEXT
         </span>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#E6EDF3] mt-2">
-          Roadmap v1.2 — Fitur Produktivitas Mahasiswa.
+          Roadmap v1.2: Fitur Produktivitas Mahasiswa.
         </h2>
         <p className="text-[#94A7BC] text-sm sm:text-base mt-2 max-w-xl mx-auto font-sans">
           Fitur yang sedang dipersiapkan untuk memudahkan rutinitas perkuliahan harian civitas UBSI.

@@ -75,7 +75,7 @@ const jetbrainsMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "UBSI API — Unofficial REST API Aggregator 6 Layanan Kampus UBSI | Muara AI",
+  title: "UBSI API: Unofficial REST API Aggregator 6 Layanan Kampus UBSI | Muara AI",
   description:
     "Agregator REST API modern untuk layanan Universitas Bina Sarana Informatika (SIAKAD, Elearning MyBest, E-Journal, E-Library, Repository, Berita). Caching Redis sub-250ms, open-source & developer-first.",
   keywords: [
@@ -93,17 +93,17 @@ export const metadata: Metadata = {
     canonical: "https://ubsi-api.muaraai.com",
   },
   openGraph: {
-    title: "UBSI API — Unofficial REST API Aggregator 6 Layanan Kampus UBSI",
+    title: "UBSI API: Unofficial REST API Aggregator 6 Layanan Kampus UBSI",
     description:
       "Agregator data modern berkecepatan tinggi untuk SIAKAD, Elearning, Jurnal, E-Library, dan Repository UBSI.",
     url: "https://ubsi-api.muaraai.com",
-    siteName: "UBSI API — Muara AI",
+    siteName: "UBSI API: Muara AI",
     locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "UBSI API — Unofficial REST API Aggregator 6 Layanan Kampus UBSI",
+    title: "UBSI API: Unofficial REST API Aggregator 6 Layanan Kampus UBSI",
     description:
       "Agregator REST API modern untuk 6 layanan Universitas Bina Sarana Informatika.",
   },
@@ -156,6 +156,12 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background text-foreground antialiased min-h-screen">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#2DD4BF] focus:text-[#06251F] focus:font-semibold focus:rounded-md focus:shadow-float focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]"
+        >
+          Langsung ke konten utama
+        </a>
         {children}
         <Analytics />
       </body>

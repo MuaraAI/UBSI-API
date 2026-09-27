@@ -1,16 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Monogram } from "./Monogram";
 
 export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileMenuOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [mobileMenuOpen]);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0A1220]/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Brand */}
         <Link href="/" className="flex items-center gap-3 group focus:outline-none">
           <Monogram className="w-8 h-8 group-hover:scale-105 transition-transform" />
           <div className="flex flex-col">
@@ -23,7 +35,6 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
           </div>
         </Link>
 
-        {/* Navigation & Action */}
         <div className="flex items-center gap-3 sm:gap-6">
           <nav className="hidden md:flex items-center gap-6 text-sm text-[#94A7BC]">
             <a href="#showcase" className="hover:text-[#E6EDF3] transition-colors">
@@ -58,9 +69,10 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
             <span className="text-[#2DD4BF] font-bold">★ {starsCount}</span>
           </a>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
             className="md:hidden p-2 rounded-md bg-[#111C2E] border border-white/10 text-[#E6EDF3] hover:text-[#2DD4BF] transition-colors"
             aria-label="Toggle navigation menu"
           >
@@ -77,9 +89,8 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
         </div>
       </div>
 
-      {/* Mobile Drawer Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-white/5 bg-[#0D1624] px-4 py-3 space-y-2">
+        <div id="mobile-menu" className="md:hidden border-b border-white/5 bg-[#0D1624] px-4 py-3 space-y-2">
           <a
             href="#showcase"
             onClick={() => setMobileMenuOpen(false)}

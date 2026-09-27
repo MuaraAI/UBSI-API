@@ -17,7 +17,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-accent selection:text-accent-dark">
       <Navbar starsCount={stats.stars} />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <Hero />
         <CodeShowcase />
         <ModulesGrid />

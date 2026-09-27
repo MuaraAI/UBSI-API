@@ -16,7 +16,6 @@ export function Quickstart() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Step 1 */}
         <div className="rounded-lg bg-[#111C2E] border border-white/5 p-6 flex flex-col justify-between shadow-sm">
           <div>
             <span className="w-8 h-8 rounded-full bg-[#0A1220] border border-[#2DD4BF]/40 text-[#2DD4BF] font-mono text-sm font-bold flex items-center justify-center mb-4">
@@ -37,7 +36,6 @@ pip install -r requirements.txt`}</code>
           </pre>
         </div>
 
-        {/* Step 2 */}
         <div className="rounded-lg bg-[#111C2E] border border-white/5 p-6 flex flex-col justify-between shadow-sm">
           <div>
             <span className="w-8 h-8 rounded-full bg-[#0A1220] border border-[#2DD4BF]/40 text-[#2DD4BF] font-mono text-sm font-bold flex items-center justify-center mb-4">
@@ -59,7 +57,6 @@ pip install -r requirements.txt`}</code>
           </pre>
         </div>
 
-        {/* Step 3 */}
         <div className="rounded-lg bg-[#111C2E] border border-white/5 p-6 flex flex-col justify-between shadow-sm">
           <div>
             <span className="w-8 h-8 rounded-full bg-[#0A1220] border border-[#2DD4BF]/40 text-[#2DD4BF] font-mono text-sm font-bold flex items-center justify-center mb-4">
