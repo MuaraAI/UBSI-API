@@ -25,13 +25,21 @@ This project establishes the official landing page for the project inside the `/
 ## 2. Technical Stack & Architecture
 
 - **Framework:** Next.js (App Router, TypeScript)
-- **Styling:** Tailwind CSS + CSS custom properties matching `web/DESIGN.md` tokens
+- **Styling & Components:** 
+  - Tailwind CSS configured with `web/DESIGN.md` Deep Water tokens.
+  - **shadcn/ui** (Button, Card, Tabs, Badge, Tooltip) customized to dark-first Deep Water aesthetic (`#0A1220` background, `#111C2E` card/surface, `#2DD4BF` primary accent).
+- **Animation Engine:** **Anime.js** (`animejs`)
+  - Staggered entrance animation for Hero text and code block.
+  - Number counter animation (0 → live stars, 0 → live commits, 0 → 198ms latency).
+  - SVG path draw/flow animation for Muara Monogram "M" (representing "arus bertemu").
+  - Tab switch smooth cross-fades.
+  - Full respect for `prefers-reduced-motion` (disabled when requested by system).
 - **Deployment:** Vercel (Monorepo setup: Root Directory set to `web`)
 - **Font Strategy:** Self-hosted `.woff2` files copied from `/home/curzy/workspace/Fonts/Google/` into `web/public/fonts/` loaded via `next/font/local`:
   - Display/Heading: **Space Grotesk** (weights 600, 700)
   - Body & UI: **Inter** (weights 400, 500, 600)
   - Code & Eyebrows: **JetBrains Mono** (weights 400, 500)
-- **Icons:** Material Symbols Rounded / inline SVG icons with accessible titles (`aria-hidden="true"` for decorative icons). Strictly no emojis used as UI icons.
+- **Icons:** Material Symbols Rounded / inline accessible SVG with accessible titles (`aria-hidden="true"` for decorative icons). Strictly no emojis used as UI icons.
 
 ---
 
