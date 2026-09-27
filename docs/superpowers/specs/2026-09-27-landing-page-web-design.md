@@ -184,18 +184,41 @@ Grid card interaktif menampilkan fitur produktivitas yang sedang disiapkan:
 
 ---
 
-## 5. SEO, Metadata, Accessibility & Performance
+## 5. SEO, OpenGraph, Accessibility & Performance
 
-1. **OpenGraph & Social Cards:**
-   - Title: `UBSI API — Unofficial REST API Aggregator 6 Layanan Kampus UBSI`
-   - Description: `Agregator data modern berkecepatan tinggi untuk SIAKAD, Elearning, Jurnal, E-Library, dan Repository UBSI.`
-   - Dynamic OG image matching Deep Water dark aesthetic.
-2. **Live Health Ping:**
-   - Real-time client polling/fetch ke `https://ubsi-api.curzy.dev/health` dengan dot indicator berkedip halus (pulse).
-3. **WCAG AA Compliance:** All text combinations satisfy AA contrast (minimum 4.5:1 on dark surfaces). `#94A7BC` on `#0A1220` is 5.5:1. `#2DD4BF` on `#0A1220` is 9.8:1.
-4. **Keyboard Navigation:** Explicit visible focus rings (`outline: 2px solid #2DD4BF; outline-offset: 2px`).
-5. **Motion Safety:** All anime.js animations respect `prefers-reduced-motion: reduce`.
-6. **Touch Target Size:** All buttons and interactive tabs have minimum dimensions of 44x44px.
+### 5.1. Comprehensive SEO & Structured Data
+1. **Metadata & Keywords:**
+   - Title: `UBSI API — Unofficial REST API Aggregator 6 Layanan Kampus UBSI | Muara AI`
+   - Description: `Agregator REST API modern untuk layanan Universitas Bina Sarana Informatika (SIAKAD, Elearning MyBest, E-Journal, E-Library, Repository, Berita). Caching Redis sub-250ms, open-source & developer-first.`
+   - Keywords: `UBSI API, SIAKAD UBSI API, Elearning MyBest UBSI, Ejournal UBSI, Muara AI, API Kampus UBSI, Yuken Velino, Verzio`
+   - Canonical: `https://ubsi-api.muaraai.com`
+2. **Dynamic OpenGraph Image (`src/app/opengraph-image.tsx`):**
+   - Generated dynamically at edge via Next.js `ImageResponse` (1200×630px).
+   - Styled with Deep Water theme: `#0A1220` background, subtle `#111C2E` border, glowing teal `#2DD4BF` monogram and badge.
+   - Display: Live API status, repo star indicator, and project tagline.
+   - Twitter Card: `summary_large_image`.
+3. **Structured Data (Schema.org JSON-LD):**
+   - `@type`: `SoftwareApplication` and `WebAPI`.
+   - `name`: `UBSI API`
+   - `applicationCategory`: `DeveloperApplication, EducationalApplication`
+   - `operatingSystem`: `Cloud, Docker, Linux`
+   - `offers`: `{ @type: "Offer", price: "0", priceCurrency: "IDR" }` (Free MIT)
+   - `author`: Two Person entities:
+     - Yuken Velino (`@Curzyori`, `https://github.com/Curzyori`)
+     - Verzio (`@MyKineID`, `https://github.com/MyKineID`)
+   - `publisher`: Organization `Muara AI` (`https://github.com/MuaraAI`)
+4. **Technical SEO Routing:**
+   - `src/app/sitemap.ts` → auto-generates dynamic XML sitemap with daily priority.
+   - `src/app/robots.ts` → crawler directives (`Allow: /`, pointing to `/sitemap.xml`).
+
+### 5.2. Live Health Ping
+- Real-time client polling/fetch ke `https://ubsi-api.curzy.dev/health` dengan dot indicator berkedip halus (pulse).
+
+### 5.3. Accessibility & Performance Guardrails
+1. **WCAG AA Compliance:** All text combinations satisfy AA contrast (minimum 4.5:1 on dark surfaces). `#94A7BC` on `#0A1220` is 5.5:1. `#2DD4BF` on `#0A1220` is 9.8:1.
+2. **Keyboard Navigation:** Explicit visible focus rings (`outline: 2px solid #2DD4BF; outline-offset: 2px`).
+3. **Motion Safety:** All anime.js animations respect `prefers-reduced-motion: reduce`.
+4. **Touch Target Size:** All buttons and interactive tabs have minimum dimensions of 44x44px.
 
 ---
 
