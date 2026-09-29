@@ -72,7 +72,7 @@ UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di 
 
 | Modul | Status | Sumber | Kemampuan Utama |
 |:---|:---:|:---|:---|
-| **StudentV2** | ✅ | `studentv2.bsi.ac.id` | Jadwal kuliah semester aktif, nilai murni, pengumuman PDF, arsip berita |
+| **StudentV2** | ✅ | `students.bsi.ac.id` | Jadwal kuliah semester aktif, nilai murni, pengumuman PDF, arsip berita |
 | **Elearning** | ✅ | `elearning.bsi.ac.id` (MyBest) | Kartu matkul, presensi perkuliahan, tugas & submission, materi ZIP, kuis |
 | **Elibrary** | ✅ | `elibrary.bsi.ac.id` | OPAC search katalog, detail buku, stok fisik, 60s timeout & retry |
 | **News Portal** | ✅ | `news.bsi.ac.id` | Berita kampus resmi via native WP REST API (`/wp-json/wp/v2/posts`) |
