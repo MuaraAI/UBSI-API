@@ -458,7 +458,7 @@ class PooledElearningClient:
     """Fasade client elearning dengan pool sesi per-NIM (pola sama studentv2)."""
 
     def __init__(self, ttl_seconds: int = 900):
-        self._pool = SessionPool(lambda: ElearningClient(), ttl_seconds=ttl_seconds)
+        self._pool = SessionPool(lambda: elearning_client, ttl_seconds=ttl_seconds)
 
     async def fetch_page(self, path: str, nim: str, password: str) -> str:
         client = self._pool.get(nim)
