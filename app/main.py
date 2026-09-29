@@ -91,6 +91,7 @@ app = FastAPI(
     title="UBSI API",
     description="Private Unofficial API Aggregator for UBSI Services",
     version="1.1.5",
+    root_path=settings.ROOT_PATH,
     lifespan=lifespan
 )
 

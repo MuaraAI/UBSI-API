@@ -43,3 +43,28 @@ def test_security_config_defaults(monkeypatch):
     assert cfg.API_KEY == ""
     assert cfg.ALLOWED_ORIGINS == "*"
     assert cfg.TRUSTED_PROXIES == "127.0.0.1"
+
+def test_vault_and_root_path_settings(monkeypatch):
+    monkeypatch.delenv("ROOT_PATH", raising=False)
+    monkeypatch.delenv("SUPABASE_URL", raising=False)
+    monkeypatch.delenv("SUPABASE_SERVICE_KEY", raising=False)
+    monkeypatch.delenv("VAULT_ENCRYPTION_KEY", raising=False)
+
+    s = Settings(_env_file=None)
+    assert s.ROOT_PATH == ""
+    assert s.SUPABASE_URL == ""
+    assert s.SUPABASE_SERVICE_KEY == ""
+    assert s.VAULT_ENCRYPTION_KEY == ""
+
+    s_custom = Settings(
+        _env_file=None,
+        ROOT_PATH="/v1/ubsi-api",
+        SUPABASE_URL="https://example.supabase.co",
+        SUPABASE_SERVICE_KEY="service_key_test",
+        VAULT_ENCRYPTION_KEY="01234567890123456789012345678901",
+    )
+    assert s_custom.ROOT_PATH == "/v1/ubsi-api"
+    assert s_custom.SUPABASE_URL == "https://example.supabase.co"
+    assert s_custom.SUPABASE_SERVICE_KEY == "service_key_test"
+    assert s_custom.VAULT_ENCRYPTION_KEY == "01234567890123456789012345678901"
+
