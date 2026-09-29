@@ -275,13 +275,63 @@ Konfigurasi production menggunakan PM2 (`ecosystem.config.cjs`) di target folder
 
 ## <a id="contributors"></a>👥 Contributors
 
-Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak:
+Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Universitas Bina Sarana Informatika (UBSI) Kampus Kota Pontianak.
 
-| Foto | Kontributor | Identitas Mahasiswa | Peran | Commits |
-|:---:|---|---|---|:---:|
-| <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator** | [![Commits](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B0%5D.contributions&label=Commits&color=2DD4BF&logo=git)](https://github.com/MuaraAI/UBSI-API/commits?author=Curzyori) |
-| <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor** | [![Commits](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B1%5D.contributions&label=Commits&color=2DD4BF&logo=git)](https://github.com/MuaraAI/UBSI-API/commits?author=MyKineID) |
-| <img src="https://github.com/Seeyaa77.png" width="65" height="65" style="border-radius:50%;" alt="Muhammad Raffli Aldiansyah" /> | **Muhammad Raffli Aldiansyah**<br>[@Seeyaa77](https://github.com/Seeyaa77) | **NIM**: `15260161`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1A.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor** | [![Commits](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B2%5D.contributions&label=Commits&color=2DD4BF&logo=git)](https://github.com/MuaraAI/UBSI-API/commits?author=Seeyaa77) |
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://github.com/Curzyori">
+        <img src="https://github.com/Curzyori.png" width="90" height="90" alt="Yuken Velino" style="border-radius:50%;" /><br />
+        <b>Yuken Velino</b>
+      </a>
+      <br />
+      <a href="https://github.com/Curzyori">@Curzyori</a>
+      <br /><br />
+      <a href="https://github.com/MuaraAI/UBSI-API/commits?author=Curzyori">
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B0%5D.contributions&label=commits&color=2DD4BF&logo=git" alt="Commits" />
+      </a>
+      <br /><br />
+      <sub><b>Lead Developer &amp; Creator</b><br />
+      NIM 15260767 · Informatika (S1)<br />
+      15.1C.30 · Semester 1<br />
+      FTI · UBSI Kota Pontianak</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://github.com/MyKineID">
+        <img src="https://github.com/MyKineID.png" width="90" height="90" alt="Verzio" style="border-radius:50%;" /><br />
+        <b>Verzio</b>
+      </a>
+      <br />
+      <a href="https://github.com/MyKineID">@MyKineID</a>
+      <br /><br />
+      <a href="https://github.com/MuaraAI/UBSI-API/commits?author=MyKineID">
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B1%5D.contributions&label=commits&color=2DD4BF&logo=git" alt="Commits" />
+      </a>
+      <br /><br />
+      <sub><b>Core Contributor</b><br />
+      NIM 15260225 · Informatika (S1)<br />
+      15.1B.30 · Semester 1<br />
+      FTI · UBSI Kota Pontianak</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://github.com/Seeyaa77">
+        <img src="https://github.com/Seeyaa77.png" width="90" height="90" alt="Muhammad Raffli Aldiansyah" style="border-radius:50%;" /><br />
+        <b>Muhammad Raffli Aldiansyah</b>
+      </a>
+      <br />
+      <a href="https://github.com/Seeyaa77">@Seeyaa77</a>
+      <br /><br />
+      <a href="https://github.com/MuaraAI/UBSI-API/commits?author=Seeyaa77">
+        <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B2%5D.contributions&label=commits&color=2DD4BF&logo=git" alt="Commits" />
+      </a>
+      <br /><br />
+      <sub><b>Core Contributor</b><br />
+      NIM 15260161 · Informatika (S1)<br />
+      15.1A.30 · Semester 1<br />
+      FTI · UBSI Kota Pontianak</sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
