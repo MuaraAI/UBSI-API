@@ -2,8 +2,10 @@ import asyncio
 import json
 import re
 import urllib.parse
+from datetime import datetime, timezone
 from typing import Any, Optional
 
+import httpx
 from fastapi import APIRouter, HTTPException, Path, Query, status
 from scrapling.fetchers import Fetcher
 
@@ -164,3 +166,106 @@ async def get_news_detail(post_id: str = Path(..., pattern=r"^[0-9]+$")):
         ttl=settings.TTL_NEWS,
         cache_params={"post_id": post_id},
     )
+
+# ============================================================================
+# News Webhook Auto-Notification
+# ============================================================================
+
+async def dispatch_webhook_notification(post: dict[str, Any], webhook_url: str) -> bool:
+    payload = {
+        "event": "news.published",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "data": post,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            res = await client.post(webhook_url, json=payload)
+            return res.is_success
+    except Exception:
+        return False
+
+async def poll_news_webhook() -> int:
+    """Cek artikel berita baru dan dispatch ke webhook jika ada.
+
+    Mengembalikan jumlah notifikasi yang berhasil dikirim.
+    """
+    if not settings.NEWS_WEBHOOK_URL:
+        return 0
+
+    redis = await cache.get_client()
+    key_seen = "ubsi:news:seen_ids"
+
+    loop = asyncio.get_running_loop()
+    try:
+        raw_posts = await loop.run_in_executor(None, news_client.fetch_posts, None, 1, 5)
+        posts = parse_wp_posts(raw_posts)
+    except Exception:
+        return 0
+
+    if not posts:
+        return 0
+
+    # Cold start: seed IDs tanpa mengirim spam
+    exists = await redis.exists(key_seen)
+    if not exists:
+        ids = [p["id"] for p in posts if p.get("id")]
+        if ids:
+            await redis.sadd(key_seen, *ids)
+            await redis.expire(key_seen, 86400 * 30)
+        return 0
+
+    dispatched_count = 0
+    for p in reversed(posts):
+        p_id = p.get("id")
+        if not p_id:
+            continue
+        is_member = await redis.sismember(key_seen, p_id)
+        if not is_member:
+            ok = await dispatch_webhook_notification(p, settings.NEWS_WEBHOOK_URL)
+            if ok:
+                await redis.sadd(key_seen, p_id)
+                dispatched_count += 1
+
+    return dispatched_count
+
+async def news_webhook_worker():
+    while True:
+        try:
+            await poll_news_webhook()
+        except Exception:
+            pass
+        await asyncio.sleep(settings.NEWS_WEBHOOK_INTERVAL)
+
+@router.post("/webhook/test")
+async def test_news_webhook(target_url: Optional[str] = Query(default=None, description="URL target alternatif")):
+    """Kirim payload uji coba ke webhook untuk memverifikasi endpoint consumer."""
+    webhook_url = target_url or settings.NEWS_WEBHOOK_URL
+    if not webhook_url:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_response(
+                code="CONFIG_MISSING",
+                message="NEWS_WEBHOOK_URL belum disetel di .env atau parameter target_url kosong",
+                module="news"
+            )
+        )
+    sample_post = {
+        "id": "test_99999",
+        "title": "Uji Coba Notifikasi Webhook Berita UBSI",
+        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+        "link": "https://news.bsi.ac.id/sample-article",
+        "author": "Redaksi UBSI API",
+        "featured_image": None,
+        "excerpt": "Ini adalah payload contoh verifikasi koneksi webhook dari UBSI API.",
+    }
+    ok = await dispatch_webhook_notification(sample_post, webhook_url)
+    if not ok:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=error_response(
+                code="DELIVERY_FAILED",
+                message=f"Gagal mengirim webhook ke {webhook_url}",
+                module="news"
+            )
+        )
+    return success_response(data={"message": f"Webhook test berhasil dikirim ke {webhook_url}", "payload": sample_post})
