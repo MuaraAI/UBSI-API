@@ -315,8 +315,8 @@ Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Univ
     </td>
     <td align="center" width="33%">
       <a href="https://github.com/Seeyaa77">
-        <img src="https://github.com/Seeyaa77.png" width="90" height="90" alt="Muhammad Raffli Aldiansyah" style="border-radius:50%;" /><br />
-        <b>Muhammad Raffli Aldiansyah</b>
+        <img src="https://github.com/Seeyaa77.png" width="90" height="90" alt="M Raffli Aldiansyah" style="border-radius:50%;" /><br />
+        <b>M Raffli Aldiansyah</b>
       </a>
       <br />
       <a href="https://github.com/Seeyaa77">@Seeyaa77</a>
