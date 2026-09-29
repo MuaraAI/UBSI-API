@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import anime from "animejs";
+import { DeepWaterLink } from "./DeepWaterButton";
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -47,20 +48,28 @@ export function Hero() {
       </p>
 
       <div className="anime-reveal flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
-        <a
-          href="#showcase"
-          className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-md bg-[#2DD4BF] hover:bg-[#54E3D1] text-[#06251F] font-semibold text-sm transition-colors shadow-float"
-        >
+        <DeepWaterLink href="#showcase" variant="primary" size="lg" shine>
           Lihat Contoh Response
-        </a>
-        <a
+          <svg
+            className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5-5 5M6 12h12" />
+          </svg>
+        </DeepWaterLink>
+        <DeepWaterLink
           href="https://github.com/MuaraAI/UBSI-API"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-md bg-[#111C2E] hover:bg-[#17263D] text-[#E6EDF3] font-semibold text-sm border border-white/10 hover:border-[#2DD4BF]/50 transition-colors"
+          variant="secondary"
+          size="lg"
         >
           GitHub Repository
-        </a>
+        </DeepWaterLink>
       </div>
 
       <div className="anime-reveal mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono text-[#94A7BC]">

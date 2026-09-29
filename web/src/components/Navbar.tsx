@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Monogram } from "./Monogram";
+import { DeepWaterLink } from "./DeepWaterButton";
 
 export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -51,11 +52,13 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
             </a>
           </nav>
 
-          <a
+          <DeepWaterLink
             href="https://github.com/MuaraAI/UBSI-API"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#111C2E] hover:bg-[#17263D] border border-white/10 hover:border-[#2DD4BF]/40 text-xs font-mono text-[#E6EDF3] transition-all"
+            variant="secondary"
+            size="sm"
+            className="border-white/10 hover:border-[#2DD4BF]/40 font-mono"
             aria-label="GitHub Repository"
           >
             <svg
@@ -67,7 +70,7 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
             </svg>
             <span className="font-semibold">Star</span>
             <span className="text-[#2DD4BF] font-bold">★ {starsCount}</span>
-          </a>
+          </DeepWaterLink>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
