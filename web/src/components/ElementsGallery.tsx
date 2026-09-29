@@ -1,41 +1,39 @@
 import React from "react";
 import styles from "./ElementsGallery.module.css";
 
-const LOADER_TEXT = "SCRAPING.";
-
 export function ElementsGallery() {
   return (
     <section id="elements" className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="text-center mb-10">
-        <span className="text-xs font-mono text-[#2DD4BF] tracking-widest uppercase">
-          UI ELEMENTS
-        </span>
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#E6EDF3] mt-2">
+        <div className="badge-dark mb-4 mx-auto">
+          <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
+          <span>UI ELEMENTS</span>
+        </div>
+        <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-2">
           Elemen UI Adaptasi Uiverse.
         </h2>
-        <p className="text-[#94A7BC] text-sm sm:text-base mt-2 max-w-xl mx-auto font-sans">
-          Elemen open-source dari Uiverse (lisensi MIT), diadaptasi ke palet Deep
-          Water: navy, teal, dan aksen gelap.
+        <p className="text-secondary text-sm sm:text-base mt-2 max-w-xl mx-auto font-sans">
+          Elemen open-source dari Uiverse (lisensi MIT), diadaptasi ke tema glassmorphism dengan aksen ocean cyan (#92EEFF).
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="rounded-lg bg-[#111C2E] border border-white/5 p-6 flex flex-col shadow-sm">
-          <span className="text-xs font-mono text-[#94A7BC] uppercase tracking-wider mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="glass-card-3d p-6 flex flex-col">
+          <span className="text-xs font-mono text-[#062535] font-semibold uppercase tracking-wider mb-4">
             Button
           </span>
-          <div className="flex-1 flex items-center justify-center py-6">
+          <div className="flex-1 flex items-center justify-center py-8">
             <button type="button" className={styles.uwButton}>
               <span>GET STARTED</span>
             </button>
           </div>
-          <p className="text-xs text-[#94A7BC] leading-relaxed">
-            Hover fill dari kanan ke kiri. Adaptasi dari{" "}
+          <p className="text-xs text-secondary leading-relaxed mt-2">
+            Hover fill interaktif dari kanan ke kiri. Adaptasi dari{" "}
             <a
               href="https://uiverse.io/abrahamcalsin/sour-donkey-65"
               target="_blank"
               rel="noreferrer noopener"
-              className="text-[#2DD4BF] hover:underline"
+              className="text-[#0369a1] hover:underline font-medium"
             >
               sour-donkey-65
             </a>
@@ -43,11 +41,11 @@ export function ElementsGallery() {
           </p>
         </div>
 
-        <div className="rounded-lg bg-[#111C2E] border border-white/5 p-6 flex flex-col shadow-sm">
-          <span className="text-xs font-mono text-[#94A7BC] uppercase tracking-wider mb-4">
+        <div className="glass-card-3d p-6 flex flex-col">
+          <span className="text-xs font-mono text-[#062535] font-semibold uppercase tracking-wider mb-4">
             Switch
           </span>
-          <div className="flex-1 flex items-center justify-center py-6">
+          <div className="flex-1 flex items-center justify-center py-8">
             <label className="inline-flex flex-col items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
@@ -64,48 +62,20 @@ export function ElementsGallery() {
                   <path d="M9 20h6v1c0 .55-.45 1-1 1h-4c-.55 0-1-.45-1-1v-1z" />
                 </svg>
               </span>
-              <span className="text-xs font-mono text-[#94A7BC]">
+              <span className="text-xs font-mono text-secondary">
                 Toggle scraper
               </span>
             </label>
           </div>
-          <p className="text-xs text-[#94A7BC] leading-relaxed">
-            Glow teal saat aktif. Adaptasi dari{" "}
+          <p className="text-xs text-secondary leading-relaxed mt-2">
+            Glow ocean cyan (#92EEFF) saat aktif. Adaptasi dari{" "}
             <a
               href="https://uiverse.io/vinodjangid07/quick-moth-22"
               target="_blank"
               rel="noreferrer noopener"
-              className="text-[#2DD4BF] hover:underline"
+              className="text-[#0369a1] hover:underline font-medium"
             >
               quick-moth-22
-            </a>
-            .
-          </p>
-        </div>
-
-        <div className="rounded-lg bg-[#111C2E] border border-white/5 p-6 flex flex-col shadow-sm">
-          <span className="text-xs font-mono text-[#94A7BC] uppercase tracking-wider mb-4">
-            Loader
-          </span>
-          <div className="flex-1 flex items-center justify-center py-6">
-            <div className={styles.uwLoaderWrapper}>
-              <div className={styles.uwLoader} />
-              {LOADER_TEXT.split("").map((ch, i) => (
-                <span key={i} className={styles.uwLoaderLetter}>
-                  {ch}
-                </span>
-              ))}
-            </div>
-          </div>
-          <p className="text-xs text-[#94A7BC] leading-relaxed">
-            Scanline penuh warna. Adaptasi dari{" "}
-            <a
-              href="https://uiverse.io/dexter-st/wicked-elephant-4"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="text-[#2DD4BF] hover:underline"
-            >
-              wicked-elephant-4
             </a>
             .
           </p>

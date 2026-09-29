@@ -1,8 +1,7 @@
-/* ElementsGallery: Uiverse-inspired elements adapted to the Deep Water theme.
+/* ElementsGallery: Uiverse-inspired elements adapted to the Light Glassmorphism theme with Ocean Cyan (#92EEFF).
    Sources (MIT License, uiverse.io):
    - Button:  abrahamcalsin/sour-donkey-65
-   - Switch:  vinodjangid07/quick-moth-22
-   - Loader:  dexter-st/wicked-elephant-4 */
+   - Switch:  vinodjangid07/quick-moth-22 */
 
 /* ============ Button ============ */
 
@@ -11,10 +10,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #0a1220;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 6px 24px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(146, 238, 255, 0.3);
+  box-shadow: 0 8px 24px -4px rgba(10, 18, 32, 0.25);
   overflow: hidden;
   cursor: pointer;
   width: 100%;
@@ -25,9 +24,9 @@
   content: " ";
   width: 0%;
   height: 100%;
-  background: #2dd4bf;
+  background: #92EEFF;
   position: absolute;
-  transition: all 0.4s ease-in-out;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   right: 0;
 }
 
@@ -41,7 +40,7 @@
   text-align: center;
   width: 100%;
   padding: 14px 22px;
-  color: #e6edf3;
+  color: #ffffff;
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -50,7 +49,7 @@
 }
 
 .uwButton:hover span {
-  color: #06251f;
+  color: #062535;
   animation: uwScaleUp 0.3s ease-in-out;
 }
 
@@ -58,11 +57,9 @@
   0% {
     transform: scale(1);
   }
-
   50% {
     transform: scale(0.95);
   }
-
   100% {
     transform: scale(1);
   }
@@ -78,14 +75,14 @@
   position: relative;
   width: 64px;
   height: 64px;
-  background-color: #111c2e;
+  background-color: #0a1220;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #1e2d42;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.6) inset;
+  border: 2px solid rgba(146, 238, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -100,188 +97,29 @@
 
 .uwSwitchInput:checked + .uwSwitch {
   box-shadow:
-    0 0 1px rgba(45, 212, 191, 0.9) inset,
-    0 0 3px rgba(45, 212, 191, 0.9) inset,
-    0 0 10px rgba(45, 212, 191, 0.7) inset,
-    0 0 40px rgba(45, 212, 191, 0.55),
-    0 0 5px rgba(45, 212, 191, 0.8);
-  border: 2px solid #54e3d1;
-  background-color: #123b3c;
+    0 0 1px rgba(146, 238, 255, 0.9) inset,
+    0 0 6px rgba(146, 238, 255, 0.8) inset,
+    0 0 14px rgba(146, 238, 255, 0.7) inset,
+    0 0 32px rgba(146, 238, 255, 0.6),
+    0 0 8px rgba(146, 238, 255, 0.9);
+  border: 2px solid #92EEFF;
+  background-color: #082d38;
 }
 
 .uwSwitchInput:checked + .uwSwitch svg {
-  filter: drop-shadow(0 0 5px rgba(45, 212, 191, 0.9));
+  filter: drop-shadow(0 0 6px rgba(146, 238, 255, 0.9));
 }
 
 .uwSwitchInput:checked + .uwSwitch svg path {
-  fill: #e6edf3;
+  fill: #ffffff;
 }
 
 .uwSwitchInput:focus-visible + .uwSwitch {
-  outline: 2px solid #2dd4bf;
+  outline: 2px solid #92EEFF;
   outline-offset: 3px;
 }
 
-/* ============ Scan Loader ============ */
-
-.uwLoaderWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 96px;
-  width: 100%;
-  max-width: 300px;
-
-  font-family: var(--font-jetbrains-mono), monospace;
-  font-size: 1.15em;
-  font-weight: 600;
-  user-select: none;
-  color: #e6edf3;
-  scale: 1.4;
-}
-
-.uwLoader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-
-  background-color: transparent;
-  mask: repeating-linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 6px,
-    black 7px,
-    black 8px
-  );
-}
-
-.uwLoader::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  background-image:
-    radial-gradient(circle at 50% 50%, #54e3d1 0%, transparent 50%),
-    radial-gradient(circle at 45% 45%, #2dd4bf 0%, transparent 45%),
-    radial-gradient(circle at 55% 55%, #22d3ee 0%, transparent 45%),
-    radial-gradient(circle at 45% 55%, #0ea5e9 0%, transparent 45%),
-    radial-gradient(circle at 55% 45%, #123b3c 0%, transparent 45%);
-  mask: radial-gradient(
-    circle at 50% 50%,
-    transparent 0%,
-    transparent 10%,
-    black 25%
-  );
-  animation:
-    uwTransformAnimation 2s infinite alternate,
-    uwOpacityAnimation 4s infinite;
-  animation-timing-function: cubic-bezier(0.6, 0.8, 0.5, 1);
-}
-
-@keyframes uwTransformAnimation {
-  0% {
-    transform: translate(-55%);
-  }
-
-  100% {
-    transform: translate(55%);
-  }
-}
-
-@keyframes uwOpacityAnimation {
-  0%,
-  100% {
-    opacity: 0;
-  }
-
-  15% {
-    opacity: 1;
-  }
-
-  65% {
-    opacity: 0;
-  }
-}
-
-.uwLoaderLetter {
-  display: inline-block;
-  opacity: 0;
-  animation: uwLoaderLetterAnim 4s infinite linear;
-  z-index: 2;
-}
-
-.uwLoaderLetter:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.uwLoaderLetter:nth-child(2) {
-  animation-delay: 0.205s;
-}
-
-.uwLoaderLetter:nth-child(3) {
-  animation-delay: 0.31s;
-}
-
-.uwLoaderLetter:nth-child(4) {
-  animation-delay: 0.415s;
-}
-
-.uwLoaderLetter:nth-child(5) {
-  animation-delay: 0.521s;
-}
-
-.uwLoaderLetter:nth-child(6) {
-  animation-delay: 0.626s;
-}
-
-.uwLoaderLetter:nth-child(7) {
-  animation-delay: 0.731s;
-}
-
-.uwLoaderLetter:nth-child(8) {
-  animation-delay: 0.837s;
-}
-
-@keyframes uwLoaderLetterAnim {
-  0% {
-    opacity: 0;
-  }
-
-  5% {
-    opacity: 1;
-    text-shadow: 0 0 4px #54e3d1;
-    transform: scale(1.1) translateY(-2px);
-  }
-
-  20% {
-    opacity: 0.2;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
-
-@media (max-width: 400px) {
-  .uwLoaderWrapper {
-    scale: 1.05;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .uwLoader::after,
-  .uwLoaderLetter {
-    animation: none;
-    opacity: 0.6;
-  }
-
   .uwButton::after {
     transition: none;
   }

@@ -3,8 +3,9 @@ import React from "react";
 export function Hero() {
   return (
     <section className="relative pt-12 pb-14 sm:pt-20 sm:pb-20 md:pt-28 md:pb-24 px-4 sm:px-6 max-w-7xl mx-auto text-center">
-      <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-accent uppercase mb-5 font-semibold accent-badge">
-        UNOFFICIAL CAMPUS GATEWAY
+      <div className="badge-dark mb-6 mx-auto">
+        <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
+        <span>UNOFFICIAL CAMPUS GATEWAY</span>
       </div>
 
       <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground max-w-4xl mx-auto leading-[1.1] mb-6">
@@ -34,20 +35,20 @@ export function Hero() {
       </div>
 
       <div className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
-        <div className="glass-card px-4 py-3 text-xs font-mono text-secondary">
-          <span className="text-accent font-bold block text-base mb-0.5">6 Layanan</span>
+        <div className="glass-card-3d px-4 py-3.5 text-xs font-mono text-secondary">
+          <span className="text-[#083344] font-bold block text-lg mb-0.5">6 Layanan</span>
           Terintegrasi
         </div>
-        <div className="glass-card px-4 py-3 text-xs font-mono text-secondary">
-          <span className="text-accent font-bold block text-base mb-0.5">23 Jurnal</span>
+        <div className="glass-card-3d px-4 py-3.5 text-xs font-mono text-secondary">
+          <span className="text-[#083344] font-bold block text-lg mb-0.5">23 Jurnal</span>
           Aktif Resmi
         </div>
-        <div className="glass-card px-4 py-3 text-xs font-mono text-secondary">
-          <span className="text-accent font-bold block text-base mb-0.5">Sub-250ms</span>
+        <div className="glass-card-3d px-4 py-3.5 text-xs font-mono text-secondary">
+          <span className="text-[#083344] font-bold block text-lg mb-0.5">Sub-250ms</span>
           Caching Latency
         </div>
-        <div className="glass-card px-4 py-3 text-xs font-mono text-secondary">
-          <span className="text-accent font-bold block text-base mb-0.5">71 Tests</span>
+        <div className="glass-card-3d px-4 py-3.5 text-xs font-mono text-secondary">
+          <span className="text-[#083344] font-bold block text-lg mb-0.5">71 Tests</span>
           100% Passed
         </div>
       </div>

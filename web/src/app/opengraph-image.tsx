@@ -33,11 +33,11 @@ export default async function Image() {
               height: "48px",
               backgroundColor: "#111C2E",
               borderRadius: "10px",
-              border: "2px solid #2DD4BF",
+              border: "2px solid #92EEFF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#2DD4BF",
+              color: "#92EEFF",
               fontSize: "24px",
               fontWeight: "bold",
             }}
@@ -48,7 +48,7 @@ export default async function Image() {
             <span style={{ color: "#E6EDF3", fontSize: "28px", fontWeight: "bold" }}>
               UBSI API
             </span>
-            <span style={{ color: "#2DD4BF", fontSize: "14px", letterSpacing: "2px" }}>
+            <span style={{ color: "#92EEFF", fontSize: "14px", letterSpacing: "2px" }}>
               MUARA AI • DEEP WATER
             </span>
           </div>
@@ -77,7 +77,7 @@ export default async function Image() {
               backgroundColor: "#111C2E",
               padding: "10px 20px",
               borderRadius: "8px",
-              color: "#2DD4BF",
+              color: "#92EEFF",
               fontSize: "18px",
               border: "1px solid rgba(255,255,255,0.1)",
             }}
@@ -89,7 +89,7 @@ export default async function Image() {
               backgroundColor: "#111C2E",
               padding: "10px 20px",
               borderRadius: "8px",
-              color: "#2DD4BF",
+              color: "#92EEFF",
               fontSize: "18px",
               border: "1px solid rgba(255,255,255,0.1)",
             }}

@@ -4,9 +4,10 @@ export function Quickstart() {
   return (
     <section id="quickstart" className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="text-center mb-10">
-        <span className="accent-badge text-xs font-mono tracking-widest uppercase">
-          INSTALLATION IN 3 MINUTES
-        </span>
+        <div className="badge-dark mb-4 mx-auto">
+          <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
+          <span>INSTALLATION IN 3 MINUTES</span>
+        </div>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-3">
           Jalankan Local Server UBSI API.
         </h2>
@@ -15,10 +16,10 @@ export function Quickstart() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="glass-card p-7 flex flex-col justify-between">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-card-3d p-7 flex flex-col justify-between">
           <div>
-            <span className="w-9 h-9 rounded-full bg-accent/10 border border-accent/30 text-accent font-mono text-sm font-bold flex items-center justify-center mb-4">
+            <span className="w-9 h-9 rounded-full bg-[#0a1220] border border-[#92EEFF]/40 text-[#92EEFF] font-mono text-sm font-bold flex items-center justify-center mb-4 shadow-sm">
               1
             </span>
             <h3 className="font-display text-base font-semibold text-foreground">
@@ -28,7 +29,7 @@ export function Quickstart() {
               Unduh repositori resmi dan aktifkan virtual environment Python 3.10+.
             </p>
           </div>
-          <pre className="p-3 rounded-sm bg-code-bg font-mono text-xs text-code-text overflow-x-auto border border-white/10 leading-relaxed">
+          <pre className="p-3 rounded-md bg-code-bg font-mono text-xs text-code-text overflow-x-auto border border-white/10 leading-relaxed">
             <code>{`git clone https://github.com/MuaraAI/UBSI-API.git
 cd UBSI-API && python -m venv .venv
 source .venv/bin/activate
@@ -36,9 +37,9 @@ pip install -r requirements.txt`}</code>
           </pre>
         </div>
 
-        <div className="glass-card p-7 flex flex-col justify-between">
+        <div className="glass-card-3d p-7 flex flex-col justify-between">
           <div>
-            <span className="w-9 h-9 rounded-full bg-accent/10 border border-accent/30 text-accent font-mono text-sm font-bold flex items-center justify-center mb-4">
+            <span className="w-9 h-9 rounded-full bg-[#0a1220] border border-[#92EEFF]/40 text-[#92EEFF] font-mono text-sm font-bold flex items-center justify-center mb-4 shadow-sm">
               2
             </span>
             <h3 className="font-display text-base font-semibold text-foreground">
@@ -48,7 +49,7 @@ pip install -r requirements.txt`}</code>
               Salin contoh konfigurasi dan masukkan API Key serta kredensial akun SIAKAD.
             </p>
           </div>
-          <pre className="p-3 rounded-sm bg-code-bg font-mono text-xs text-code-text overflow-x-auto border border-white/10 leading-relaxed">
+          <pre className="p-3 rounded-md bg-code-bg font-mono text-xs text-code-text overflow-x-auto border border-white/10 leading-relaxed">
             <code>{`cp .env.example .env
 # Edit .env:
 # API_KEY=kunci_rahasia_anda
@@ -57,9 +58,9 @@ pip install -r requirements.txt`}</code>
           </pre>
         </div>
 
-        <div className="glass-card p-7 flex flex-col justify-between">
+        <div className="glass-card-3d p-7 flex flex-col justify-between">
           <div>
-            <span className="w-9 h-9 rounded-full bg-accent/10 border border-accent/30 text-accent font-mono text-sm font-bold flex items-center justify-center mb-4">
+            <span className="w-9 h-9 rounded-full bg-[#0a1220] border border-[#92EEFF]/40 text-[#92EEFF] font-mono text-sm font-bold flex items-center justify-center mb-4 shadow-sm">
               3
             </span>
             <h3 className="font-display text-base font-semibold text-foreground">
