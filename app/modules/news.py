@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 import httpx
-from fastapi import APIRouter, HTTPException, Path, Query, status
+from fastapi import APIRouter, HTTPException, Path, Query, Request, status
 from scrapling.fetchers import Fetcher
 
 from app.config import settings
@@ -337,14 +337,58 @@ async def news_webhook_worker():
             pass
         await asyncio.sleep(settings.NEWS_WEBHOOK_INTERVAL)
 
+def is_safe_webhook_url(url_str: str) -> bool:
+    """Validasi skema dan larang URL loopback/private IP untuk mencegah SSRF."""
+    try:
+        parsed = urllib.parse.urlparse(url_str)
+        if parsed.scheme not in ("http", "https"):
+            return False
+        hostname = (parsed.hostname or "").lower()
+        if not hostname:
+            return False
+        if hostname in ("localhost", "127.0.0.1", "0.0.0.0", "::1", "169.254.169.254"):
+            return False
+        if hostname.startswith("10.") or hostname.startswith("192.168."):
+            return False
+        if hostname.startswith("172.") and len(hostname.split(".")) > 1:
+            try:
+                second_octet = int(hostname.split(".")[1])
+                if 16 <= second_octet <= 31:
+                    return False
+            except ValueError:
+                pass
+        return True
+    except Exception:
+        return False
+
 @router.post("/webhook/test")
 async def test_news_webhook(
+    request: Request,
     channel: str = Query(default="all", pattern=r"^(all|discord|telegram|custom)$", description="Channel target: all, discord, telegram, custom"),
     target_url: Optional[str] = Query(default=None, description="URL target override (khusus custom/discord)"),
     telegram_bot_token: Optional[str] = Query(default=None, description="Bot token override (khusus telegram)"),
     telegram_chat_id: Optional[str] = Query(default=None, description="Chat ID override (khusus telegram)")
 ):
     """Kirim payload uji coba ke Discord, Telegram, atau Custom Webhook."""
+    if not getattr(request.state, "is_master", False):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=error_response(
+                code="FORBIDDEN",
+                message="Endpoint uji coba webhook hanya dapat diakses menggunakan Master Key",
+                module="news"
+            )
+        )
+
+    if target_url and not is_safe_webhook_url(target_url):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_response(
+                code="INVALID_URL",
+                message="target_url tidak valid atau mengarah ke alamat jaringan privat yang dilarang (anti-SSRF)",
+                module="news"
+            )
+        )
     sample_post = {
         "id": "test_99999",
         "title": "Uji Coba Notifikasi Berita Kampus UBSI",
