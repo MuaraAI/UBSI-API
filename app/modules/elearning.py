@@ -20,11 +20,18 @@ router = APIRouter(prefix="/v1/elearning", tags=["elearning"])
 # Pure Parsers (Unit-tested against snapshot fixtures)
 # ============================================================================
 
-def solve_captcha(question_text: str) -> int:
+def solve_captcha(question_text: str) -> Any:
+    # 1. New SVG text captcha (<text ...>X</text>)
+    svg_texts = re.findall(r"<text[^>]*>([^<]+)</text>", question_text)
+    if svg_texts:
+        return "".join(svg_texts).strip()
+
+    # 2. Legacy math pattern ("12 + 5")
     m = re.search(r"(\d+)\s*\+\s*(\d+)", question_text)
-    if not m:
-        raise ValueError(f"Tidak dapat menemukan pola captcha matematika di: {question_text}")
-    return int(m.group(1)) + int(m.group(2))
+    if m:
+        return int(m.group(1)) + int(m.group(2))
+
+    raise ValueError(f"Tidak dapat menemukan pola captcha di: {question_text[:100]}")
 
 def parse_courses(html: str) -> list[dict[str, Any]]:
     page = Adaptor(html)
@@ -272,10 +279,10 @@ class ElearningClient:
                 return False
             token = m.group(1)
 
-            c_match = re.search(r"(\d+)\s*\+\s*(\d+)", r1.text)
-            if not c_match:
+            try:
+                ans = solve_captcha(r1.text)
+            except ValueError:
                 return False
-            ans = int(c_match.group(1)) + int(c_match.group(2))
 
             payload = {
                 "_token": token,
@@ -284,7 +291,7 @@ class ElearningClient:
                 "captcha_answer": str(ans),
             }
             r2 = client.post(login_url, data=payload)
-            if "dashboard" in str(r2.url) or "elearning.bsi.ac.id/user" in str(r2.url) or r2.status_code == 200:
+            if "dashboard" in str(r2.url) or "elearning.bsi.ac.id/user" in str(r2.url):
                 self._logged_in = True
                 return True
             return False

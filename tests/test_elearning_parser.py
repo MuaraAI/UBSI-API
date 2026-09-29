@@ -12,10 +12,15 @@ from app.modules.elearning import (
 FIXTURES = Path(__file__).parent / "fixtures"
 
 def test_solve_captcha():
+    # Legacy math captcha
     assert solve_captcha("Berapa hasil dari 4 + 3?") == 7
     assert solve_captcha("Berapa hasil dari 1 + 5?") == 6
     assert solve_captcha("12 + 15") == 27
     assert solve_captcha("Berapa hasil dari 10 + 0?") == 10
+
+    # New SVG text captcha
+    svg_sample = "<svg><text x='30'>4</text><text x='68'>E</text><text x='101'>7</text></svg>"
+    assert solve_captcha(svg_sample) == "4E7"
 
 def test_parse_courses():
     html = (FIXTURES / "el_sch.html").read_text(encoding="utf-8")
