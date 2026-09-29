@@ -90,7 +90,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(
     title="UBSI API",
     description="Private Unofficial API Aggregator for UBSI Services",
-    version="1.1.0",
+    version="1.1.5",
     lifespan=lifespan
 )
 
