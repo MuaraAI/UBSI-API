@@ -314,12 +314,7 @@ Rencana pengembangan dan milestones UBSI API:
   - Auto-dispatch berita kampus baru secara paralel ke Discord (Rich Embed), Telegram (HTML photo message), dan Custom Webhook.
   - Migrasi domain upstream SIAKAD ke `students.bsi.ac.id`.
 
-### Version 1.2.0 (In Progress — Write Automation & Productivity)
-- [ ] **Write Operations & Auto-Attendance (Presensi Otomatis MyBest)**:
-  - `POST /v1/elearning/presence` — Submit presensi kuliah manual via API.
-  - Background worker auto-absen berbasis jadwal aktif harian, otomatis check-in saat sesi dibuka dosen.
-  - Proteksi anti-ban human-jitter (jeda acak 1–5 menit) agar tampak natural.
-  - Dual-toggle dinamis On/Off auto-absen via API (`GET/POST /v1/elearning/auto-presence/*`) dan konfigurasi `.env` (`AUTO_PRESENCE_ENABLED`).
+### Version 1.2.0 (In Progress — Feeds & Productivity)
 - [ ] **Ekspor Kalender iCal (`.ics`)**:
   - Endpoint `GET /v1/studentv2/schedule.ics` untuk auto-sinkronisasi jadwal kuliah langsung ke Google Calendar (Android) dan Apple Calendar (iOS).
 - [x] **Rekap Nilai Tugas & Kuis Elearning (Per Pertemuan)**:
