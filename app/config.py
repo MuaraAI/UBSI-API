@@ -23,6 +23,9 @@ class Settings(BaseSettings):
 
     NEWS_WEBHOOK_URL: str = ""
     NEWS_WEBHOOK_INTERVAL: int = 600  # seconds (10 min)
+    DISCORD_WEBHOOK_URL: str = ""
+    TELEGRAM_BOT_TOKEN: str = ""
+    TELEGRAM_CHAT_ID: str = ""
 
     model_config = SettingsConfigDict(
         env_file=".env",

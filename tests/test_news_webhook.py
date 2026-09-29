@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, patch, MagicMock
 from httpx import AsyncClient, ASGITransport
 from app.main import app
 from app.config import settings
@@ -17,6 +17,9 @@ def reset_clients():
 @pytest.mark.asyncio
 async def test_poll_news_webhook_disabled(monkeypatch):
     monkeypatch.setattr(settings, "NEWS_WEBHOOK_URL", "")
+    monkeypatch.setattr(settings, "DISCORD_WEBHOOK_URL", "")
+    monkeypatch.setattr(settings, "TELEGRAM_BOT_TOKEN", "")
+    monkeypatch.setattr(settings, "TELEGRAM_CHAT_ID", "")
     from app.modules.news import poll_news_webhook
     count = await poll_news_webhook()
     assert count == 0
@@ -36,12 +39,11 @@ async def test_poll_news_webhook_cold_start(monkeypatch):
     
     with patch("app.cache.cache.get_client", return_value=mock_redis), \
          patch("app.modules.news.news_client.fetch_posts", return_value=mock_posts), \
-         patch("app.modules.news.dispatch_webhook_notification") as mock_dispatch:
+         patch("app.modules.news.broadcast_news_article") as mock_broadcast:
         
         count = await poll_news_webhook()
         assert count == 0
-        mock_dispatch.assert_not_called()
-        # Verify IDs were seeded into Redis
+        mock_broadcast.assert_not_called()
         mock_redis.sadd.assert_called_once()
         args = mock_redis.sadd.call_args[0]
         assert args[0] == "ubsi:news:seen_ids"
@@ -59,29 +61,108 @@ async def test_poll_news_webhook_dispatches_new_articles(monkeypatch):
     
     mock_redis = AsyncMock()
     mock_redis.exists.return_value = 1  # Already seeded
-    # 102 is seen, 103 is not
     mock_redis.sismember.side_effect = lambda key, val: val == "102"
     
     with patch("app.cache.cache.get_client", return_value=mock_redis), \
          patch("app.modules.news.news_client.fetch_posts", return_value=mock_posts), \
-         patch("app.modules.news.dispatch_webhook_notification", return_value=True) as mock_dispatch:
+         patch("app.modules.news.broadcast_news_article", return_value={"custom": True}) as mock_broadcast:
         
         count = await poll_news_webhook()
         assert count == 1
-        assert mock_dispatch.call_count == 1
-        dispatched_data = mock_dispatch.call_args[0][0]
+        assert mock_broadcast.call_count == 1
+        dispatched_data = mock_broadcast.call_args[0][0]
         assert dispatched_data["id"] == "103"
         assert dispatched_data["title"] == "Berita Baru 3"
         mock_redis.sadd.assert_called_with("ubsi:news:seen_ids", "103")
 
 @pytest.mark.asyncio
-async def test_news_webhook_test_endpoint():
-    with patch("app.modules.news.dispatch_webhook_notification", return_value=True) as mock_dispatch:
+async def test_dispatch_discord_webhook():
+    from app.modules.news import dispatch_discord_webhook
+    sample_post = {
+        "id": "1",
+        "title": "Judul Discord",
+        "link": "https://news.bsi.ac.id/test",
+        "excerpt": "Cuplikan singkat",
+        "author": "Penulis",
+        "featured_image": "https://news.bsi.ac.id/img.jpg"
+    }
+    
+    mock_res = MagicMock()
+    mock_res.is_success = True
+    
+    with patch("httpx.AsyncClient.post", return_value=mock_res) as mock_post:
+        ok = await dispatch_discord_webhook(sample_post, "https://discord.com/api/webhooks/123/abc")
+        assert ok is True
+        assert mock_post.call_count == 1
+        payload = mock_post.call_args[1]["json"]
+        assert "embeds" in payload
+        assert payload["embeds"][0]["title"] == "Judul Discord"
+        assert payload["embeds"][0]["color"] == 0x2DD4BF
+        assert payload["embeds"][0]["image"]["url"] == "https://news.bsi.ac.id/img.jpg"
+
+@pytest.mark.asyncio
+async def test_dispatch_telegram_message():
+    from app.modules.news import dispatch_telegram_message
+    sample_post = {
+        "id": "2",
+        "title": "Judul Telegram",
+        "link": "https://news.bsi.ac.id/test",
+        "excerpt": "Cuplikan singkat telegram",
+        "author": "Penulis",
+        "date": "2026-09-29",
+        "featured_image": "https://news.bsi.ac.id/img.jpg"
+    }
+    
+    mock_res = MagicMock()
+    mock_res.is_success = True
+    
+    with patch("httpx.AsyncClient.post", return_value=mock_res) as mock_post:
+        ok = await dispatch_telegram_message(sample_post, "bot123456", "@testchannel")
+        assert ok is True
+        assert mock_post.call_count == 1
+        url = mock_post.call_args[0][0]
+        assert "sendPhoto" in url
+        payload = mock_post.call_args[1]["json"]
+        assert payload["chat_id"] == "@testchannel"
+        assert "Judul Telegram" in payload["caption"]
+
+@pytest.mark.asyncio
+async def test_broadcast_news_article_multi_channel(monkeypatch):
+    monkeypatch.setattr(settings, "DISCORD_WEBHOOK_URL", "https://discord.com/api/webhooks/mock")
+    monkeypatch.setattr(settings, "TELEGRAM_BOT_TOKEN", "mock_token")
+    monkeypatch.setattr(settings, "TELEGRAM_CHAT_ID", "-100123")
+    monkeypatch.setattr(settings, "NEWS_WEBHOOK_URL", "https://custom.hook/api")
+    from app.modules.news import broadcast_news_article
+    
+    sample_post = {"id": "1", "title": "Test Multi"}
+    with patch("app.modules.news.dispatch_discord_webhook", return_value=True) as mock_dc, \
+         patch("app.modules.news.dispatch_telegram_message", return_value=True) as mock_tg, \
+         patch("app.modules.news.dispatch_webhook_notification", return_value=True) as mock_custom:
+        
+        results = await broadcast_news_article(sample_post)
+        assert results == {"discord": True, "telegram": True, "custom": True}
+        assert mock_dc.call_count == 1
+        assert mock_tg.call_count == 1
+        assert mock_custom.call_count == 1
+
+@pytest.mark.asyncio
+async def test_news_webhook_test_endpoint_channels(monkeypatch):
+    monkeypatch.setattr(settings, "DISCORD_WEBHOOK_URL", "https://discord.test")
+    monkeypatch.setattr(settings, "TELEGRAM_BOT_TOKEN", "mock_token")
+    monkeypatch.setattr(settings, "TELEGRAM_CHAT_ID", "-100123")
+    monkeypatch.setattr(settings, "NEWS_WEBHOOK_URL", "https://custom.test")
+    
+    with patch("app.modules.news.dispatch_discord_webhook", return_value=True), \
+         patch("app.modules.news.dispatch_telegram_message", return_value=True), \
+         patch("app.modules.news.dispatch_webhook_notification", return_value=True):
+        
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-            res = await ac.post("/v1/news/webhook/test?target_url=https://mock.hook/endpoint")
+            res = await ac.post("/v1/news/webhook/test?channel=all")
             
         assert res.status_code == 200
         data = res.json()
         assert data["success"] is True
-        assert "berhasil" in data["data"]["message"]
-        assert mock_dispatch.call_count == 1
+        results = data["data"]["results"]
+        assert results["discord"]["success"] is True
+        assert results["telegram"]["success"] is True
+        assert results["custom"]["success"] is True

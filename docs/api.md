@@ -244,8 +244,10 @@ Fetches official news posts directly from the WordPress REST API (`news.bsi.ac.i
 Retrieves full rendered HTML content and author metadata for a specific article.
 
 ### `POST /v1/news/webhook/test`
-Sends a test webhook payload to `NEWS_WEBHOOK_URL` (or an optional `?target_url=...` query param) to verify receiver connectivity.
-- **Payload Event**: `news.published`
+Sends a test news publication alert to configured channels (`all`, `discord`, `telegram`, or `custom`) or an explicit `?target_url=...`.
+- **Query Parameters**:
+  - `channel` (optional, default: `all`): Target channel to test (`all`, `discord`, `telegram`, `custom`).
+  - `target_url` (optional): Override webhook URL for testing ad-hoc endpoints.
 - **Requires Auth**: Yes (`X-API-Key`)
 
 ### `GET /v1/repository/recent`

@@ -54,7 +54,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     news_task = None
     if not os.getenv("PYTEST_CURRENT_TEST"):
         eviction_task = asyncio.create_task(_eviction_worker())
-        if settings.NEWS_WEBHOOK_URL:
+        has_news_broadcaster = bool(
+            settings.NEWS_WEBHOOK_URL
+            or settings.DISCORD_WEBHOOK_URL
+            or (settings.TELEGRAM_BOT_TOKEN and settings.TELEGRAM_CHAT_ID)
+        )
+        if has_news_broadcaster:
             from app.modules.news import news_webhook_worker
             news_task = asyncio.create_task(news_webhook_worker())
 
