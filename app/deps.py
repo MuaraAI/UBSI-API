@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 from fastapi import Request, HTTPException, status
 from app.config import Settings, settings
@@ -27,8 +28,10 @@ def require_studentv2_creds(
             return h_nim.strip(), h_pass.strip()
 
     # Tier 3: Local .env Fallback (Standalone / Single-User mode)
-    if cfg.STUDENTV2_NIM and cfg.STUDENTV2_PASS:
-        return cfg.STUDENTV2_NIM, cfg.STUDENTV2_PASS
+    env_nim = os.getenv("STUDENTV2_NIM") or cfg.STUDENTV2_NIM
+    env_pass = os.getenv("STUDENTV2_PASS") or cfg.STUDENTV2_PASS
+    if env_nim and env_pass:
+        return env_nim, env_pass
 
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
@@ -63,8 +66,10 @@ def require_elearning_creds(
             return h_nim.strip(), h_pass.strip()
 
     # Tier 3: Local .env Fallback (Standalone / Single-User mode)
-    if cfg.ELEARNING_NIM and cfg.ELEARNING_PASS:
-        return cfg.ELEARNING_NIM, cfg.ELEARNING_PASS
+    env_nim = os.getenv("ELEARNING_NIM") or cfg.ELEARNING_NIM
+    env_pass = os.getenv("ELEARNING_PASS") or cfg.ELEARNING_PASS
+    if env_nim and env_pass:
+        return env_nim, env_pass
 
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
