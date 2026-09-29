@@ -22,9 +22,11 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
 
 ## 1. Project & Author Overview
 
-- **Repository**: [https://github.com/MuaraAI/UBSI-API](https://github.com/MuaraAI/UBSI-API) (Private)
+- **Repository**: [https://github.com/MuaraAI/UBSI-API](https://github.com/MuaraAI/UBSI-API) (Public)
 - **Author**: **Yuken Velino** ([@Curzyori](https://github.com/Curzyori)) — Lead Developer & Creator · NIM: `15260767` · Kelas: `15.1C.30` · Informatika · FTI UBSI Pontianak.
-- **Contributor**: **Verzio** ([@MyKineID](https://github.com/MyKineID)) — Contributor · NIM: `15260225` · Kelas: `15.1B.30` · Informatika · FTI UBSI Pontianak.
+- **Contributors**:
+  - **Verzio** ([@MyKineID](https://github.com/MyKineID)) — Contributor · NIM: `15260225` · Kelas: `15.1B.30` · Informatika · FTI UBSI Pontianak.
+  - **Muhammad Raffli Aldiansyah** ([@Seeyaa77](https://github.com/Seeyaa77)) — Contributor · NIM: `15260161` · Kelas: `15.1A.30` · Informatika · FTI UBSI Pontianak.
 - **Tujuan**: Otomatisasi personal dan jembatan data terstruktur JSON (jadwal, nilai, tugas, materi) untuk bot asisten mahasiswa dan developer tanpa navigasi manual.
 - **Dokumentasi Lengkap**:
   - [`README.md`](../README.md) — Gambaran umum produk, ringkasan endpoint, dan quick start.
@@ -32,8 +34,8 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
   - [`CODE_OF_CONDUCT.md`](../CODE_OF_CONDUCT.md) — Norma komunitas & etika rekayasa perangkat lunak Muara AI.
   - [`SECURITY.md`](../SECURITY.md) — Kebijakan privasi, kredensial lokal, dan etika keamanan.
   - [`DMCA.md`](../DMCA.md) — Hak cipta kampus, landasan *Fair Use*, dan permohonan takedown resmi.
-  - [`docs/api.md`](../docs/api.md) — Kamus detail 19 endpoint beserta contoh payload JSON.
-  - [`docs/architecture.md`](../docs/architecture.md) — Diagram siklus request, two-tier cache, dan mutex.
+  - [`docs/api.md`](../docs/api.md) — Kamus detail 20 endpoint beserta contoh payload JSON.
+  - [`docs/architecture.md`](../docs/architecture.md) — Diagram siklus request, two-tier cache, mutex, dan webhook poller.
   - [`docs/anti-ban.md`](../docs/anti-ban.md) — Protokol proteksi akun kampus (TLS impersonation, session reuse, jitter).
   - [`docs/deploy.md`](../docs/deploy.md) — Panduan operasi dan pemeliharaan server production via PM2.
   - [`docs/remote-access.md`](../docs/remote-access.md) — Panduan setup reverse proxy (Caddy/Nginx), Cloudflare Tunnel, dan otentikasi X-API-Key.
@@ -48,8 +50,8 @@ Panduan operasional dan referensi teknis bagi AI Coding Agent dan pengembang yan
 | **SIAKAD** | `GET /v1/studentv2/dashboard`<br>`GET /v1/studentv2/schedule`<br>`GET /v1/studentv2/grades`<br>`GET /v1/studentv2/announcements`<br>`GET /v1/studentv2/news` | Dashboard paralel (4 seksi sekaligus), jadwal kuliah aktif, nilai murni lengkap (UTS/UAS/Tugas/Grade), edaran PDF, dan arsip berita |
 | **MyBest LMS** | `GET /v1/elearning/courses`<br>`GET /v1/elearning/assignments`<br>`GET /v1/elearning/presence`<br>`GET /v1/elearning/materials`<br>`GET /v1/elearning/quiz` | Kartu matkul & token terenkripsi, deadline tugas & nilai dosen, rekap presensi hadir, tautan ZIP silabus/modul, kuis online |
 | **Perpustakaan** | `GET /v1/elibrary/search?q={query}&opsi={buku}`<br>`GET /v1/elibrary/book/{book_id}` | Pencarian OPAC katalog, metadata buku, klasifikasi, dan stok fisik di rak |
-| **Berita Resmi** | `GET /v1/news?page={1}&per_page={10}&search={query}`<br>`GET /v1/news/{id}` | Berita kampus resmi langsung via native WordPress REST API (`news.bsi.ac.id`) |
-| **Publikasi** | `GET /v1/repository/recent`<br>`GET /v1/repository/search?q={query}`<br>`GET /v1/ejournal/journals` | EPrints skripsi/penelitian terbaru dan katalog 16 jurnal ilmiah resmi UBSI via OAI bypass |
+| **Berita Resmi** | `GET /v1/news?page={1}&per_page={10}&search={query}`<br>`GET /v1/news/{id}`<br>`POST /v1/news/webhook/test` | Berita kampus resmi via native WP REST API (`news.bsi.ac.id`), auto-broadcaster Discord/Telegram/Custom, dan endpoint uji coba |
+| **Publikasi** | `GET /v1/repository/recent`<br>`GET /v1/repository/search?q={query}`<br>`GET /v1/ejournal/journals` | EPrints skripsi/penelitian terbaru dan katalog 23 jurnal ilmiah resmi UBSI via OAI bypass |
 
 ---
 

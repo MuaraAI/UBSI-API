@@ -123,7 +123,7 @@ UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di 
 - **Frontend Landing Page**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui, Anime.js (`animejs`).
 - **Scraping & TLS**: Scrapling (FetcherSession), `curl_cffi` (Chrome impersonation), lxml.
 - **Caching & Limiter**: Redis DB 2 (asyncio), Single-flight Mutex, Sliding Window Limiter.
-- **Testing & Quality**: Pytest (71 passed), Pytest-Asyncio, HTTPX (ASGITransport).
+- **Testing & Quality**: Pytest (78 passed), Pytest-Asyncio, HTTPX (ASGITransport).
 - **Deployment & Hosting**: Vercel (`ubsi-api.muaraai.com`), Tencent Cloud VPS + PM2 + Caddy HTTPS.
 
 ---
@@ -204,8 +204,15 @@ uv pip install -r requirements.txt
 ### 2. Konfigurasi Environment
 ```bash
 cp .env.example .env
-# Edit .env: masukkan NIM, Password, dan buat API_KEY acak untuk keamanan
-# Contoh generate key: python3 -c "import secrets; print('ubsi_sec_' + secrets.token_hex(24))"
+# Edit .env:
+# 1. API_KEY: Kunci rahasia untuk autentikasi endpoint terlindungi (X-API-Key).
+#    Generate key: python3 -c "import secrets; print('ubsi_sec_' + secrets.token_hex(24))"
+# 2. STUDENTV2_NIM & STUDENTV2_PASS: Akun mahasiswa untuk modul SIAKAD (students.bsi.ac.id).
+# 3. ELEARNING_NIM & ELEARNING_PASS: Akun mahasiswa untuk modul MyBest LMS (elearning.bsi.ac.id).
+# 4. Multi-Channel Webhook (Opsional):
+#    - DISCORD_WEBHOOK_URL: Webhook URL channel Discord untuk Rich Embed berita kampus.
+#    - TELEGRAM_BOT_TOKEN & TELEGRAM_CHAT_ID: Bot token & Chat ID untuk notifikasi berita via Telegram.
+#    - NEWS_WEBHOOK_URL: Custom endpoint HTTP POST untuk bot WhatsApp Ciel / backend kustom.
 ```
 
 ### 3. Menjalankan Server & Contoh Request
@@ -222,7 +229,10 @@ Contoh memanggil API dengan header autentikasi:
 curl -s http://127.0.0.1:8300/health
 
 # Mengambil jadwal kuliah (wajib X-API-Key)
-curl -s -H "X-API-Key: ubsi_sec_xxxxxxxxxxxx" http://127.0.0.1:8300/v1/studentv2/schedule
+curl -s -H "X-API-Key: ubsi_s...xxx" http://127.0.0.1:8300/v1/studentv2/schedule
+
+# Menguji broadcast berita ke Discord / Telegram / Custom webhook
+curl -s -X POST -H "X-API-Key: ubsi_s...xxx" "http://127.0.0.1:8300/v1/news/webhook/test?channel=all"
 ```
 
 ---
@@ -232,7 +242,7 @@ curl -s -H "X-API-Key: ubsi_sec_xxxxxxxxxxxx" http://127.0.0.1:8300/v1/studentv2
 Semua parser diuji terhadap snapshot HTML offline tanpa melakukan request live ke kampus:
 
 ```bash
-# Menjalankan seluruh test suite (71 tests)
+# Menjalankan seluruh test suite (78 tests)
 .venv/bin/pytest -v
 
 # Menjalankan live smoke test terhadap server lokal
