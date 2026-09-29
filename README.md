@@ -114,11 +114,11 @@ UBSI API merapikan semuanya menjadi satu backend JSON yang cepat, berjalan lokal
 | Lapisan | Penjelasan |
 |---|---|
 | **Cache dua tingkat (Redis DB 2)** | TTL berjenjang — jadwal 2 jam, nilai 30 menit, tugas 10 menit — plus fallback Last-Known-Good saat kampus offline |
-| **Proteksi anti-ban** | Session cookie di-*reuse* in-memory, *single-flight mutex* per request, dan *human jitter* 0,8–1,5 detik |
-| **TLS impersonation** | Scrapling dengan `curl_cffi` bersidik TLS desktop Chrome; pola trafik identik dengan browser asli |
+| **Manajemen sesi yang efisien** | Sesi login di-*reuse* in-memory, request duplikat digabung lewat *single-flight mutex*, dan ada jeda adaptif antar-request agar server kampus tidak terbebani |
+| **Klien HTTP modern** | Berbasis `curl_cffi` dan lxml untuk kompatibilitas penuh dengan layanan kampus |
 | **JSON ternormalisasi** | Sanitasi HTML otomatis; SKS sebagai integer, nilai sebagai float, tanggal dalam format ISO-8601 |
 | **Batas keamanan localhost** | Server hanya mengikat `127.0.0.1:8300`; nol port ingress terbuka ke internet |
-| **WordPress REST API native** | Berita kampus diambil langsung dari endpoint JSON resmi, tanpa scraping HTML |
+| **WordPress REST API native** | Berita kampus diambil langsung dari endpoint JSON resmi, tanpa parsing HTML |
 
 ---
 
@@ -141,7 +141,7 @@ UBSI API merapikan semuanya menjadi satu backend JSON yang cepat, berjalan lokal
 
 ### Sistem
 - `GET /health` — Status kesehatan aplikasi dan koneksi Redis (`up`/`down`).
-- `GET /metrics` — Metrik operasional scraper (jumlah sesi pool aktif dan status Redis).
+- `GET /metrics` — Metrik operasional layanan (jumlah sesi aktif dan status Redis).
 
 ### StudentV2 (SIAKAD)
 - `GET /v1/studentv2/dashboard` — Jadwal, nilai, berita, dan pengumuman sekaligus secara paralel.
@@ -175,7 +175,7 @@ UBSI API merapikan semuanya menjadi satu backend JSON yang cepat, berjalan lokal
 
 - **Backend API** — Python 3.12+, FastAPI, Uvicorn (uvloop).
 - **Frontend Landing Page** — Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui, Anime.js.
-- **Scraping & TLS** — Scrapling (FetcherSession), `curl_cffi` (Chrome impersonation), lxml.
+- **HTTP client & parsing** — Scrapling (FetcherSession), `curl_cffi`, lxml.
 - **Caching & Limiter** — Redis DB 2 (asyncio), single-flight mutex, sliding-window limiter.
 - **Testing & Quality** — Pytest (78 lulus), Pytest-Asyncio, HTTPX (ASGITransport).
 - **Deployment & Hosting** — Vercel (`ubsi-api.muaraai.com`), Tencent Cloud VPS + PM2 + Caddy HTTPS.
@@ -199,7 +199,7 @@ UBSI-API/
 │   ├── deps.py                # Validasi kredensial modular (Option B)
 │   ├── envelope.py            # Envelope JSON minimalis
 │   ├── limiter.py             # Sliding-window rate limiter (60 req/menit)
-│   ├── retry.py               # Exponential backoff retry dengan jitter
+│   ├── retry.py               # Exponential backoff retry dengan jeda adaptif
 │   ├── router_helper.py       # Helper generik cache, lock, & SWR
 │   ├── session_pool.py        # Pool sesi per-NIM dengan idle TTL (15 menit)
 │   └── main.py                # Base FastAPI app & global middleware
@@ -228,7 +228,7 @@ UBSI-API/
 ├── docs/
 │   ├── api.md                 # Kamus 19 endpoint & format payload JSON
 │   ├── architecture.md        # Siklus request & alur cache
-│   ├── anti-ban.md            # Protokol keamanan akun
+│   ├── anti-ban.md            # Panduan penggunaan bertanggung jawab
 │   ├── deploy.md              # Operasi produksi VPS via PM2
 │   └── remote-access.md       # Panduan Caddy, Nginx, & Cloudflare Tunnel
 ├── ecosystem.config.cjs       # Konfigurasi produksi PM2 untuk VPS
@@ -327,7 +327,7 @@ Konfigurasi produksi menggunakan PM2 (`ecosystem.config.cjs`) di target folder `
 
 - [API Reference](docs/api.md) — Kamus lengkap 19 endpoint beserta format request dan response JSON.
 - [System Architecture](docs/architecture.md) — Siklus request, two-tier cache, dan single-flight mutex.
-- [Anti-Ban Protocol](docs/anti-ban.md) — Protokol proteksi akun kampus (cookie re-use, TLS impersonation, jitter).
+- [Access & Account Safety](docs/anti-ban.md) — Kebijakan penggunaan bertanggung jawab: manajemen sesi, jeda adaptif, dan batas laju request.
 - [Production Deployment](docs/deploy.md) — Panduan operasi dan pemeliharaan server VPS via PM2.
 - [Remote Access & Domain](docs/remote-access.md) — Setup Caddy, Nginx, Cloudflare Tunnel, dan otentikasi `X-API-Key`.
 - [Agent Skill](skills/SKILL.md) — Panduan AI coding agent untuk konsumsi dan pengembangan otomatisasi UBSI API.
@@ -341,10 +341,10 @@ Panduan kontribusi tersedia di [CONTRIBUTING.md](CONTRIBUTING.md).
 ### v1.0 — Stabil (Rilis)
 - [x] Agregasi read-only untuk 6 modul (`studentv2`, `elearning`, `elibrary`, `news`, `repository`, `ejournal`).
 - [x] Cache dua tingkat (Redis DB 2) dengan fallback offline Last-Known-Good (`stale: true`).
-- [x] Proteksi anti-ban (Chrome TLS signature, session cookie reuse, single-flight mutex).
+- [x] Manajemen sesi dan resiliensi request (session reuse, single-flight mutex, jeda adaptif).
 - [x] Batas keamanan localhost (`127.0.0.1:8300`).
 - [x] Session pool per-NIM dan endpoint dashboard paralel (`/v1/studentv2/dashboard`).
-- [x] Metrik operasional scraper real-time (`/metrics`).
+- [x] Metrik operasional layanan real-time (`/metrics`).
 - [x] Helper generik `cached_endpoint` (PR #4) dan 58 pengujian otomatis lulus.
 
 ### v1.1 — Keamanan, Remote Ingress & Multi-Channel Webhook (Rilis)
