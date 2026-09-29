@@ -23,4 +23,15 @@ export const CONTRIBUTORS: Contributor[] = [
     profileUrl: "https://github.com/MyKineID",
     fallbackCommits: 5,
   },
+  {
+    name: "Muhammad Raffli Aldiansyah",
+    username: "Seeyaa77",
+    role: "Core Contributor & Builder",
+    nim: "15260161",
+    prodi: "Informatika (S1)",
+    kelas: "15.1A.30",
+    avatarUrl: "https://github.com/Seeyaa77.png",
+    profileUrl: "https://github.com/Seeyaa77",
+    fallbackCommits: 1,
+  },
 ];

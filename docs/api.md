@@ -243,6 +243,11 @@ Fetches official news posts directly from the WordPress REST API (`news.bsi.ac.i
 ### `GET /v1/news/{post_id}`
 Retrieves full rendered HTML content and author metadata for a specific article.
 
+### `POST /v1/news/webhook/test`
+Sends a test webhook payload to `NEWS_WEBHOOK_URL` (or an optional `?target_url=...` query param) to verify receiver connectivity.
+- **Payload Event**: `news.published`
+- **Requires Auth**: Yes (`X-API-Key`)
+
 ### `GET /v1/repository/recent`
 Retrieves recent undergraduate theses and faculty research publications from EPrints.
 - **Cache TTL**: 1 hour (3600 seconds)

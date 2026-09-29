@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     TTL_NEWS: int = 900
     TTL_LIBRARY: int = 3600
 
+    NEWS_WEBHOOK_URL: str = ""
+    NEWS_WEBHOOK_INTERVAL: int = 600  # seconds (10 min)
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

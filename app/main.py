@@ -51,10 +51,21 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 pass
 
     eviction_task = None
+    news_task = None
     if not os.getenv("PYTEST_CURRENT_TEST"):
         eviction_task = asyncio.create_task(_eviction_worker())
+        if settings.NEWS_WEBHOOK_URL:
+            from app.modules.news import news_webhook_worker
+            news_task = asyncio.create_task(news_webhook_worker())
 
     yield
+
+    if news_task:
+        news_task.cancel()
+        try:
+            await news_task
+        except asyncio.CancelledError:
+            pass
 
     if eviction_task:
         eviction_task.cancel()
