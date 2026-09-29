@@ -1,4 +1,5 @@
 import asyncio
+import html
 import json
 import re
 import urllib.parse
@@ -187,13 +188,17 @@ async def dispatch_webhook_notification(post: dict[str, Any], webhook_url: str) 
 
 async def dispatch_discord_webhook(post: dict[str, Any], webhook_url: str) -> bool:
     """Kirim rich embed ke Discord Webhook."""
+    title = (post.get("title") or "Berita Baru UBSI")[:256]
+    description = (post.get("excerpt") or "")[:4000]
+    author_name = (post.get("author") or "Redaksi")[:256]
+
     embed: dict[str, Any] = {
-        "title": post.get("title", "Berita Baru UBSI"),
+        "title": title,
         "url": post.get("link", ""),
-        "description": post.get("excerpt", ""),
+        "description": description,
         "color": 0x2DD4BF,  # Teal #2DD4BF
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "footer": {"text": f"Oleh: {post.get('author', 'Redaksi')} • UBSI News Portal"},
+        "footer": {"text": f"Oleh: {author_name} • UBSI News Portal"},
     }
     if post.get("featured_image"):
         embed["image"] = {"url": post["featured_image"]}
@@ -212,12 +217,17 @@ async def dispatch_discord_webhook(post: dict[str, Any], webhook_url: str) -> bo
 
 async def dispatch_telegram_message(post: dict[str, Any], bot_token: str, chat_id: str) -> bool:
     """Kirim pesan HTML dengan foto (jika ada) ke Telegram via Bot API."""
-    title = post.get("title", "Berita Kampus UBSI")
-    link = post.get("link", "https://news.bsi.ac.id")
-    excerpt = post.get("excerpt", "")
-    author = post.get("author", "Redaksi")
+    raw_title = post.get("title", "Berita Kampus UBSI")
+    raw_excerpt = post.get("excerpt", "")
+    raw_author = post.get("author", "Redaksi")
     date = post.get("date", "")
+    link = post.get("link", "https://news.bsi.ac.id")
     image_url = post.get("featured_image")
+
+    # Escape karakter khusus HTML agar Telegram Bot API tidak melempar 400 Bad Request
+    title = html.escape(raw_title, quote=False)
+    excerpt = html.escape(raw_excerpt, quote=False)
+    author = html.escape(raw_author, quote=False)
 
     caption = (
         f"📰 <b><a href=\"{link}\">{title}</a></b>\n\n"
@@ -329,7 +339,9 @@ async def news_webhook_worker():
 @router.post("/webhook/test")
 async def test_news_webhook(
     channel: str = Query(default="all", pattern=r"^(all|discord|telegram|custom)$", description="Channel target: all, discord, telegram, custom"),
-    target_url: Optional[str] = Query(default=None, description="URL target override (khusus custom/discord)")
+    target_url: Optional[str] = Query(default=None, description="URL target override (khusus custom/discord)"),
+    telegram_bot_token: Optional[str] = Query(default=None, description="Bot token override (khusus telegram)"),
+    telegram_chat_id: Optional[str] = Query(default=None, description="Chat ID override (khusus telegram)")
 ):
     """Kirim payload uji coba ke Discord, Telegram, atau Custom Webhook."""
     sample_post = {
@@ -352,9 +364,11 @@ async def test_news_webhook(
             results["discord"] = {"configured": False, "message": "DISCORD_WEBHOOK_URL belum disetel"}
 
     if channel in ("all", "telegram"):
-        if settings.TELEGRAM_BOT_TOKEN and settings.TELEGRAM_CHAT_ID:
-            ok = await dispatch_telegram_message(sample_post, settings.TELEGRAM_BOT_TOKEN, settings.TELEGRAM_CHAT_ID)
-            results["telegram"] = {"configured": True, "success": ok, "chat_id": settings.TELEGRAM_CHAT_ID}
+        tg_token = telegram_bot_token or settings.TELEGRAM_BOT_TOKEN
+        tg_chat = telegram_chat_id or settings.TELEGRAM_CHAT_ID
+        if tg_token and tg_chat:
+            ok = await dispatch_telegram_message(sample_post, tg_token, tg_chat)
+            results["telegram"] = {"configured": True, "success": ok, "chat_id": tg_chat}
         else:
             results["telegram"] = {"configured": False, "message": "TELEGRAM_BOT_TOKEN atau TELEGRAM_CHAT_ID belum disetel"}
 

@@ -105,10 +105,10 @@ async def test_dispatch_telegram_message():
     from app.modules.news import dispatch_telegram_message
     sample_post = {
         "id": "2",
-        "title": "Judul Telegram",
+        "title": "Fakultas Ekonomi & Bisnis <Bootcamp>",
         "link": "https://news.bsi.ac.id/test",
-        "excerpt": "Cuplikan singkat telegram",
-        "author": "Penulis",
+        "excerpt": "Cuplikan & info <lengkap>",
+        "author": "Penulis & Tim",
         "date": "2026-09-29",
         "featured_image": "https://news.bsi.ac.id/img.jpg"
     }
@@ -124,7 +124,9 @@ async def test_dispatch_telegram_message():
         assert "sendPhoto" in url
         payload = mock_post.call_args[1]["json"]
         assert payload["chat_id"] == "@testchannel"
-        assert "Judul Telegram" in payload["caption"]
+        # Verify HTML special characters are properly escaped
+        assert "Fakultas Ekonomi &amp; Bisnis &lt;Bootcamp&gt;" in payload["caption"]
+        assert "Cuplikan &amp; info &lt;lengkap&gt;" in payload["caption"]
 
 @pytest.mark.asyncio
 async def test_broadcast_news_article_multi_channel(monkeypatch):
