@@ -67,10 +67,10 @@ export function Hero() {
         </div>
 
         {/* Right column: 3D Pyramid Glass Loader (andrew-demchenk0/orange-monkey-2) */}
-        <div className="lg:col-span-5 flex flex-col items-center justify-center relative min-h-[340px]">
-          <div className="absolute w-72 h-72 rounded-full bg-[#92EEFF]/25 filter blur-3xl pointer-events-none -z-10 animate-pulse" />
+        <div className="lg:col-span-5 flex flex-col items-center justify-center relative min-h-[380px]">
+          <div className="absolute w-80 h-80 rounded-full bg-[#92EEFF]/20 filter blur-3xl pointer-events-none -z-10 animate-pulse" />
           
-          <div className="glass-card-3d p-8 w-full max-w-[360px] flex flex-col items-center justify-center relative overflow-hidden">
+          <div className="w-full max-w-[390px] rounded-[24px] bg-[#0c1421]/90 backdrop-blur-2xl border border-white/10 shadow-[0_24px_60px_-12px_rgba(10,18,32,0.45),inset_0_1px_1px_rgba(255,255,255,0.15),0_0_28px_rgba(146,238,255,0.14)] p-6 sm:p-7 flex flex-col items-center justify-center relative overflow-hidden group">
             <div className="pyramid-loader">
               <div className="pyramid-wrapper">
                 <span className="pyramid-side pyramid-side1" />
@@ -81,13 +81,21 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="mt-4 text-center">
-              <span className="text-xs font-mono tracking-widest text-[#00778c] font-bold uppercase block">
-                3D HIGH SPEED AGGREGATOR
-              </span>
-              <span className="text-[11px] font-mono text-secondary mt-1 block">
-                Sub-250ms Caching • OJS TLS Fingerprint
-              </span>
+            <div className="mt-4 pt-4 border-t border-white/10 w-full text-left">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
+                  <span className="text-xs font-mono font-bold tracking-wider text-[#92EEFF] uppercase">
+                    Tentang UBSI API
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[#94A7BC] bg-white/5 px-2 py-0.5 rounded-sm border border-white/10">
+                  Open Core • MIT
+                </span>
+              </div>
+              <p className="text-xs text-[#94A7BC] leading-relaxed font-sans">
+                REST API aggregator open-source untuk otomasi dan integrasi 6 layanan portal kampus UBSI. Mengonversi data web portal mahasiswa menjadi JSON terstruktur tanpa menyimpan kredensial (stateless) dengan performa sub-250ms Redis cache.
+              </p>
             </div>
           </div>
         </div>

@@ -66,18 +66,29 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
             href="https://github.com/MuaraAI/UBSI-API"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill bg-[#0a1220] hover:bg-[#131b26] border border-[#92EEFF]/30 text-xs font-mono text-white transition-all duration-200 ease-glass shadow-sm"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-pill bg-[#0a1220] hover:bg-[#131b26] border border-[#92EEFF]/30 text-xs font-mono text-white transition-all duration-200 ease-glass shadow-sm group"
             aria-label="GitHub Repository Stars"
           >
-            {/* FontAwesome Star Icon (fa-solid fa-star) */}
+            {/* GitHub Octocat Icon */}
             <svg
-              className="w-3.5 h-3.5 text-[#92EEFF] fill-current"
-              viewBox="0 0 576 512"
+              className="w-4 h-4 fill-white group-hover:fill-[#92EEFF] transition-colors"
+              viewBox="0 0 24 24"
               aria-hidden="true"
             >
-              <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
             </svg>
-            <span className="text-[#92EEFF] font-bold">{starsCount}</span>
+            <span className="w-px h-3 bg-white/20" />
+            {/* FontAwesome Star Icon (fa-solid fa-star) */}
+            <div className="flex items-center gap-1 text-[#92EEFF]">
+              <svg
+                className="w-3.5 h-3.5 fill-current"
+                viewBox="0 0 576 512"
+                aria-hidden="true"
+              >
+                <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+              </svg>
+              <span className="font-bold">{starsCount}</span>
+            </div>
           </a>
 
           <button

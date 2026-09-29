@@ -266,8 +266,8 @@ h1, h2, h3, h4, h5, h6 {
 /* 3D Glass Pyramid Loader by andrew-demchenk0 (orange-monkey-2) adapted to Ocean Cyan (#92EEFF) */
 .pyramid-loader {
   position: relative;
-  width: 280px;
-  height: 280px;
+  width: 240px;
+  height: 200px;
   display: block;
   transform-style: preserve-3d;
   transform: rotateX(-20deg);
@@ -288,8 +288,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .pyramid-loader .pyramid-wrapper .pyramid-side {
-  width: 90px;
-  height: 90px;
+  width: 85px;
+  height: 85px;
   position: absolute;
   top: 0;
   left: 0;
@@ -298,7 +298,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: auto;
   transform-origin: center top;
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  opacity: 0.92;
+  opacity: 0.95;
 }
 
 .pyramid-loader .pyramid-wrapper .pyramid-side1 {
@@ -322,17 +322,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .pyramid-loader .pyramid-wrapper .pyramid-shadow {
-  width: 80px;
-  height: 80px;
-  background: rgba(146, 238, 255, 0.7);
+  width: 75px;
+  height: 75px;
+  background: rgba(146, 238, 255, 0.75);
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   margin: auto;
-  transform: rotateX(90deg) translateZ(-50px);
-  filter: blur(16px);
+  transform: rotateX(90deg) translateZ(-45px);
+  filter: blur(14px);
 }
 
 /* Minimal scrollbar */
