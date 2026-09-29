@@ -118,6 +118,58 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Glass card utility */
 @layer utilities {
+  .uw-button {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px;
+    background: #0a1220;
+    border: 1px solid rgba(146, 238, 255, 0.4);
+    box-shadow: 0 8px 24px -4px rgba(10, 18, 32, 0.25);
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .uw-button::after {
+    content: " ";
+    width: 0%;
+    height: 100%;
+    background: #92EEFF;
+    position: absolute;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    right: 0;
+    top: 0;
+  }
+
+  .uw-button:hover::after {
+    right: auto;
+    left: 0;
+    width: 100%;
+  }
+
+  .uw-button span {
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    z-index: 20;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .uw-button:hover span {
+    color: #062535;
+  }
+
   .glass-card {
     background: var(--glass-fill);
     backdrop-filter: var(--glass-blur);
@@ -203,6 +255,84 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.75rem;
     font-weight: 600;
   }
+}
+
+@keyframes uwScaleUp {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+/* 3D Glass Pyramid Loader by andrew-demchenk0 (orange-monkey-2) adapted to Ocean Cyan (#92EEFF) */
+.pyramid-loader {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  display: block;
+  transform-style: preserve-3d;
+  transform: rotateX(-20deg);
+}
+
+.pyramid-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: pyramid-spin 5s linear infinite;
+}
+
+@keyframes pyramid-spin {
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.pyramid-loader .pyramid-wrapper .pyramid-side {
+  width: 90px;
+  height: 90px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  transform-origin: center top;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  opacity: 0.92;
+}
+
+.pyramid-loader .pyramid-wrapper .pyramid-side1 {
+  transform: rotateZ(-30deg) rotateY(90deg);
+  background: conic-gradient(#082d38, #92EEFF, #ffffff, #00778c);
+}
+
+.pyramid-loader .pyramid-wrapper .pyramid-side2 {
+  transform: rotateZ(30deg) rotateY(90deg);
+  background: conic-gradient(#00778c, #ffffff, #92EEFF, #082d38);
+}
+
+.pyramid-loader .pyramid-wrapper .pyramid-side3 {
+  transform: rotateX(30deg);
+  background: conic-gradient(#082d38, #ffffff, #92EEFF, #00778c);
+}
+
+.pyramid-loader .pyramid-wrapper .pyramid-side4 {
+  transform: rotateX(-30deg);
+  background: conic-gradient(#92EEFF, #00778c, #ffffff, #082d38);
+}
+
+.pyramid-loader .pyramid-wrapper .pyramid-shadow {
+  width: 80px;
+  height: 80px;
+  background: rgba(146, 238, 255, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  transform: rotateX(90deg) translateZ(-50px);
+  filter: blur(16px);
 }
 
 /* Minimal scrollbar */
