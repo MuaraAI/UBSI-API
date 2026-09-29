@@ -85,7 +85,7 @@ def parse_courses(html: str) -> list[dict[str, Any]]:
         token_learning = extract_token("/learning/")
         token_assignment = extract_token("/assignment/")
 
-        item_id = hashlib.sha256(f"{kode_mtk}:{token_absen}".encode()).hexdigest()[:12]
+        item_id = hashlib.sha256(f"{kode_mtk}:{hari}:{jam}:{ruang}".encode()).hexdigest()[:12]
 
         courses.append({
             "id": item_id,
@@ -689,7 +689,7 @@ async def get_course_grades(
 
     courses_res = await get_courses(creds)
     courses = courses_res["data"]
-    course = next((c for c in courses if c.get("id") == course_id), None)
+    course = next((c for c in courses if c.get("id") == course_id or c.get("kode") == course_id), None)
     if course is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
