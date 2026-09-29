@@ -298,7 +298,7 @@ Rencana pengembangan dan milestones UBSI API:
 - [x] Metrik operasional scraper real-time (`/metrics`).
 - [x] Helper generik `cached_endpoint` (PR #4) dan 58 pengujian otomatis lulus.
 
-### Version 1.1 (Current — Security & Remote Access)
+### Version 1.1 (Released — Security, Remote Ingress & Multi-Channel Webhooks)
 - [x] **Mandatory API Key Authentication**:
   - Middleware `X-API-Key` dengan constant-time comparison (`secrets.compare_digest`).
   - Whitelist tunggal: `GET /health` untuk health probe monitoring.
@@ -310,8 +310,16 @@ Rencana pengembangan dan milestones UBSI API:
   - Ekstraksi IP asli via `CF-Connecting-IP` / `X-Forwarded-For` untuk mencegah tabrakan kuota di belakang proxy.
 - [x] **CORS Support**:
   - `CORSMiddleware` terintegrasi untuk integrasi dashboard web frontend.
+- [x] **Multi-Channel News Broadcaster (v1.1.5)**:
+  - Auto-dispatch berita kampus baru secara paralel ke Discord (Rich Embed), Telegram (HTML photo message), dan Custom Webhook.
+  - Migrasi domain upstream SIAKAD ke `students.bsi.ac.id`.
 
-### Version 1.2 (Planned — Feeds & Productivity)
+### Version 1.2.0 (In Progress — Write Automation & Productivity)
+- [ ] **Write Operations & Auto-Attendance (Presensi Otomatis MyBest)**:
+  - `POST /v1/elearning/presence` — Submit presensi kuliah manual via API.
+  - Background worker auto-absen berbasis jadwal aktif harian, otomatis check-in saat sesi dibuka dosen.
+  - Proteksi anti-ban human-jitter (jeda acak 1–5 menit) agar tampak natural.
+  - Dual-toggle dinamis On/Off auto-absen via API (`GET/POST /v1/elearning/auto-presence/*`) dan konfigurasi `.env` (`AUTO_PRESENCE_ENABLED`).
 - [ ] **Ekspor Kalender iCal (`.ics`)**:
   - Endpoint `GET /v1/studentv2/schedule.ics` untuk auto-sinkronisasi jadwal kuliah langsung ke Google Calendar (Android) dan Apple Calendar (iOS).
 - [ ] **Rekap Nilai Tugas & Kuis Elearning (Per Pertemuan)**:
@@ -321,17 +329,14 @@ Rencana pengembangan dan milestones UBSI API:
 - [ ] **Kalkulator & Simulator IPK**:
   - Estimasi dan kalkulasi IPK/IPS real-time berdasarkan riwayat nilai murni.
 
-### Version 2.0 (Planned — Automation & Institutional)
-- [ ] **Write Operations (Otomatisasi Aksi & Interaksi)**:
-  - Presensi perkuliahan otomatis (`POST /v1/elearning/presence`).
+### Version 2.0 (Planned — Full Interactive & Institutional)
+- [ ] **Assignment Submission & Interactions**:
   - Pengunggahan & submit berkas tugas (`POST /v1/elearning/assignments/{id}/submit`).
   - Forum diskusi interaktif kelas.
 - [ ] **Dosen & Staff Portal Mode (NIP Support)**:
   - Dukungan kredensial akun dosen/staf (`NIP_STUDENTV2` & `NIP_ELEARNING`).
   - Penarikan jadwal mengajar dosen & daftar peserta kelas per mata kuliah.
   - Rekap BAP (Berita Acara Perkuliahan).
-- [ ] **Event Triggers & Webhooks**:
-  - Notifikasi otomatis ke WhatsApp / Telegram saat ada tugas baru atau pengumuman fakultas.
 
 ---
 
