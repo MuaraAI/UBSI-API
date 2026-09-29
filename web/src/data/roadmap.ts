@@ -3,6 +3,14 @@ import { RoadmapItem } from "@/types";
 export const ROADMAP_ITEMS: RoadmapItem[] = [
   {
     version: "v1.2",
+    title: "Auto-Attendance & Presensi Kuliah",
+    description:
+      "Operasi write otomatisasi presensi MyBest berbasis jadwal harian dengan proteksi human-jitter dan toggle On/Off via API.",
+    badge: "Write Automation",
+    status: "upcoming",
+  },
+  {
+    version: "v1.2",
     title: "Ekspor Kalender iCal (.ics)",
     description:
       "Sinkronisasi otomatis jadwal kuliah SIAKAD langsung ke Google Calendar di Android dan Apple Calendar di iOS.",
