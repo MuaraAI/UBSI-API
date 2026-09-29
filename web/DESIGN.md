@@ -4,33 +4,34 @@
 
 Light glassmorphism design system inspired by raflialdiansyah.com (Seeyaa77/portofolio).
 White-dominant frosted glass surfaces over a soft blue-gray background with ambient color blobs.
-Adapted for UBSI API with teal accent and Gordita font family.
+Adapted for UBSI API with Ocean Cyan (#92EEFF) accent and Gordita font family.
 
 ## Color Palette
 
 | Token              | Value                                              | Usage                        |
 | ------------------ | -------------------------------------------------- | ---------------------------- |
 | `--bg`             | `#eef1f6`                                          | Page background              |
-| `--surface`        | `rgba(255, 255, 255, 0.55)`                        | Glass surface fill           |
+| `--surface`        | `rgba(255, 255, 255, 0.60)`                        | Glass surface fill           |
 | `--surface-solid`  | `#ffffff`                                          | Opaque surface               |
 | `--stroke`         | `rgba(17, 24, 39, 0.08)`                           | Glass border                 |
 | `--text`           | `#1a1d26`                                          | Primary text                 |
 | `--text-muted`     | `#5a616e`                                          | Secondary text               |
-| `--accent`         | `#2DD4BF`                                          | Teal accent (UBSI brand)     |
-| `--accent-hover`   | `#54E3D1`                                          | Accent hover                 |
-| `--accent-dark`    | `#06251F`                                          | Text on accent background    |
-| `--code-bg`        | `#1e1e2e`                                          | Dark code block background   |
+| `--accent`         | `#92EEFF`                                          | Ocean Cyan accent            |
+| `--accent-hover`   | `#B8F5FF`                                          | Accent hover                 |
+| `--accent-dark`    | `#062535`                                          | Text on accent background    |
+| `--code-bg`        | `#131b26`                                          | Dark code block background   |
 | `--code-text`      | `#cdd6f4`                                          | Code text                    |
 
 ## Glass Tokens
 
 | Property            | Value                                                                                                   |
 | ------------------- | ------------------------------------------------------------------------------------------------------- |
-| Glass fill          | `linear-gradient(150deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.5) 45%, rgba(255,255,255,0.32) 100%)` |
-| Backdrop filter     | `blur(22px) saturate(180%)`                                                                             |
-| Glass stroke        | `1px solid rgba(17, 24, 39, 0.08)`                                                                     |
-| Glass edge (inset)  | `inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 1px rgba(255,255,255,0.35)`                         |
-| Glass shadow        | `0 8px 32px rgba(26, 58, 92, 0.06)`                                                                    |
+| Glass fill          | `linear-gradient(150deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.50) 45%, rgba(255,255,255,0.32) 100%)` |
+| 3D Glass fill       | `linear-gradient(145deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0.25) 100%)` |
+| Backdrop filter     | `blur(24px) saturate(200%)`                                                                             |
+| Glass stroke        | `1px solid rgba(255, 255, 255, 0.85)`                                                                   |
+| Glass edge (inset)  | `inset 0 1.5px 1px 0 rgba(255,255,255,0.95), inset 0 -1px 2px 0 rgba(146,238,255,0.25)`               |
+| Glass 3D Hover      | `transform: translateY(-7px) scale(1.015); border-color: rgba(146,238,255,0.9); glow: 0 20px 45px rgba(146,238,255,0.38)` |
 
 ## Typography
 

@@ -22,6 +22,7 @@ export default async function Home() {
         <div className="ambient-blob ambient-blob-1" />
         <div className="ambient-blob ambient-blob-2" />
         <div className="ambient-blob ambient-blob-3" />
+        <div className="ambient-blob ambient-blob-4" />
       </div>
       {/* Grid overlay */}
       <div className="grid-overlay" aria-hidden="true" />

@@ -26,11 +26,12 @@ export function Architecture() {
 
   return (
     <section className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
-      <div className="glass-card p-8 sm:p-12">
+      <div className="glass-card-3d p-8 sm:p-12">
         <div className="text-center mb-10">
-          <span className="accent-badge text-xs font-mono tracking-widest uppercase">
-            ENGINEERING EXCELLENCE
-          </span>
+          <div className="badge-dark mb-4 mx-auto">
+            <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
+            <span>ENGINEERING EXCELLENCE</span>
+          </div>
           <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-3">
             Dibangun untuk Keandalan dan Kecepatan.
           </h2>
@@ -40,10 +41,10 @@ export function Architecture() {
           {specs.map((s, idx) => (
             <div
               key={idx}
-              className="p-5 rounded-card bg-white/40 border border-stroke flex flex-col justify-between hover:bg-white/60 transition-all duration-200 ease-glass"
+              className="p-5 rounded-[18px] bg-white/50 border border-white/80 shadow-sm flex flex-col justify-between hover:bg-white/80 hover:border-[#92EEFF]/80 hover:shadow-float transition-all duration-300"
             >
               <div>
-                <span className="font-display text-2xl font-bold text-accent">
+                <span className="font-display text-2xl font-bold text-[#083344]">
                   {s.metric}
                 </span>
                 <h3 className="font-display text-sm font-semibold text-foreground mt-1">
