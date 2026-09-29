@@ -230,9 +230,7 @@ average/max/min scores, per-course breakdown, and per-meeting rows.
 - **Cache TTL**: 30 minutes (1800 seconds)
 
 ### `GET /v1/elearning/courses/{course_id}/grades`
-Same recap scoped to one course. `course_id` is the `id` field of a course
-from `GET /v1/elearning/courses`. Returns `404 COURSE_NOT_FOUND` when the id
-is unknown.
+Same recap scoped to one course. `course_id` accepts either the 12-char hex `id` or the course code (`kode`, e.g. `104` or `101`) from `GET /v1/elearning/courses`. Returns `404 COURSE_NOT_FOUND` when the course is unknown.
 - **Cache TTL**: 30 minutes (1800 seconds)
 
 ---
