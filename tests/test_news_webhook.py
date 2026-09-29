@@ -168,3 +168,27 @@ async def test_news_webhook_test_endpoint_channels(monkeypatch):
         assert results["discord"]["success"] is True
         assert results["telegram"]["success"] is True
         assert results["custom"]["success"] is True
+
+@pytest.mark.asyncio
+async def test_news_webhook_test_endpoint_rejects_ssrf_urls():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        # Loopback attempt
+        res1 = await ac.post("/v1/news/webhook/test?channel=custom&target_url=http://127.0.0.1:6379")
+        assert res1.status_code == 400
+        assert res1.json()["error"]["code"] == "INVALID_URL"
+
+        # Private RFC1918 attempt
+        res2 = await ac.post("/v1/news/webhook/test?channel=custom&target_url=http://192.168.1.100:8000/webhook")
+        assert res2.status_code == 400
+        assert res2.json()["error"]["code"] == "INVALID_URL"
+
+@pytest.mark.asyncio
+async def test_news_webhook_test_endpoint_requires_master_key():
+    with patch("app.main.settings.API_KEY", "master123"), \
+         patch("app.vault.resolve_member_key", new_callable=AsyncMock) as mock_resolve:
+        mock_resolve.return_value = {"nim": "15260767", "elearning_pass": "p1", "studentv2_pass": "p2"}
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+            res = await ac.post("/v1/news/webhook/test?channel=all", headers={"X-API-Key": "muara_live_member_key"})
+            assert res.status_code == 403
+            assert res.json()["error"]["code"] == "FORBIDDEN"
+
