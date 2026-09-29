@@ -3,8 +3,8 @@ import { CampusModule } from "@/types";
 export const CAMPUS_MODULES: CampusModule[] = [
   {
     id: "studentv2",
-    name: "StudentV2 SIAKAD",
-    service: "studentv2.bsi.ac.id",
+    name: "Students SIAKAD",
+    service: "students.bsi.ac.id",
     description:
       "Ekstraksi data akademik, jadwal perkuliahan, rincian KRS semester berjalan, KHS, dan rangkuman dashboard mahasiswa.",
     endpointsCount: 4,

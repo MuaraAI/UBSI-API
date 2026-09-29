@@ -117,11 +117,11 @@ def parse_announcements(html: str) -> list[dict[str, Any]]:
 # ============================================================================
 
 class StudentV2Client:
-    BASE_URL = "https://studentv2.bsi.ac.id"
+    BASE_URL = "https://students.bsi.ac.id"
     HEADERS = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        "Origin": "https://studentv2.bsi.ac.id",
-        "Referer": "https://studentv2.bsi.ac.id/login",
+        "Origin": "https://students.bsi.ac.id",
+        "Referer": "https://students.bsi.ac.id/login",
     }
 
     def __init__(self):
@@ -160,7 +160,7 @@ class StudentV2Client:
                 "remember": "on"
             }
             r2 = client.post(login_url, data=payload)
-            if "mahasiswa/beranda" in str(r2.url) or "studentv2.bsi.ac.id/mahasiswa" in str(r2.url):
+            if "mahasiswa/beranda" in str(r2.url) or "students.bsi.ac.id/mahasiswa" in str(r2.url) or "studentv2.bsi.ac.id/mahasiswa" in str(r2.url):
                 self._logged_in = True
                 return True
             return False
@@ -178,7 +178,7 @@ class StudentV2Client:
                     status_code=status.HTTP_502_BAD_GATEWAY,
                     detail=error_response(
                         code="AUTH_FAILED",
-                        message="Gagal login ke studentv2.bsi.ac.id",
+                        message="Gagal login ke students.bsi.ac.id",
                         module="studentv2"
                     )
                 )
