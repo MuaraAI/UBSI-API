@@ -298,7 +298,7 @@ Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Univ
     </td>
     <td align="center" width="33%">
       <a href="https://github.com/MyKineID">
-        <img src="https://github.com/MyKineID.png" width="90" height="90" alt="Verzio" style="border-radius:50%;" /><br />
+        <img src="https://github.com/MyKineID.png" width="90" height="90" alt="Verzio Y." style="border-radius:50%;" /><br />
         <b>Verzio</b>
       </a>
       <br />
