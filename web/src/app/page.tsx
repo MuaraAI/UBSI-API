@@ -3,7 +3,6 @@ import { Hero } from "@/components/Hero";
 import { CodeShowcase } from "@/components/CodeShowcase";
 import { ModulesGrid } from "@/components/ModulesGrid";
 import { Architecture } from "@/components/Architecture";
-import { ElementsGallery } from "@/components/ElementsGallery";
 import { Quickstart } from "@/components/Quickstart";
 import { Contributors } from "@/components/Contributors";
 import { RoadmapTeaser } from "@/components/RoadmapTeaser";
@@ -33,7 +32,6 @@ export default async function Home() {
         <CodeShowcase />
         <ModulesGrid />
         <Architecture />
-        <ElementsGallery />
         <Quickstart />
         <RoadmapTeaser />
         <Contributors contributions={stats.contributors} />
