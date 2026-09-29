@@ -24,9 +24,10 @@ export function CodeShowcase() {
   return (
     <section id="showcase" className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="text-center mb-10">
-        <span className="accent-badge text-xs font-mono tracking-widest uppercase">
-          DEVELOPER EXPERIENCE
-        </span>
+        <div className="badge-dark mb-4 mx-auto">
+          <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
+          <span>DEVELOPER EXPERIENCE</span>
+        </div>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-3">
           Interaksi Cepat, Response Terstandarisasi.
         </h2>
@@ -35,7 +36,7 @@ export function CodeShowcase() {
         </p>
       </div>
 
-      <div className="glass-card overflow-hidden p-0">
+      <div className="glass-card-3d overflow-hidden p-0">
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-code-bg/90 border-b border-white/10">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[#F87171]/80 inline-block" />
@@ -54,7 +55,7 @@ export function CodeShowcase() {
                   onClick={() => setActiveTab(tab)}
                   className={`px-2.5 py-1 rounded-sm text-xs font-mono transition-colors duration-200 ${
                     activeTab === tab
-                      ? "bg-accent/20 text-accent font-semibold"
+                      ? "bg-[#92EEFF]/20 text-[#92EEFF] border border-[#92EEFF]/40 font-semibold"
                       : "text-code-text/60 hover:text-code-text"
                   }`}
                 >

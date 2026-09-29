@@ -40,7 +40,7 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
             <span className="font-display font-bold text-base tracking-tight text-foreground">
               UBSI API
             </span>
-            <span className="text-[10px] font-mono tracking-widest text-accent uppercase -mt-0.5">
+            <span className="text-[10px] font-mono tracking-widest text-[#08738a] font-bold uppercase -mt-0.5">
               Muara AI
             </span>
           </div>

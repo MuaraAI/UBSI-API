@@ -5,9 +5,10 @@ export function RoadmapTeaser() {
   return (
     <section className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="text-center mb-10">
-        <span className="accent-badge text-xs font-mono tracking-widest uppercase">
-          WHAT\u2019S NEXT
-        </span>
+        <div className="badge-dark mb-4 mx-auto">
+          <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
+          <span>WHAT’S NEXT</span>
+        </div>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-3">
           Roadmap v1.2: Fitur Produktivitas Mahasiswa.
         </h2>
@@ -16,11 +17,11 @@ export function RoadmapTeaser() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {ROADMAP_ITEMS.map((item, idx) => (
           <div
             key={idx}
-            className="glass-card p-6 flex flex-col justify-between group"
+            className="glass-card-3d p-6 flex flex-col justify-between group"
           >
             <div>
               <div className="flex items-center justify-between mb-3">
@@ -32,7 +33,7 @@ export function RoadmapTeaser() {
                 </span>
               </div>
 
-              <h3 className="font-display text-base font-semibold text-foreground group-hover:text-accent transition-colors duration-200 ease-glass">
+              <h3 className="font-display text-base font-semibold text-foreground group-hover:text-[#00778c] transition-colors duration-200">
                 {item.title}
               </h3>
               <p className="text-xs text-secondary mt-2 leading-relaxed font-sans">
@@ -42,7 +43,7 @@ export function RoadmapTeaser() {
 
             <div className="mt-4 pt-3 border-t border-stroke flex items-center justify-between text-[11px] font-mono text-secondary">
               <span>Status:</span>
-              <span className="text-accent capitalize">{item.status}</span>
+              <span className="text-[#08738a] font-semibold capitalize">{item.status}</span>
             </div>
           </div>
         ))}

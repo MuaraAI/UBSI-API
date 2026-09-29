@@ -9,15 +9,15 @@ export function Monogram({ className = "w-7 h-7" }: { className?: string }) {
       className={className}
       aria-hidden="true"
     >
-      <rect width="32" height="32" rx="6" fill="#111C2E" />
+      <rect width="32" height="32" rx="6" fill="#0e1726" />
       <path
         d="M8 24V11L16 19L24 11V24"
-        stroke="#2DD4BF"
+        stroke="#92EEFF"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="16" cy="19" r="1.5" fill="#54E3D1" />
+      <circle cx="16" cy="19" r="1.5" fill="#B8F5FF" />
     </svg>
   );
 }
