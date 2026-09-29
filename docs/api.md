@@ -30,6 +30,28 @@ UBSI API organizes all endpoints under the `/v1/` prefix. Every endpoint returns
 
 ---
 
+## Authentication & Dual-Mode Access
+
+UBSI API supports two operating modes:
+
+### 1. Standalone / Self-Host Mode (Default)
+Run locally or on your own VPS with a single master key:
+- Header: `X-API-Key: <your_configured_API_KEY>`
+- Campus credentials default to `.env` (`STUDENTV2_NIM`, `STUDENTV2_PASS`, `ELEARNING_NIM`, `ELEARNING_PASS`).
+- Developer overrides supported per-request via headers: `X-Studentv2-NIM`, `X-Studentv2-Pass`, `X-Elearning-NIM`, `X-Elearning-Pass`.
+- Rate limiting: Unlimited for Master Key.
+
+### 2. Cloud Hosted Mode (Muara AI Platform)
+Deployed on `api.muaraai.com` or `ubsi-api.muaraai.com` with multi-tenancy:
+- Header: `X-API-Key: muara_live_<member_key>`
+- The backend automatically resolves and decrypts (AES-256-GCM) the student's bound NIM and campus passwords from the Supabase Vault with zero DB latency (Redis cached for 10 minutes).
+- Rate limiting: 60 requests/minute per member key (sliding-window).
+
+### API Gateway Prefix (`ROOT_PATH`)
+When proxied behind an API Gateway (e.g., Caddy handling `api.muaraai.com/v1/ubsi-api/*`), set `ROOT_PATH=/v1/ubsi-api` in `.env`. Swagger UI (`/docs`) and OpenAPI schema automatically adjust to the sub-path prefix.
+
+---
+
 ## 1. System
 
 ### `GET /health`

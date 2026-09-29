@@ -1,6 +1,7 @@
 import asyncio
 import os
 import secrets
+import hashlib
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 from fastapi import FastAPI, Request, status, HTTPException
@@ -91,6 +92,7 @@ app = FastAPI(
     title="UBSI API",
     description="Private Unofficial API Aggregator for UBSI Services",
     version="1.1.5",
+    root_path=settings.ROOT_PATH,
     lifespan=lifespan
 )
 
@@ -112,10 +114,9 @@ async def api_key_auth_middleware(request: Request, call_next):
         return await call_next(request)
 
     # 3. Validate X-API-Key
-    api_key = request.headers.get("x-api-key")
-    configured_key = settings.API_KEY
-
-    if not api_key or not configured_key or not secrets.compare_digest(api_key, configured_key):
+    raw_api_key = request.headers.get("x-api-key")
+    api_key = raw_api_key.strip() if raw_api_key else ""
+    if not api_key:
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content=error_response(
@@ -125,7 +126,33 @@ async def api_key_auth_middleware(request: Request, call_next):
             )
         )
 
-    return await call_next(request)
+    configured_key = settings.API_KEY
+
+    # 3a. Master Key check
+    if configured_key and secrets.compare_digest(api_key, configured_key):
+        request.state.is_master = True
+        request.state.key_id = "master"
+        return await call_next(request)
+
+    # 3b. Member Key check (Supabase Vault)
+    from app.vault import resolve_member_key
+    member_data = await resolve_member_key(api_key)
+    if member_data:
+        request.state.is_master = False
+        request.state.key_id = hashlib.sha256(api_key.encode("utf-8")).hexdigest()[:12]
+        request.state.nim = member_data["nim"]
+        request.state.elearning_pass = member_data["elearning_pass"]
+        request.state.studentv2_pass = member_data["studentv2_pass"]
+        return await call_next(request)
+
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content=error_response(
+            code="UNAUTHORIZED",
+            message="Akses ditolak: Header X-API-Key tidak valid atau tidak disertakan",
+            module="auth"
+        )
+    )
 
 @app.middleware("http")
 async def rate_limiting_middleware(request: Request, call_next):
@@ -134,14 +161,21 @@ async def rate_limiting_middleware(request: Request, call_next):
     if path in ("/health", "/docs", "/openapi.json", "/redoc"):
         return await call_next(request)
 
-    client_ip = extract_client_ip(request)
-    is_allowed = await limiter.is_allowed(client_ip)
+    # Master key bypasses rate limiting
+    if getattr(request.state, "is_master", False):
+        return await call_next(request)
+
+    client_key = getattr(request.state, "key_id", None)
+    rate_identifier = f"key:{client_key}" if client_key else extract_client_ip(request)
+
+    is_allowed = await limiter.is_allowed(rate_identifier)
     if not is_allowed:
         return JSONResponse(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             content=error_response(
                 code="RATE_LIMIT_EXCEEDED",
-                message="Rate limit exceeded (max 60 req/min)"
+                message="Rate limit exceeded (max 60 req/min)",
+                module="limiter"
             )
         )
     return await call_next(request)

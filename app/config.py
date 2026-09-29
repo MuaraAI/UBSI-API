@@ -8,6 +8,12 @@ class Settings(BaseSettings):
     API_KEY: str = ""
     ALLOWED_ORIGINS: str = "*"
     TRUSTED_PROXIES: str = "127.0.0.1"
+    ROOT_PATH: str = ""
+
+    # Supabase Vault & Member Key Configuration (Opsional - Cloud Mode)
+    SUPABASE_URL: str = ""
+    SUPABASE_SERVICE_KEY: str = ""
+    VAULT_ENCRYPTION_KEY: str = ""
 
     STUDENTV2_NIM: str = ""
     STUDENTV2_PASS: str = ""
