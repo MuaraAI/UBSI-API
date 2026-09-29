@@ -72,12 +72,13 @@ UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di 
 
 | Modul | Status | Sumber | Kemampuan Utama |
 |:---|:---:|:---|:---|
-| **StudentV2** | ✅ | `studentv2.bsi.ac.id` | Jadwal kuliah semester aktif, nilai murni, pengumuman PDF, arsip berita |
+| **StudentV2** | ✅ | `students.bsi.ac.id` | Jadwal kuliah semester aktif, nilai murni, pengumuman PDF, arsip berita |
 | **Elearning** | ✅ | `elearning.bsi.ac.id` (MyBest) | Kartu matkul, presensi perkuliahan, tugas & submission, materi ZIP, kuis |
 | **Elibrary** | ✅ | `elibrary.bsi.ac.id` | OPAC search katalog, detail buku, stok fisik, 60s timeout & retry |
 | **News Portal** | ✅ | `news.bsi.ac.id` | Berita kampus resmi via native WP REST API (`/wp-json/wp/v2/posts`) |
+| **News Webhook** | ✅ | Internal Engine | Auto-dispatch webhook real-time setiap ada artikel baru via background worker |
 | **Repository** | ✅ | `repository.bsi.ac.id` | Publikasi ilmiah terbaru & pencarian riset EPrints |
-| **EJournal** | ✅ | `ejournal.bsi.ac.id` | Katalog 16 jurnal ilmiah resmi UBSI via jalur OAI bypass |
+| **EJournal** | ✅ | `ejournal.bsi.ac.id` | Katalog 23 jurnal ilmiah resmi UBSI via jalur OAI bypass |
 | **Rate Limiter** | ✅ | Internal Engine | Sliding-window limiter 60 request/menit via Redis |
 
 ---
@@ -109,6 +110,7 @@ UBSI API menyatukan seluruh sumber tersebut ke dalam satu backend JSON cepat di 
 ### Publikasi Ilmiah & Berita
 - `GET /v1/news?search=&page=&per_page=` — Berita kampus resmi (dilengkapi author & featured image).
 - `GET /v1/news/{post_id}` — Detail artikel berita lengkap.
+- `POST /v1/news/webhook/test?target_url=` — Uji coba kirim payload event berita ke URL webhook target.
 - `GET /v1/repository/recent` — Publikasi karya ilmiah dan tugas akhir terbaru di EPrints.
 - `GET /v1/repository/search?q=` — Pencarian repositori karya ilmiah.
 - `GET /v1/ejournal/journals` — Katalog lengkap 23 jurnal ilmiah resmi UBSI.
@@ -269,6 +271,7 @@ Proyek ini dibangun dan dikembangkan secara independen oleh mahasiswa aktif Univ
 |:---:|---|---|---|:---:|
 | <img src="https://github.com/Curzyori.png" width="65" height="65" style="border-radius:50%;" alt="Yuken Velino" /> | **Yuken Velino**<br>[@Curzyori](https://github.com/Curzyori) | **NIM**: `15260767`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1C.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Lead Developer & Creator** | [![Commits](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B0%5D.contributions&label=Commits&color=2DD4BF&logo=git)](https://github.com/MuaraAI/UBSI-API/commits?author=Curzyori) |
 | <img src="https://github.com/MyKineID.png" width="65" height="65" style="border-radius:50%;" alt="Verzio" /> | **Verzio**<br>[@MyKineID](https://github.com/MyKineID) | **NIM**: `15260225`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1B.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor** | [![Commits](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B1%5D.contributions&label=Commits&color=2DD4BF&logo=git)](https://github.com/MuaraAI/UBSI-API/commits?author=MyKineID) |
+| <img src="https://github.com/Seeyaa77.png" width="65" height="65" style="border-radius:50%;" alt="Muhammad Raffli Aldiansyah" /> | **Muhammad Raffli Aldiansyah**<br>[@Seeyaa77](https://github.com/Seeyaa77) | **NIM**: `15260161`<br>**Prodi**: Informatika (S1)<br>**Fakultas**: Teknik & Informatika<br>**Kelas**: `15.1A.30`<br>**Semester**: 1<br>**Kampus**: UBSI Kota Pontianak | **Contributor** | [![Commits](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMuaraAI%2FUBSI-API%2Fcontributors&query=%24%5B2%5D.contributions&label=Commits&color=2DD4BF&logo=git)](https://github.com/MuaraAI/UBSI-API/commits?author=Seeyaa77) |
 
 ---
 
