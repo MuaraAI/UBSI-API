@@ -104,7 +104,20 @@ Retrieves 4 critical academic sections (`schedule`, `grades`, `news`, `announcem
 
 ---
 
-## 6. Repository Layout
+## 6. Multi-Channel Webhook Broadcaster (`app/modules/news.py`)
+
+UBSI API includes an automated background watcher for new campus publications:
+- **Background Worker (`lifespan`)**: Non-blocking async loop checking upstream WordPress REST API every 10 minutes (`NEWS_WEBHOOK_INTERVAL`).
+- **Cold-Start Protection**: First run seeds current post IDs into Redis (`ubsi:news:seen_ids`, TTL 30 days) to prevent spamming notifications on reboot.
+- **Parallel Multi-Channel Delivery**:
+  - **Discord Webhook**: Rich Embeds formatted with Teal (`#2DD4BF`), article banner image, and clickable links.
+  - **Telegram Bot API**: HTML-escaped messages sent via `sendPhoto` with automatic fallback to `sendMessage`.
+  - **Custom Webhook**: Generic JSON payload `{"event": "news.published", "data": {...}}`.
+- **Fault-Tolerant & Retry**: Dispatches via `asyncio.gather(*tasks, return_exceptions=True)`. Posts are only marked as seen if delivery succeeds, retrying automatically on the next cycle if upstream or network fails.
+
+---
+
+## 7. Repository Layout
 
 ```text
 UBSI-API/
@@ -113,9 +126,9 @@ UBSI-API/
 │   │   ├── studentv2.py       # SIAKAD: Jadwal, Nilai, Berita, Pengumuman, Dashboard
 │   │   ├── elearning.py       # MyBest: Captcha solver, Courses, Absensi, Tugas, Materi, Kuis
 │   │   ├── elibrary.py        # Perpus: OPAC search, Book detail, 60s retry
-│   │   ├── news.py            # Portal: Native WP REST API (/wp-json/wp/v2/posts)
+│   │   ├── news.py            # Portal: Native WP REST API & Multi-channel Webhook
 │   │   ├── repository.py      # EPrints: Recent publications & search
-│   │   └── ejournal.py        # OJS: 16 Journal catalog via OAI bypass
+│   │   └── ejournal.py        # OJS: 23 Journal catalog with real titles
 │   ├── cache.py               # Redis 2-tier cache (fresh + LGG) & single-flight mutex
 │   ├── config.py              # Pydantic Settings & tiered TTLs
 │   ├── deps.py                # Modular credential validation (Option B)
@@ -128,7 +141,7 @@ UBSI-API/
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline (sv2_*.html, el_*.html)
 │   ├── conftest.py            # Fixture autouse & test auth client
-│   └── test_*.py              # 71 Automated unit & integration tests
+│   └── test_*.py              # 78 Automated unit & integration tests
 ├── templates/
 │   ├── Caddyfile.example      # Caddy reverse proxy template (HTTPS auto)
 │   ├── nginx.example.conf     # Nginx reverse proxy configuration template
@@ -139,7 +152,7 @@ UBSI-API/
 ├── skills/
 │   └── SKILL.md               # Agent skill definition for AI assistants
 ├── docs/
-│   ├── api.md                 # 19 Endpoints dictionary & JSON payloads
+│   ├── api.md                 # 20 Endpoints dictionary & JSON payloads
 │   ├── architecture.md        # Request lifecycle, session pool, and cache flow
 │   ├── anti-ban.md            # Account security & safety protocols
 │   ├── deploy.md              # VPS PM2 production operations

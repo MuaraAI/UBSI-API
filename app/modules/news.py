@@ -1,4 +1,5 @@
 import asyncio
+import html
 import json
 import re
 import urllib.parse
@@ -168,10 +169,11 @@ async def get_news_detail(post_id: str = Path(..., pattern=r"^[0-9]+$")):
     )
 
 # ============================================================================
-# News Webhook Auto-Notification
+# News Multi-Channel Auto-Notification (Discord, Telegram, Custom)
 # ============================================================================
 
 async def dispatch_webhook_notification(post: dict[str, Any], webhook_url: str) -> bool:
+    """Kirim generic JSON payload ke custom webhook URL."""
     payload = {
         "event": "news.published",
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -184,12 +186,110 @@ async def dispatch_webhook_notification(post: dict[str, Any], webhook_url: str) 
     except Exception:
         return False
 
-async def poll_news_webhook() -> int:
-    """Cek artikel berita baru dan dispatch ke webhook jika ada.
+async def dispatch_discord_webhook(post: dict[str, Any], webhook_url: str) -> bool:
+    """Kirim rich embed ke Discord Webhook."""
+    title = (post.get("title") or "Berita Baru UBSI")[:256]
+    description = (post.get("excerpt") or "")[:4000]
+    author_name = (post.get("author") or "Redaksi")[:256]
 
-    Mengembalikan jumlah notifikasi yang berhasil dikirim.
-    """
-    if not settings.NEWS_WEBHOOK_URL:
+    embed: dict[str, Any] = {
+        "title": title,
+        "url": post.get("link", ""),
+        "description": description,
+        "color": 0x2DD4BF,  # Teal #2DD4BF
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "footer": {"text": f"Oleh: {author_name} • UBSI News Portal"},
+    }
+    if post.get("featured_image"):
+        embed["image"] = {"url": post["featured_image"]}
+
+    payload = {
+        "username": "UBSI News",
+        "avatar_url": "https://ubsi-api.muaraai.com/assets/images/brand-logos/logo_bsi.png",
+        "embeds": [embed],
+    }
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            res = await client.post(webhook_url, json=payload)
+            return res.is_success
+    except Exception:
+        return False
+
+async def dispatch_telegram_message(post: dict[str, Any], bot_token: str, chat_id: str) -> bool:
+    """Kirim pesan HTML dengan foto (jika ada) ke Telegram via Bot API."""
+    raw_title = post.get("title", "Berita Kampus UBSI")
+    raw_excerpt = post.get("excerpt", "")
+    raw_author = post.get("author", "Redaksi")
+    date = post.get("date", "")
+    link = post.get("link", "https://news.bsi.ac.id")
+    image_url = post.get("featured_image")
+
+    # Escape karakter khusus HTML agar Telegram Bot API tidak melempar 400 Bad Request
+    title = html.escape(raw_title, quote=False)
+    excerpt = html.escape(raw_excerpt, quote=False)
+    author = html.escape(raw_author, quote=False)
+
+    caption = (
+        f"📰 <b><a href=\"{link}\">{title}</a></b>\n\n"
+        f"{excerpt}\n\n"
+        f"✍️ <i>{author}</i> • 📅 {date}\n"
+        f"🔗 <a href=\"{link}\">Baca Selengkapnya di Portal Berita</a>"
+    )
+
+    base_url = f"https://api.telegram.org/bot{bot_token}"
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            if image_url:
+                res = await client.post(
+                    f"{base_url}/sendPhoto",
+                    json={
+                        "chat_id": chat_id,
+                        "photo": image_url,
+                        "caption": caption[:1024],
+                        "parse_mode": "HTML",
+                    },
+                )
+                if res.is_success:
+                    return True
+            # Fallback sendMessage jika tanpa gambar atau sendPhoto gagal
+            res2 = await client.post(
+                f"{base_url}/sendMessage",
+                json={
+                    "chat_id": chat_id,
+                    "text": caption[:4096],
+                    "parse_mode": "HTML",
+                    "disable_web_page_preview": False,
+                },
+            )
+            return res2.is_success
+    except Exception:
+        return False
+
+async def broadcast_news_article(post: dict[str, Any]) -> dict[str, bool]:
+    """Kirim artikel secara paralel ke seluruh channel yang aktif."""
+    tasks: dict[str, Any] = {}
+    if settings.DISCORD_WEBHOOK_URL:
+        tasks["discord"] = dispatch_discord_webhook(post, settings.DISCORD_WEBHOOK_URL)
+    if settings.TELEGRAM_BOT_TOKEN and settings.TELEGRAM_CHAT_ID:
+        tasks["telegram"] = dispatch_telegram_message(post, settings.TELEGRAM_BOT_TOKEN, settings.TELEGRAM_CHAT_ID)
+    if settings.NEWS_WEBHOOK_URL:
+        tasks["custom"] = dispatch_webhook_notification(post, settings.NEWS_WEBHOOK_URL)
+
+    if not tasks:
+        return {}
+
+    keys = list(tasks.keys())
+    results = await asyncio.gather(*tasks.values(), return_exceptions=True)
+    return {k: (bool(r) and not isinstance(r, Exception)) for k, r in zip(keys, results)}
+
+async def poll_news_webhook() -> int:
+    """Cek artikel berita baru dan broadcast ke seluruh channel aktif."""
+    has_channel = bool(
+        settings.DISCORD_WEBHOOK_URL
+        or (settings.TELEGRAM_BOT_TOKEN and settings.TELEGRAM_CHAT_ID)
+        or settings.NEWS_WEBHOOK_URL
+    )
+    if not has_channel:
         return 0
 
     redis = await cache.get_client()
@@ -221,8 +321,8 @@ async def poll_news_webhook() -> int:
             continue
         is_member = await redis.sismember(key_seen, p_id)
         if not is_member:
-            ok = await dispatch_webhook_notification(p, settings.NEWS_WEBHOOK_URL)
-            if ok:
+            results = await broadcast_news_article(p)
+            if any(results.values()):
                 await redis.sadd(key_seen, p_id)
                 dispatched_count += 1
 
@@ -237,35 +337,58 @@ async def news_webhook_worker():
         await asyncio.sleep(settings.NEWS_WEBHOOK_INTERVAL)
 
 @router.post("/webhook/test")
-async def test_news_webhook(target_url: Optional[str] = Query(default=None, description="URL target alternatif")):
-    """Kirim payload uji coba ke webhook untuk memverifikasi endpoint consumer."""
-    webhook_url = target_url or settings.NEWS_WEBHOOK_URL
-    if not webhook_url:
+async def test_news_webhook(
+    channel: str = Query(default="all", pattern=r"^(all|discord|telegram|custom)$", description="Channel target: all, discord, telegram, custom"),
+    target_url: Optional[str] = Query(default=None, description="URL target override (khusus custom/discord)"),
+    telegram_bot_token: Optional[str] = Query(default=None, description="Bot token override (khusus telegram)"),
+    telegram_chat_id: Optional[str] = Query(default=None, description="Chat ID override (khusus telegram)")
+):
+    """Kirim payload uji coba ke Discord, Telegram, atau Custom Webhook."""
+    sample_post = {
+        "id": "test_99999",
+        "title": "Uji Coba Notifikasi Berita Kampus UBSI",
+        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+        "link": "https://news.bsi.ac.id/sample-article",
+        "author": "Redaksi UBSI API",
+        "featured_image": "https://news.bsi.ac.id/wp-content/uploads/2026/09/banner.jpg",
+        "excerpt": "Ini adalah payload contoh verifikasi koneksi broadcast webhook multi-channel dari UBSI API.",
+    }
+
+    results: dict[str, Any] = {}
+    if channel in ("all", "discord"):
+        discord_url = target_url or settings.DISCORD_WEBHOOK_URL
+        if discord_url:
+            ok = await dispatch_discord_webhook(sample_post, discord_url)
+            results["discord"] = {"configured": True, "success": ok, "target": discord_url}
+        else:
+            results["discord"] = {"configured": False, "message": "DISCORD_WEBHOOK_URL belum disetel"}
+
+    if channel in ("all", "telegram"):
+        tg_token = telegram_bot_token or settings.TELEGRAM_BOT_TOKEN
+        tg_chat = telegram_chat_id or settings.TELEGRAM_CHAT_ID
+        if tg_token and tg_chat:
+            ok = await dispatch_telegram_message(sample_post, tg_token, tg_chat)
+            results["telegram"] = {"configured": True, "success": ok, "chat_id": tg_chat}
+        else:
+            results["telegram"] = {"configured": False, "message": "TELEGRAM_BOT_TOKEN atau TELEGRAM_CHAT_ID belum disetel"}
+
+    if channel in ("all", "custom"):
+        custom_url = target_url or settings.NEWS_WEBHOOK_URL
+        if custom_url:
+            ok = await dispatch_webhook_notification(sample_post, custom_url)
+            results["custom"] = {"configured": True, "success": ok, "target": custom_url}
+        else:
+            results["custom"] = {"configured": False, "message": "NEWS_WEBHOOK_URL belum disetel"}
+
+    any_configured = any(r.get("configured") for r in results.values())
+    if not any_configured:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_response(
                 code="CONFIG_MISSING",
-                message="NEWS_WEBHOOK_URL belum disetel di .env atau parameter target_url kosong",
+                message=f"Tidak ada konfigurasi aktif untuk channel '{channel}'. Setel di .env atau kirim parameter target_url.",
                 module="news"
             )
         )
-    sample_post = {
-        "id": "test_99999",
-        "title": "Uji Coba Notifikasi Webhook Berita UBSI",
-        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
-        "link": "https://news.bsi.ac.id/sample-article",
-        "author": "Redaksi UBSI API",
-        "featured_image": None,
-        "excerpt": "Ini adalah payload contoh verifikasi koneksi webhook dari UBSI API.",
-    }
-    ok = await dispatch_webhook_notification(sample_post, webhook_url)
-    if not ok:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=error_response(
-                code="DELIVERY_FAILED",
-                message=f"Gagal mengirim webhook ke {webhook_url}",
-                module="news"
-            )
-        )
-    return success_response(data={"message": f"Webhook test berhasil dikirim ke {webhook_url}", "payload": sample_post})
+
+    return success_response(data={"message": f"Pengujian broadcast channel '{channel}' selesai", "results": results})

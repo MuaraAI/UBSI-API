@@ -244,9 +244,28 @@ Fetches official news posts directly from the WordPress REST API (`news.bsi.ac.i
 Retrieves full rendered HTML content and author metadata for a specific article.
 
 ### `POST /v1/news/webhook/test`
-Sends a test webhook payload to `NEWS_WEBHOOK_URL` (or an optional `?target_url=...` query param) to verify receiver connectivity.
-- **Payload Event**: `news.published`
+Sends a test news publication alert to configured channels (`all`, `discord`, `telegram`, or `custom`) or explicit target parameters.
+- **Query Parameters**:
+  - `channel` (optional, default: `all`): Target channel to test (`all`, `discord`, `telegram`, `custom`).
+  - `target_url` (optional): Override webhook URL for testing ad-hoc endpoints (Discord / Custom).
+  - `telegram_bot_token` (optional): Override Telegram bot token for testing.
+  - `telegram_chat_id` (optional): Override Telegram target chat ID for testing.
 - **Requires Auth**: Yes (`X-API-Key`)
+- **Sample Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "message": "Pengujian broadcast channel 'all' selesai",
+      "results": {
+        "discord": { "configured": true, "success": true, "target": "https://discord.com/api/webhooks/..." },
+        "telegram": { "configured": true, "success": true, "chat_id": "@channel_kampus" },
+        "custom": { "configured": true, "success": true, "target": "https://bot-ciel.internal/api/webhook" }
+      }
+    },
+    "cached": false
+  }
+  ```
 
 ### `GET /v1/repository/recent`
 Retrieves recent undergraduate theses and faculty research publications from EPrints.
@@ -256,5 +275,5 @@ Retrieves recent undergraduate theses and faculty research publications from EPr
 Performs a full-text search across institutional research publications.
 
 ### `GET /v1/ejournal/journals`
-Lists the catalog of 16 official UBSI peer-reviewed scientific journals.
+Lists the catalog of 23 official UBSI peer-reviewed scientific journals.
 - **Cache TTL**: 1 hour (3600 seconds)

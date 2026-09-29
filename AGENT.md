@@ -37,7 +37,7 @@ UBSI-API/
 │       ├── studentv2.py       # SIAKAD (students.bsi.ac.id): Jadwal, Nilai, Berita, Dashboard
 │       ├── elearning.py       # MyBest (elearning.bsi.ac.id): Matkul, Tugas, Presensi, Modul, Kuis
 │       ├── elibrary.py        # Perpustakaan (elibrary.bsi.ac.id): OPAC search, stok buku
-│       ├── news.py            # Portal Berita (news.bsi.ac.id via native WP REST API)
+│       ├── news.py            # Portal Berita (news.bsi.ac.id) & Multi-Channel Webhook Broadcaster
 │       ├── repository.py      # EPrints Publikasi (repository.bsi.ac.id): Riset & skripsi terbaru
 │       └── ejournal.py        # E-Journal (ejournal.bsi.ac.id): 23 jurnal aktif via OAI bypass
 │
@@ -48,7 +48,7 @@ UBSI-API/
 │   ├── public/fonts/          # Self-hosted woff2 Google Fonts (Space Grotesk, Inter, JetBrains Mono)
 │   └── DESIGN.md              # Token desain resmi Deep Water (navy, teal, dark-first)
 │
-├── tests/                     # [TEST SUITE] Pytest 100% Offline (71+ Passing Tests)
+├── tests/                     # [TEST SUITE] Pytest 100% Offline (78+ Passing Tests)
 │   ├── fixtures/              # Snapshot HTML statis kampus (sv2_*.html, el_*.html)
 │   ├── test_studentv2_*.py    # Parser & router tests untuk SIAKAD
 │   ├── test_elearning_*.py    # Parser & router tests untuk MyBest
