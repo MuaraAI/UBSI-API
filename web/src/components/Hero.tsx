@@ -1,55 +1,25 @@
-"use client";
-
-import React, { useEffect, useRef } from "react";
-import anime from "animejs";
+import React from "react";
 
 export function Hero() {
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (!prefersReducedMotion && heroRef.current) {
-      anime({
-        targets: heroRef.current.querySelectorAll(".anime-reveal"),
-        opacity: [0, 1],
-        translateY: [20, 0],
-        delay: anime.stagger(100),
-        duration: 700,
-        easing: "cubicBezier(0.2, 0, 0, 1)",
-      });
-    }
-  }, []);
-
   return (
-    <section
-      ref={heroRef}
-      className="relative overflow-hidden pt-10 pb-12 sm:pt-16 sm:pb-16 md:pt-24 md:pb-20 px-4 sm:px-6 max-w-7xl mx-auto text-center flex flex-col items-center"
-    >
-      <div
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#2DD4BF]/10 rounded-full blur-3xl pointer-events-none -z-10"
-        aria-hidden="true"
-      />
-
-      <div className="anime-reveal inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#2DD4BF] uppercase mb-4 font-semibold">
-        <span>UNOFFICIAL CAMPUS GATEWAY</span>
+    <section className="relative pt-12 pb-14 sm:pt-20 sm:pb-20 md:pt-28 md:pb-24 px-4 sm:px-6 max-w-7xl mx-auto text-center">
+      <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-accent uppercase mb-5 font-semibold accent-badge">
+        UNOFFICIAL CAMPUS GATEWAY
       </div>
 
-      <h1 className="anime-reveal font-display text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#E6EDF3] max-w-4xl leading-[1.1] mb-6">
+      <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground max-w-4xl mx-auto leading-[1.1] mb-6">
         Satu Antarmuka REST API untuk Seluruh Layanan Kampus UBSI.
       </h1>
 
-      <p className="anime-reveal text-[#94A7BC] text-base sm:text-lg md:text-xl max-w-2xl leading-relaxed mb-10 font-sans">
+      <p className="text-secondary text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-sans">
         Agregator data modern berkecepatan tinggi untuk SIAKAD, MyBest Elearning, E-Library,
         Repository, dan E-Journal dengan format JSON terstandarisasi dan Redis cache sub-250ms.
       </p>
 
-      <div className="anime-reveal flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
+      <div className="flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
         <a
           href="#showcase"
-          className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-md bg-[#2DD4BF] hover:bg-[#54E3D1] text-[#06251F] font-semibold text-sm transition-colors shadow-float"
+          className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-pill bg-accent hover:bg-accent-hover text-accent-dark font-semibold text-sm transition-all duration-200 ease-glass shadow-float"
         >
           Lihat Contoh Response
         </a>
@@ -57,24 +27,28 @@ export function Hero() {
           href="https://github.com/MuaraAI/UBSI-API"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-md bg-[#111C2E] hover:bg-[#17263D] text-[#E6EDF3] font-semibold text-sm border border-white/10 hover:border-[#2DD4BF]/50 transition-colors"
+          className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-pill glass-card text-foreground font-semibold text-sm hover:border-accent/30 transition-all duration-200 ease-glass"
         >
           GitHub Repository
         </a>
       </div>
 
-      <div className="anime-reveal mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono text-[#94A7BC]">
-        <div className="px-4 py-2.5 rounded-md bg-[#111C2E]/60 border border-white/5">
-          <span className="text-[#2DD4BF] font-bold">6 Layanan</span> Terintegrasi
+      <div className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
+        <div className="glass-card px-4 py-3 text-xs font-mono text-secondary">
+          <span className="text-accent font-bold block text-base mb-0.5">6 Layanan</span>
+          Terintegrasi
         </div>
-        <div className="px-4 py-2.5 rounded-md bg-[#111C2E]/60 border border-white/5">
-          <span className="text-[#2DD4BF] font-bold">23 Jurnal</span> Aktif Resmi
+        <div className="glass-card px-4 py-3 text-xs font-mono text-secondary">
+          <span className="text-accent font-bold block text-base mb-0.5">23 Jurnal</span>
+          Aktif Resmi
         </div>
-        <div className="px-4 py-2.5 rounded-md bg-[#111C2E]/60 border border-white/5">
-          <span className="text-[#2DD4BF] font-bold">Sub-250ms</span> Caching Latency
+        <div className="glass-card px-4 py-3 text-xs font-mono text-secondary">
+          <span className="text-accent font-bold block text-base mb-0.5">Sub-250ms</span>
+          Caching Latency
         </div>
-        <div className="px-4 py-2.5 rounded-md bg-[#111C2E]/60 border border-white/5">
-          <span className="text-[#2DD4BF] font-bold">71 Tests</span> 100% Passed
+        <div className="glass-card px-4 py-3 text-xs font-mono text-secondary">
+          <span className="text-accent font-bold block text-base mb-0.5">71 Tests</span>
+          100% Passed
         </div>
       </div>
     </section>

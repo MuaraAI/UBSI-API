@@ -3,25 +3,30 @@ import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
-const spaceGrotesk = localFont({
+const gordita = localFont({
   src: [
     {
-      path: "../../public/fonts/SpaceGrotesk-Regular.woff2",
+      path: "../../public/fonts/Gordita-Regular.otf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/fonts/SpaceGrotesk-Medium.woff2",
+      path: "../../public/fonts/Gordita-Medium.otf",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../../public/fonts/SpaceGrotesk-Bold.woff2",
+      path: "../../public/fonts/Gordita-Bold.otf",
       weight: "700",
       style: "normal",
     },
+    {
+      path: "../../public/fonts/Gordita-Black.otf",
+      weight: "900",
+      style: "normal",
+    },
   ],
-  variable: "--font-space-grotesk",
+  variable: "--font-gordita",
   display: "swap",
 });
 
@@ -147,7 +152,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${gordita.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <script
@@ -155,10 +160,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-background text-foreground antialiased min-h-screen">
+      <body className="bg-background text-foreground antialiased min-h-screen font-sans">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#2DD4BF] focus:text-[#06251F] focus:font-semibold focus:rounded-md focus:shadow-float focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-accent-dark focus:font-semibold focus:rounded-md focus:shadow-float focus:outline-none focus:ring-2 focus:ring-accent"
         >
           Langsung ke konten utama
         </a>
