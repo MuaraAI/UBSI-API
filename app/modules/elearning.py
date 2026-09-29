@@ -66,7 +66,7 @@ def parse_courses(html: str) -> list[dict[str, Any]]:
         m_ruang = re.search(r"No Ruang\s*:\s*([A-Za-z0-9\-]+)", card_text)
         ruang = m_ruang.group(1).strip() if m_ruang else ""
 
-        m_kel = re.search(r"Kel Praktek\s*:\s*([A-Za-z0-9\.\-]+)", card_text)
+        m_kel = re.search(r"Kel Praktek\s*:\s*(?!Kode\b)([A-Za-z0-9\.\-]+)", card_text)
         kel_praktek = m_kel.group(1).strip() if m_kel else None
 
         m_gabung = re.search(r"Kode Gabung\s*:\s*([A-Za-z0-9\.\-]+)", card_text)
@@ -98,6 +98,17 @@ def parse_courses(html: str) -> list[dict[str, Any]]:
             "kode_dosen": dosen_code,
             "kelompok_praktek": kel_praktek,
             "kode_gabung": kode_gabung,
+            "jadwal": {
+                "hari": hari,
+                "jam": jam,
+                "ruang": ruang,
+            },
+            "tokens": {
+                "absen": token_absen,
+                "diskusi": token_diskusi,
+                "learning": token_learning,
+                "assignment": token_assignment,
+            },
             "token_absen": token_absen,
             "token_diskusi": token_diskusi,
             "token_learning": token_learning,
@@ -148,8 +159,21 @@ def parse_assignments(html: str) -> dict[str, list[dict[str, Any]]]:
 
     return {"tasks": tasks, "submissions": submissions}
 
-def parse_presence(html: str) -> list[dict[str, Any]]:
+def parse_presence(html: str) -> dict[str, Any]:
     page = Adaptor(html)
+    tiles = page.css("div.info-tiles")
+    info: dict[str, str] = {}
+    for t in tiles:
+        detail = t.css(".stats-detail")
+        if detail:
+            val = detail[0].css("h5")
+            label = detail[0].css("p")
+            if val and label:
+                info[label[0].text.strip().lower()] = val[0].text.strip()
+
+    btn = page.css("div.col-xl-3 button, button.btn-warning, button.btn-success, button.btn-info, button.btn-danger")
+    status_sesi = btn[0].text.strip() if btn else None
+
     tables = page.css("table")
     records = []
 
@@ -175,7 +199,19 @@ def parse_presence(html: str) -> list[dict[str, Any]]:
                     "berita_acara": cols[6] if len(cols) > 6 and cols[6] else None,
                 })
 
-    return records
+    return {
+        "kode_mtk": info.get("kode mtk"),
+        "matakuliah": info.get("matakuliah"),
+        "kelas": info.get("kelas"),
+        "dosen": info.get("dosen"),
+        "ruang": info.get("ruang"),
+        "hari": info.get("hari"),
+        "jam_masuk": info.get("jam masuk"),
+        "jam_keluar": info.get("jam keluar"),
+        "status_sesi": status_sesi,
+        "total_kehadiran": len(records),
+        "riwayat": records,
+    }
 
 def parse_materials(html: str) -> list[dict[str, Any]]:
     page = Adaptor(html)
@@ -466,18 +502,50 @@ async def get_courses(creds: tuple[str, str] = Depends(require_elearning_creds))
 
 @router.get("/assignments")
 async def get_assignments(
-    token: Optional[str] = Query(default=None, pattern=r"^[A-Za-z0-9+/=_-]+$", description="Encrypted course token from /courses"),
+    token: Optional[str] = Query(default=None, pattern=r"^[A-Za-z0-9+/=_-]+$", description="Encrypted course token from /courses (opsional, tanpa token = agregasi seluruh matkul)"),
     creds: tuple[str, str] = Depends(require_elearning_creds)
 ):
     nim, password = creds
-    
-    # If no token provided, get courses first and use first course's token
+
     if not token:
-        courses_res = await get_courses(creds)
-        courses = courses_res["data"]
-        if not courses or not courses[0].get("token_assignment"):
-            return success_response(data={"tasks": [], "submissions": []}, cached=False)
-        token = courses[0]["token_assignment"]
+        async def _fetch_all_assignments():
+            courses_res = await get_courses(creds)
+            courses = courses_res["data"]
+
+            async def _fetch_for(course: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+                t = course.get("token_assignment")
+                if not t:
+                    return {"tasks": [], "submissions": []}
+                try:
+                    html = await pooled_elearning_client.fetch_page(f"/assignment/{t}", nim, password)
+                    parsed = parse_assignments(html)
+                    for item in parsed.get("tasks", []):
+                        item.setdefault("kode", course.get("kode") or "")
+                        item["mata_kuliah"] = course.get("nama") or ""
+                    for item in parsed.get("submissions", []):
+                        item.setdefault("kode", course.get("kode") or "")
+                        item["mata_kuliah"] = course.get("nama") or ""
+                    return parsed
+                except Exception:
+                    return {"tasks": [], "submissions": []}
+
+            results = await asyncio.gather(*(_fetch_for(c) for c in courses), return_exceptions=True)
+            tasks_list: list[dict[str, Any]] = []
+            submissions_list: list[dict[str, Any]] = []
+            for r in results:
+                if isinstance(r, dict):
+                    tasks_list.extend(r.get("tasks", []))
+                    submissions_list.extend(r.get("submissions", []))
+            return {"tasks": tasks_list, "submissions": submissions_list}
+
+        return await cached_endpoint(
+            module="elearning",
+            name="assignments",
+            fetch=_fetch_all_assignments,
+            parse=lambda data: data,
+            ttl=settings.TTL_ASSIGNMENTS,
+            cache_params={"nim": nim, "token": "all"},
+        )
 
     return await cached_endpoint(
         module="elearning",
@@ -499,7 +567,7 @@ async def get_presence(
         courses_res = await get_courses(creds)
         courses = courses_res["data"]
         if not courses or not courses[0].get("token_absen"):
-            return success_response(data=[], cached=False)
+            return success_response(data={}, cached=False)
         token = courses[0]["token_absen"]
 
     return await cached_endpoint(

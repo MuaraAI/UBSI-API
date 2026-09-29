@@ -158,10 +158,20 @@ Lists enrolled LMS courses with schedule metadata and encrypted action tokens.
         "kode": "101",
         "nama": "PENDIDIKAN PANCASILA",
         "sks": 2,
-        "hari": "Jumat",
-        "jam": "07:30-09:10",
-        "ruang": "EL2-P1",
         "kode_dosen": "BDM",
+        "kelompok_praktek": null,
+        "kode_gabung": "KG.101.30.C",
+        "jadwal": {
+          "hari": "Jumat",
+          "jam": "07:30-09:10",
+          "ruang": "EL2-P1"
+        },
+        "tokens": {
+          "absen": "eyJpdi...",
+          "diskusi": "eyJpdi...",
+          "learning": "eyJpdi...",
+          "assignment": "eyJpdi..."
+        },
         "token_absen": "eyJpdi...",
         "token_assignment": "eyJpdi...",
         "token_learning": "eyJpdi...",
@@ -174,13 +184,33 @@ Lists enrolled LMS courses with schedule metadata and encrypted action tokens.
 
 ### `GET /v1/elearning/assignments`
 Retrieves active assignment requirements, deadlines, and graded submission history.
-- **Query Parameter**: `token` (optional; encrypted course token from `/courses`)
+- **Query Parameter**: `token` (optional; when omitted, aggregates all active assignments across all courses)
 - **Cache TTL**: 10 minutes (600 seconds)
 
 ### `GET /v1/elearning/presence`
-Retrieves lecture attendance history and discussion logs per meeting.
+Retrieves lecture attendance status, classroom/session header information, and meeting history.
 - **Query Parameter**: `token` (optional)
 - **Cache TTL**: 10 minutes (600 seconds)
+- **Response Sample**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "kode_mtk": "101",
+      "matakuliah": "PENDIDIKAN PANCASILA",
+      "kelas": "KG.101.30.C",
+      "dosen": "BDM",
+      "ruang": "EL2-P1",
+      "hari": "Jumat",
+      "jam_masuk": "07:30",
+      "jam_keluar": "09:10",
+      "status_sesi": "Sudah Selesai",
+      "total_kehadiran": 0,
+      "riwayat": []
+    },
+    "cached": false
+  }
+  ```
 
 ### `GET /v1/elearning/materials`
 Retrieves direct download links for lecture syllabus and weekly module packages (ZIP/PDF).

@@ -22,6 +22,7 @@ def clean_html_text(raw: str) -> str:
         return ""
     text = re.sub(r"<[^>]+>", " ", raw)
     text = text.replace("&#8217;", "'").replace("&#8211;", "-").replace("&amp;", "&").replace("&quot;", '"')
+    text = text.replace("[&hellip;]", "...").replace("&hellip;", "...").replace("&#8230;", "...")
     return " ".join(text.split()).strip()
 
 def parse_wp_posts(raw_posts: list[dict[str, Any]]) -> list[dict[str, Any]]:

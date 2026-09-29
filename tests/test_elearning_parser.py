@@ -32,6 +32,11 @@ def test_parse_courses():
     assert isinstance(first["sks"], int)
     assert first["hari"] != ""
     assert first["jam"] != ""
+    assert first["kelompok_praktek"] is None
+    assert "jadwal" in first
+    assert first["jadwal"]["hari"] == first["hari"]
+    assert "tokens" in first
+    assert first["tokens"]["absen"] == first["token_absen"]
     assert first["token_absen"] is not None
     assert first["token_assignment"] is not None
     assert first["token_learning"] is not None
@@ -63,7 +68,13 @@ def test_parse_assignments_grades_rows():
 def test_parse_presence():
     html = (FIXTURES / "el_absen_1.html").read_text(encoding="utf-8")
     presence = parse_presence(html)
-    assert isinstance(presence, list)
+    assert isinstance(presence, dict)
+    assert presence["kode_mtk"] == "101"
+    assert presence["matakuliah"] == "PENDIDIKANPANCASILA"
+    assert presence["dosen"] == "BDM"
+    assert presence["ruang"] == "EL2-P1"
+    assert presence["status_sesi"] == "Sudah Selesai"
+    assert isinstance(presence["riwayat"], list)
 
 def test_parse_materials():
     html = (FIXTURES / "el_learning_1.html").read_text(encoding="utf-8")
