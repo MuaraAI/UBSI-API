@@ -9,15 +9,15 @@ export function Contributors({
 }) {
   return (
     <section id="contributors" className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
-      <div className="text-center mb-12">
-        <div className="badge-dark mb-4 mx-auto">
+      <div className="text-left mb-12">
+        <div className="badge-dark mb-4">
           <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
           <span>OPEN SOURCE COLLABORATION</span>
         </div>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-3">
           Dibangun oleh Mahasiswa, untuk Komunitas.
         </h2>
-        <p className="text-secondary text-sm sm:text-base mt-2 max-w-xl mx-auto font-sans">
+        <p className="text-secondary text-sm sm:text-base mt-2 max-w-xl font-sans">
           Dikembangkan secara independen oleh mahasiswa Informatika UBSI Pontianak di bawah naungan inisiatif Muara AI.
         </p>
       </div>
