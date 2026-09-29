@@ -191,6 +191,20 @@ Retrieves direct download links for lecture syllabus and weekly module packages 
 Retrieves active online quizzes and practice exam schedules.
 - **Cache TTL**: 10 minutes (600 seconds)
 
+### `GET /v1/elearning/grades`
+Recap of assignment grades (and quiz schedules) per meeting across all active
+courses, or a single course when the optional `token` query parameter (from
+`/v1/elearning/courses`) is provided. Returns totals, graded/ungraded counts,
+average/max/min scores, per-course breakdown, and per-meeting rows.
+- **Query Parameter**: `token` (optional)
+- **Cache TTL**: 30 minutes (1800 seconds)
+
+### `GET /v1/elearning/courses/{course_id}/grades`
+Same recap scoped to one course. `course_id` is the `id` field of a course
+from `GET /v1/elearning/courses`. Returns `404 COURSE_NOT_FOUND` when the id
+is unknown.
+- **Cache TTL**: 30 minutes (1800 seconds)
+
 ---
 
 ## 4. Elibrary (Library Catalog)

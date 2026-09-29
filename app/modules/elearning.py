@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import re
+import statistics
 from typing import Any, Optional
 
 import httpx
@@ -239,6 +240,88 @@ def parse_quiz(html: str) -> list[dict[str, Any]]:
     return quizzes
 
 # ============================================================================
+# Rekap Nilai (Per Pertemuan)
+# ============================================================================
+
+def _pertemuan_sort_key(pertemuan: str) -> int:
+    digits = [int(n) for n in re.findall(r"\d+", str(pertemuan))]
+    return digits[0] if digits else 999
+
+def _to_float(value: Optional[str]) -> Optional[float]:
+    if value is None:
+        return None
+    cleaned = value.strip().replace(",", ".")
+    try:
+        return float(cleaned)
+    except ValueError:
+        return None
+
+def summarize_grades(
+    submissions: list[dict[str, Any]],
+    quizzes: Optional[list[dict[str, Any]]] = None,
+) -> dict[str, Any]:
+    """Rekap status & statistik nilai tugas (dan kuis) per pertemuan.
+
+    submissions: hasil parse_assignments()["submissions"] (satu mata kuliah
+    atau gabungan beberapa matkul, dibedakan lewat kolom "kode").
+    quizzes: hasil parse_quiz() opsional untuk pelengkap status ujian.
+    """
+    quizzes = quizzes or []
+
+    by_pertemuan: dict[str, list[dict[str, Any]]] = {}
+    for s in submissions:
+        by_pertemuan.setdefault(s.get("pertemuan") or "-", []).append(s)
+
+    pertemuan_rows = []
+    for pert, items in by_pertemuan.items():
+        graded = [s["nilai"] for s in items if isinstance(s.get("nilai"), (int, float))]
+        pertemuan_rows.append({
+            "pertemuan": pert,
+            "total_tugas": len(items),
+            "sudah_dinilai": len(graded),
+            "belum_dinilai": len(items) - len(graded),
+            "rata_nilai": round(statistics.fmean(graded), 2) if graded else None,
+            "nilai_max": max(graded) if graded else None,
+            "nilai_min": min(graded) if graded else None,
+            "items": items,
+        })
+    pertemuan_rows.sort(key=lambda r: _pertemuan_sort_key(r["pertemuan"]))
+
+    all_graded = [s["nilai"] for s in submissions if isinstance(s.get("nilai"), (int, float))]
+    by_course: dict[str, list[float]] = {}
+    for s in submissions:
+        nilai = s.get("nilai")
+        if isinstance(nilai, (int, float)):
+            by_course.setdefault(s.get("kode") or "-", []).append(nilai)
+
+    return {
+        "total_tugas": len(submissions),
+        "sudah_dinilai": len(all_graded),
+        "belum_dinilai": len(submissions) - len(all_graded),
+        "rata_nilai": round(statistics.fmean(all_graded), 2) if all_graded else None,
+        "nilai_max": max(all_graded) if all_graded else None,
+        "nilai_min": min(all_graded) if all_graded else None,
+        "per_matkul": {
+            kode: {
+                "total_tugas": len(nilais),
+                "rata_nilai": round(statistics.fmean(nilais), 2),
+            }
+            for kode, nilais in sorted(by_course.items())
+        },
+        "per_pertemuan": pertemuan_rows,
+        "kuis": [
+            {
+                "paket": q.get("paket"),
+                "kode_mtk": q.get("kode_mtk"),
+                "dosen": q.get("dosen"),
+                "ujian_mulai": q.get("ujian_mulai"),
+                "ujian_selesai": q.get("ujian_selesai"),
+            }
+            for q in quizzes
+        ],
+    }
+
+# ============================================================================
 # Authenticated Scrapling Client
 # ============================================================================
 
@@ -461,4 +544,103 @@ async def get_quiz(creds: tuple[str, str] = Depends(require_elearning_creds)):
         parse=parse_quiz,
         ttl=settings.TTL_ASSIGNMENTS,
         cache_params={"nim": nim},
+    )
+
+# ============================================================================
+# Rekap Nilai Tugas & Kuis (Per Pertemuan)
+# ============================================================================
+
+async def _build_grades(
+    nim: str,
+    password: str,
+    token: Optional[str],
+) -> dict[str, Any]:
+    """Kumpulkan submissions (opsional per-token) + daftar kuis, lalu rekap.
+
+    Tanpa token: submissions digabung dari seluruh mata kuliah aktif
+    (halaman /assignment/{token_assignment} per kursus dari /sch).
+    """
+    quiz_res = await get_quiz((nim, password))
+    quizzes = quiz_res["data"]
+
+    if token:
+        assignment_res = await get_assignments(token=token, creds=(nim, password))
+        submissions = assignment_res["data"]["submissions"]
+    else:
+        courses_res = await get_courses((nim, password))
+        courses = courses_res["data"]
+
+        async def _subs_for(course: dict[str, Any]) -> list[dict[str, Any]]:
+            t = course.get("token_assignment")
+            if not t:
+                return []
+            res = await get_assignments(token=t, creds=(nim, password))
+            subs = res["data"]["submissions"]
+            for s in subs:
+                s.setdefault("kode", course.get("kode") or "-")
+                s["mata_kuliah"] = course.get("nama") or ""
+            return subs
+
+        gathered = await asyncio.gather(
+            *(_subs_for(c) for c in courses), return_exceptions=True
+        )
+        submissions: list[dict[str, Any]] = []
+        for item in gathered:
+            if isinstance(item, BaseException):
+                continue
+            submissions.extend(item)
+
+    return summarize_grades(submissions, quizzes)
+
+
+@router.get("/grades")
+async def get_grades(
+    token: Optional[str] = Query(default=None, pattern=r"^[A-Za-z0-9+/=_-]+$", description="Encrypted course token from /courses (opsional, tanpa token = semua matkul)"),
+    creds: tuple[str, str] = Depends(require_elearning_creds),
+):
+    """Rekap nilai tugas & kuis seluruh mata kuliah aktif, per pertemuan."""
+    nim, password = creds
+
+    return await cached_endpoint(
+        module="elearning",
+        name="grades",
+        fetch=lambda: _build_grades(nim, password, token),
+        parse=lambda data: data,
+        ttl=settings.TTL_GRADES,
+        cache_params={"nim": nim, "token": token or "all"},
+    )
+
+
+@router.get("/courses/{course_id}/grades")
+async def get_course_grades(
+    course_id: str,
+    creds: tuple[str, str] = Depends(require_elearning_creds),
+):
+    """Rekap nilai tugas & kuis satu mata kuliah (id dari /v1/elearning/courses)."""
+    nim, password = creds
+
+    courses_res = await get_courses(creds)
+    courses = courses_res["data"]
+    course = next((c for c in courses if c.get("id") == course_id), None)
+    if course is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=error_response(
+                code="COURSE_NOT_FOUND",
+                message=f"Mata kuliah dengan id '{course_id}' tidak ditemukan di daftar kursus aktif",
+                module="elearning",
+            ),
+        )
+
+    token = course.get("token_assignment")
+    if not token:
+        return success_response(data=summarize_grades([], []), cached=False)
+
+    return await cached_endpoint(
+        module="elearning",
+        name="course_grades",
+        fetch=lambda: _build_grades(nim, password, token),
+        parse=lambda data: data,
+        ttl=settings.TTL_GRADES,
+        cache_params={"nim": nim, "course_id": course_id},
     )

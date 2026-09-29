@@ -44,6 +44,22 @@ def test_parse_assignments():
     assert isinstance(data["tasks"], list)
     assert isinstance(data["submissions"], list)
 
+def test_parse_assignments_grades_rows():
+    html = (FIXTURES / "el_assignment_grades.html").read_text(encoding="utf-8")
+    data = parse_assignments(html)
+    subs = data["submissions"]
+    assert len(subs) == 3
+
+    first = subs[0]
+    assert first["kode"] == "121-PBO"
+    assert first["judul"] == "Implementasi Class"
+    assert first["pertemuan"] == "Pertemuan 3"
+    assert first["nilai"] == 90.0
+    assert first["link_tugas"].startswith("https://elearning.bsi.ac.id/")
+
+    graded = [s for s in subs if s["nilai"] is not None]
+    assert len(graded) == 3
+
 def test_parse_presence():
     html = (FIXTURES / "el_absen_1.html").read_text(encoding="utf-8")
     presence = parse_presence(html)
