@@ -1,6 +1,11 @@
 import os
 import base64
+import hashlib
+from typing import Optional
+import httpx
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from app.config import settings
+from app.cache import cache
 
 class VaultDecryptionError(Exception):
     """Raised when vault ciphertext is invalid, corrupted, or fails authentication tag verification."""
@@ -55,3 +60,69 @@ def decrypt_credential(cipher_str: str, key_input: str) -> str:
         raise
     except Exception as e:
         raise VaultDecryptionError(f"Decryption failed: {str(e)}") from e
+
+async def resolve_member_key(api_key: str) -> Optional[dict[str, str]]:
+    """
+    Resolve and decrypt a member's credentials using Supabase Vault and Redis cache.
+    Returns: {"nim": str, "elearning_pass": str, "studentv2_pass": str} or None.
+    """
+    if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_KEY or not settings.VAULT_ENCRYPTION_KEY:
+        return None
+
+    stripped_key = api_key.strip()
+    if not stripped_key:
+        return None
+
+    key_hash = hashlib.sha256(stripped_key.encode("utf-8")).hexdigest()
+    cache_key = f"ubsi:vault:{key_hash}"
+
+    # 1. Cek Redis Cache
+    try:
+        cached = await cache.get_fresh(cache_key)
+        if cached and isinstance(cached, dict):
+            return cached
+    except Exception:
+        pass
+
+    # 2. Query Supabase REST API
+    headers = {
+        "apikey": settings.SUPABASE_SERVICE_KEY,
+        "Authorization": f"Bearer {settings.SUPABASE_SERVICE_KEY}",
+        "Accept": "application/json"
+    }
+    url = f"{settings.SUPABASE_URL.rstrip('/')}/rest/v1/api_keys"
+    params = {
+        "key_hash": f"eq.{key_hash}",
+        "is_active": "eq.true",
+        "select": "nim,encrypted_elearning_pass,encrypted_studentv2_pass"
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(url, headers=headers, params=params)
+            if resp.status_code != 200:
+                return None
+            rows = resp.json()
+            if not rows or not isinstance(rows, list):
+                return None
+
+            row = rows[0]
+            el_pass = decrypt_credential(row["encrypted_elearning_pass"], settings.VAULT_ENCRYPTION_KEY)
+            sv_pass = decrypt_credential(row["encrypted_studentv2_pass"], settings.VAULT_ENCRYPTION_KEY)
+
+            data = {
+                "nim": str(row["nim"]),
+                "elearning_pass": el_pass,
+                "studentv2_pass": sv_pass
+            }
+
+            try:
+                # Cache selama 10 menit (600 detik)
+                await cache.set(cache_key, data, ttl=600)
+            except Exception:
+                pass
+
+            return data
+    except Exception:
+        return None
+
