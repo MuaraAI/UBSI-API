@@ -1,12 +1,34 @@
-# UBSI API — Caddy Reverse Proxy Template
-# Lokasi file di server biasanya: /etc/caddy/Caddyfile
+# UBSI API — Caddy Reverse Proxy Template (api.muaraai.com)
+# Lokasi file di VPS: /etc/caddy/Caddyfile
 
-api.example.com {
-    # Otomatis Let's Encrypt HTTPS / TLS & HTTP-to-HTTPS redirect
-    reverse_proxy 127.0.0.1:8300 {
-        header_up Host {upstream_hostport}
-        header_up X-Real-IP {remote_host}
-        header_up X-Forwarded-For {remote_host}
-        header_up X-Forwarded-Proto {scheme}
+api.muaraai.com {
+    # Project: UBSI API docs & openapi
+    handle_path /v1/ubsi-api/docs* {
+        rewrite * /docs{path}
+        reverse_proxy 127.0.0.1:8300
+    }
+    handle_path /v1/ubsi-api/openapi.json* {
+        rewrite * /openapi.json
+        reverse_proxy 127.0.0.1:8300
+    }
+    handle_path /v1/ubsi-api/health* {
+        rewrite * /health
+        reverse_proxy 127.0.0.1:8300
+    }
+
+    # Project: UBSI API /v1/ubsi-api/v1/* -> /v1/*
+    handle_path /v1/ubsi-api/v1/* {
+        rewrite * /v1{path}
+        reverse_proxy 127.0.0.1:8300
+    }
+
+    # Project: UBSI API /v1/ubsi-api/* -> /v1/*
+    handle_path /v1/ubsi-api/* {
+        rewrite * /v1{path}
+        reverse_proxy 127.0.0.1:8300
+    }
+
+    handle {
+        respond "Muara AI Unified API Gateway (Status: Operational)" 200
     }
 }
