@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/python-3.12%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Redis-cache-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis" />
-  <img src="https://img.shields.io/badge/tests-78%20lulus-2EA043?style=flat-square" alt="Tests" />
+  <img src="https://img.shields.io/badge/tests-126%20lulus-2EA043?style=flat-square" alt="Tests" />
 
 </div>
 
@@ -177,7 +177,7 @@ UBSI API merapikan semuanya menjadi satu backend JSON yang cepat, berjalan lokal
 - **Frontend Landing Page** — Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui, Anime.js.
 - **HTTP client & parsing** — Scrapling (FetcherSession), `curl_cffi`, lxml.
 - **Caching & Limiter** — Redis DB 2 (asyncio), single-flight mutex, sliding-window limiter.
-- **Testing & Quality** — Pytest (78 lulus), Pytest-Asyncio, HTTPX (ASGITransport).
+- **Testing & Quality** — Pytest (126 lulus), Pytest-Asyncio, HTTPX (ASGITransport).
 - **Deployment & Hosting** — Vercel (`ubsi-api.muaraai.com`), Tencent Cloud VPS + PM2 + Caddy HTTPS.
 
 ---
@@ -215,7 +215,7 @@ UBSI-API/
 ├── tests/
 │   ├── fixtures/              # Snapshot HTML offline
 │   ├── conftest.py            # Fixture autouse & test auth client
-│   └── test_*.py              # 78 pengujian unit & integrasi otomatis
+│   └── test_*.py              # 126 pengujian unit & integrasi otomatis
 ├── templates/
 │   ├── Caddyfile.example      # Template reverse proxy Caddy (HTTPS otomatis)
 │   ├── nginx.example.conf     # Template konfigurasi reverse proxy Nginx
@@ -303,7 +303,7 @@ curl -s -X POST -H "X-API-Key: ubsi_s...xxx" "http://127.0.0.1:8300/v1/news/webh
 Semua parser diuji terhadap snapshot HTML offline, tanpa request live ke server kampus:
 
 ```bash
-# Menjalankan seluruh test suite (78 tests)
+# Menjalankan seluruh test suite (126 tests)
 .venv/bin/pytest -v
 
 # Live smoke test terhadap server lokal
@@ -353,6 +353,7 @@ Panduan kontribusi tersedia di [CONTRIBUTING.md](CONTRIBUTING.md).
 - [x] **Rate limiting real client IP** — ekstraksi IP asli via `CF-Connecting-IP` / `X-Forwarded-For` agar kuota tidak bertabrakan di belakang proxy.
 - [x] **Dukungan CORS** — `CORSMiddleware` terintegrasi untuk integrasi dashboard web frontend.
 - [x] **Multi-channel news broadcaster (v1.1.5)** — auto-dispatch berita baru paralel ke Discord (Rich Embed), Telegram (HTML photo message), dan custom webhook; migrasi upstream SIAKAD ke `students.bsi.ac.id`.
+- [x] **Dual-Mode Auth, Vault AES-256 & API Gateway (v1.1.7)** — Master Key lokal unmetered vs Cloud Member Key terikat ke Vault Supabase terenkripsi AES-256-GCM, sub-path gateway `api.muaraai.com/v1/ubsi-api/*`, pre-validasi kredensial `POST /v1/auth/verify`, proteksi anti-SSRF, dan proxy pool rotation.
 
 ### v1.2 — Feeds & Produktivitas (Dikerjakan)
 - [ ] **Ekspor kalender iCal (`.ics`)** — endpoint `GET /v1/studentv2/schedule.ics` untuk sinkronisasi jadwal kuliah ke Google Calendar (Android) dan Apple Calendar (iOS).

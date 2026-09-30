@@ -32,7 +32,7 @@ export function Footer() {
             rel="noopener noreferrer"
             className="hover:text-accent transition-colors duration-200"
           >
-            v1.1.0 Stable
+            v1.1.7 Stable
           </a>
         </div>
       </div>

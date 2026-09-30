@@ -121,7 +121,7 @@ Sebelum menyatakan tugas selesai, agen **WAJIB** menjalankan pengujian nyata:
 1. **Backend Tests:**
    ```bash
    .venv/bin/pytest -q
-   # Wajib 100% lulus (minimal 71 passed)
+   # Wajib 100% lulus (minimal 126 passed)
    ```
 2. **Frontend Build Check (jika memodifikasi `/web`):**
    ```bash

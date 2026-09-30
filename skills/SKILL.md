@@ -1,6 +1,6 @@
 ---
 name: ubsi-api
-version: 1.1.5
+version: 1.1.7
 description: Agent skill for consuming, extending, and operating the UBSI API (Unofficial BSI Campus Aggregator).
 metadata:
   repository: https://github.com/MuaraAI/UBSI-API

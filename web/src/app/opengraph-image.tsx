@@ -106,7 +106,7 @@ export default async function Image() {
               border: "1px solid rgba(255,255,255,0.1)",
             }}
           >
-            v1.1.0 Stable
+            v1.1.7 Stable
           </div>
         </div>
       </div>
