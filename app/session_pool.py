@@ -27,7 +27,10 @@ class SessionPool:
     def get(self, nim: str) -> Any:
         entry = self._sessions.get(nim)
         if entry is None:
-            client = self._factory()
+            try:
+                client = self._factory(nim)
+            except TypeError:
+                client = self._factory()
             self._sessions[nim] = (client, time.monotonic())
             return client
         client, _ = entry

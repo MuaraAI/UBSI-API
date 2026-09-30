@@ -11,6 +11,7 @@ from app.config import settings
 from app.envelope import success_response, error_response
 from app.cache import cache
 from app.router_helper import cached_endpoint
+from app.proxy import get_proxy
 
 router = APIRouter(prefix="/v1/ejournal", tags=["ejournal"])
 
@@ -70,7 +71,7 @@ class EJournalClient:
         # Bypasses Cloudflare challenge via OAI identifier fallback
         url = f"{self.BASE_URL}/ejurnal/oai?verb=Identify"
         try:
-            res = Fetcher.get(url, timeout=30, impersonate="chrome")
+            res = Fetcher.get(url, timeout=30, impersonate="chrome", proxy=get_proxy())
             if res.status == 200:
                 body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
                 return body.decode("utf-8", "ignore")

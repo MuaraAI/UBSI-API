@@ -12,6 +12,7 @@ from app.config import settings
 from app.envelope import success_response, error_response
 from app.cache import cache
 from app.router_helper import cached_endpoint
+from app.proxy import get_proxy
 
 router = APIRouter(prefix="/v1/repository", tags=["repository"])
 
@@ -64,7 +65,7 @@ class RepositoryClient:
     def fetch_recent(self) -> str:
         url = f"{self.BASE_URL}/"
         try:
-            res = Fetcher.get(url, timeout=30, impersonate="chrome")
+            res = Fetcher.get(url, timeout=30, impersonate="chrome", proxy=get_proxy())
             if res.status == 200:
                 body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
                 return body.decode("utf-8", "ignore")
@@ -84,13 +85,13 @@ class RepositoryClient:
         safe_q = urllib.parse.quote_plus(q)
         url = f"{self.BASE_URL}/cgi/search/simple?q={safe_q}"
         try:
-            res = Fetcher.get(url, timeout=30, impersonate="chrome")
+            res = Fetcher.get(url, timeout=30, impersonate="chrome", proxy=get_proxy())
             if res.status == 200:
                 body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
                 return body.decode("utf-8", "ignore")
             # fallback search path
             fallback_url = f"{self.BASE_URL}/index.php/repo/search?q={safe_q}"
-            res_fb = Fetcher.get(fallback_url, timeout=30, impersonate="chrome")
+            res_fb = Fetcher.get(fallback_url, timeout=30, impersonate="chrome", proxy=get_proxy())
             if res_fb.status == 200:
                 body_fb = res_fb.body if isinstance(res_fb.body, bytes) else str(res_fb.body).encode("utf-8")
                 return body_fb.decode("utf-8", "ignore")

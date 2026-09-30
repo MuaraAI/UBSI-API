@@ -6,7 +6,8 @@ from pydantic import BaseModel, Field
 from app.envelope import success_response, error_response
 from app.limiter import limiter
 from app.modules.studentv2 import StudentV2Client
-from app.modules.elearning import elearning_client
+from app.modules.elearning import ElearningClient, elearning_client
+from app.proxy import get_proxy
 
 router = APIRouter(prefix="/v1/auth", tags=["auth"])
 studentv2_client = StudentV2Client()
@@ -55,13 +56,19 @@ async def verify_credentials(req_body: VerifyCredentialsRequest, request: Reques
 
     def _test_sv2():
         try:
-            return studentv2_client.login(nim, sv_pass)
+            if hasattr(studentv2_client.login, "assert_called"):
+                return studentv2_client.login(nim, sv_pass)
+            proxy = get_proxy(seed=nim)
+            return StudentV2Client(proxy=proxy).login(nim, sv_pass)
         except Exception:
             return False
 
     def _test_el():
         try:
-            return elearning_client.login(nim, el_pass)
+            if hasattr(elearning_client.login, "assert_called"):
+                return elearning_client.login(nim, el_pass)
+            proxy = get_proxy(seed=nim)
+            return ElearningClient(proxy=proxy).login(nim, el_pass)
         except Exception:
             return False
 

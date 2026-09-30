@@ -11,8 +11,9 @@ from app.config import settings
 from app.deps import require_studentv2_creds
 from app.envelope import success_response, error_response
 from app.cache import cache
-from app.session_pool import SessionPool
 from app.retry import retry_async
+from app.session_pool import SessionPool
+from app.proxy import get_proxy
 from app.router_helper import cached_endpoint
 
 router = APIRouter(prefix="/v1/studentv2", tags=["studentv2"])
@@ -124,14 +125,15 @@ class StudentV2Client:
         "Referer": "https://students.bsi.ac.id/login",
     }
 
-    def __init__(self):
+    def __init__(self, proxy: Optional[str] = None):
+        self._proxy = proxy
         self._client: Optional[httpx.Client] = None
         self._logged_in: bool = False
         self._login_lock = asyncio.Lock()
 
     def get_client(self) -> httpx.Client:
         if self._client is None or self._client.is_closed:
-            self._client = httpx.Client(headers=self.HEADERS, follow_redirects=True, timeout=25.0)
+            self._client = httpx.Client(headers=self.HEADERS, follow_redirects=True, timeout=25.0, proxy=self._proxy)
         return self._client
 
     def close(self) -> None:
@@ -210,7 +212,7 @@ class PooledStudentV2Client:
     """
 
     def __init__(self, ttl_seconds: int = 900):
-        self._pool = SessionPool(lambda: StudentV2Client(), ttl_seconds=ttl_seconds)
+        self._pool = SessionPool(lambda nim=None: StudentV2Client(proxy=get_proxy(seed=nim)), ttl_seconds=ttl_seconds)
 
     async def fetch_page(self, path: str, nim: str, password: str) -> str:
         client = self._pool.get(nim)
