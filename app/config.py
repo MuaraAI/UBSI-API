@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_KEY: str = ""
     VAULT_ENCRYPTION_KEY: str = ""
 
+    # Scraper Proxy Configuration (Opsional - Single Proxy / Rotating Pool)
+    SCRAPER_PROXY: str = ""
+    SCRAPER_PROXY_POOL: str = ""
+
     STUDENTV2_NIM: str = ""
     STUDENTV2_PASS: str = ""
     ELEARNING_NIM: str = ""

@@ -14,6 +14,7 @@ from app.config import settings
 from app.envelope import success_response, error_response
 from app.cache import cache
 from app.router_helper import cached_endpoint
+from app.proxy import get_proxy
 
 router = APIRouter(prefix="/v1/news", tags=["news"])
 
@@ -91,7 +92,7 @@ class NewsClient:
         url = f"{self.BASE_URL}/posts?{params}"
 
         try:
-            res = Fetcher.get(url, timeout=20, impersonate="chrome")
+            res = Fetcher.get(url, timeout=20, impersonate="chrome", proxy=get_proxy())
             if res.status == 200:
                 if hasattr(res, "json") and callable(res.json):
                     return res.json()
@@ -116,7 +117,7 @@ class NewsClient:
     def fetch_post_detail(self, post_id: str) -> dict[str, Any]:
         url = f"{self.BASE_URL}/posts/{post_id}?_embed=1"
         try:
-            res = Fetcher.get(url, timeout=20, impersonate="chrome")
+            res = Fetcher.get(url, timeout=20, impersonate="chrome", proxy=get_proxy())
             if res.status == 200:
                 if hasattr(res, "json") and callable(res.json):
                     return res.json()

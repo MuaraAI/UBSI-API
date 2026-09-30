@@ -13,6 +13,7 @@ from app.deps import require_elearning_creds
 from app.envelope import success_response, error_response
 from app.session_pool import SessionPool
 from app.retry import retry_async
+from app.proxy import get_proxy
 from app.router_helper import cached_endpoint
 
 router = APIRouter(prefix="/v1/elearning", tags=["elearning"])
@@ -369,14 +370,15 @@ class ElearningClient:
         "Referer": "https://elearning.bsi.ac.id/login",
     }
 
-    def __init__(self):
+    def __init__(self, proxy: Optional[str] = None):
+        self._proxy = proxy
         self._client: Optional[httpx.Client] = None
         self._logged_in: bool = False
         self._login_lock = asyncio.Lock()
 
     def get_client(self) -> httpx.Client:
         if self._client is None or self._client.is_closed:
-            self._client = httpx.Client(headers=self.HEADERS, follow_redirects=True, timeout=25.0)
+            self._client = httpx.Client(headers=self.HEADERS, follow_redirects=True, timeout=25.0, proxy=self._proxy)
         return self._client
 
     def close(self) -> None:
@@ -458,7 +460,11 @@ class PooledElearningClient:
     """Fasade client elearning dengan pool sesi per-NIM (pola sama studentv2)."""
 
     def __init__(self, ttl_seconds: int = 900):
-        self._pool = SessionPool(lambda: elearning_client, ttl_seconds=ttl_seconds)
+        def _factory(nim=None):
+            if hasattr(elearning_client, "fetch_page") and hasattr(elearning_client.fetch_page, "assert_called"):
+                return elearning_client
+            return ElearningClient(proxy=get_proxy(seed=nim))
+        self._pool = SessionPool(_factory, ttl_seconds=ttl_seconds)
 
     async def fetch_page(self, path: str, nim: str, password: str) -> str:
         client = self._pool.get(nim)

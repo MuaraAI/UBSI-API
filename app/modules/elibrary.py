@@ -12,6 +12,7 @@ from app.config import settings
 from app.envelope import success_response, error_response
 from app.cache import cache
 from app.router_helper import cached_endpoint
+from app.proxy import get_proxy
 
 router = APIRouter(prefix="/v1/elibrary", tags=["elibrary"])
 
@@ -116,7 +117,7 @@ class ElibraryClient:
         last_error: Optional[Exception] = None
         for attempt in range(3):
             try:
-                res = Fetcher.get(url, timeout=60, impersonate="chrome")
+                res = Fetcher.get(url, timeout=60, impersonate="chrome", proxy=get_proxy())
                 if res.status == 200:
                     body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
                     return body.decode("utf-8", "ignore")
@@ -139,7 +140,7 @@ class ElibraryClient:
         last_error: Optional[Exception] = None
         for attempt in range(3):
             try:
-                res = Fetcher.get(url, timeout=60, impersonate="chrome")
+                res = Fetcher.get(url, timeout=60, impersonate="chrome", proxy=get_proxy())
                 if res.status == 200:
                     body = res.body if isinstance(res.body, bytes) else str(res.body).encode("utf-8")
                     return body.decode("utf-8", "ignore")
