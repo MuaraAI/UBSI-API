@@ -22,7 +22,7 @@ rsync -avz --delete \
     --exclude='*.pyc' \
     --exclude='.pytest_cache/' \
     --exclude='tests/' \
-    --exclude='web/' \
+    --exclude='landing-page/' \
     --exclude='anti-slop/' \
     --exclude='graphify-out/' \
     --exclude='.env' \

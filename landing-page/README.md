@@ -4,7 +4,7 @@ Official landing page for UBSI API (`ubsi-api.muaraai.com`), built with Next.js 
 
 ## What It Is
 
-A standalone frontend client in the `/web` subdirectory of the monorepo `MuaraAI/UBSI-API`. It presents the capabilities, architecture, interactive request examples, and contributor information for the UBSI API aggregator.
+A standalone frontend client in the `/landing-page` subdirectory of the monorepo `MuaraAI/UBSI-API`. It presents the capabilities, architecture, interactive request examples, and contributor information for the UBSI API aggregator.
 
 - **Theme**: Muara AI Deep Water design tokens (navy `#0A1220`, surface `#111C2E`, teal accent `#2DD4BF`).
 - **Typography**: Self-hosted Space Grotesk, Inter, and JetBrains Mono (`.woff2`) loaded via `next/font/local`. Zero external font CDN requests.
@@ -20,7 +20,7 @@ A standalone frontend client in the `/web` subdirectory of the monorepo `MuaraAI
 ### Installation & Development
 
 ```bash
-cd web
+cd landing-page
 npm install
 npm run dev
 ```
@@ -51,7 +51,7 @@ cp .env.example .env.local
 This application is designed for native deployment on Vercel:
 
 1. Import the `MuaraAI/UBSI-API` repository into Vercel.
-2. Set **Root Directory** to `web`.
+2. Set **Root Directory** to `landing-page`.
 3. Framework preset will automatically detect **Next.js**.
 4. (Optional) Set `NEXT_PUBLIC_API_URL` in the project Environment Variables dashboard.
 5. Deploy.

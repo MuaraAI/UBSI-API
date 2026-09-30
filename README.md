@@ -203,7 +203,7 @@ UBSI-API/
 │   ├── router_helper.py       # Helper generik cache, lock, & SWR
 │   ├── session_pool.py        # Pool sesi per-NIM dengan idle TTL (15 menit)
 │   └── main.py                # Base FastAPI app & global middleware
-├── web/                       # Frontend Landing Page (ubsi-api.muaraai.com)
+├── landing-page/              # Frontend Landing Page (ubsi-api.muaraai.com)
 │   ├── public/fonts/          # Self-hosted woff2 (Space Grotesk, Inter, JetBrains Mono)
 │   ├── src/
 │   │   ├── app/               # App Router, Layout, dynamic OG image, sitemap, robots

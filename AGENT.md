@@ -41,7 +41,7 @@ UBSI-API/
 │       ├── repository.py      # EPrints Publikasi (repository.bsi.ac.id): Riset & skripsi terbaru
 │       └── ejournal.py        # E-Journal (ejournal.bsi.ac.id): 23 jurnal aktif via OAI bypass
 │
-├── web/                       # [FRONTEND] Landing Page & Documentation (Next.js 15)
+├── landing-page/              # [FRONTEND] Landing Page & Documentation (Next.js 15)
 │   ├── src/app/               # App Router, layout, globals.css, open-graph image, SEO
 │   ├── src/components/        # Komponen UI Deep Water (Navbar, Hero, CodeShowcase, dll.)
 │   ├── src/data/              # Dataset statis modul kampus, kontributor, dan contoh payload
@@ -109,9 +109,9 @@ Dilarang keras melakukan direct commit dan direct push ke branch `main`! Setiap 
 * Dilarang mengirim request HTTP langsung ke server kampus BSI (`*.bsi.ac.id`) di dalam test suite pytest.
 * Setiap parser baru atau perbaikan parser wajib menggunakan file snapshot HTML statis di `tests/fixtures/`.
 
-### 3. Anti-Slop & Frontend Design Standards (Direktori `/web`)
+### 3. Anti-Slop & Frontend Design Standards (Direktori `/landing-page`)
 * **Zero Em-Dash:** Dilarang menggunakan karakter em dash (`—`) pada copy/metadata antarmuka; gunakan titik dua (`:`) atau titik (`.`).
-* **Zero CDN Fonts:** Semua font wajib self-hosted `.woff2` di `web/public/fonts/`. Dilarang menggunakan `<link>` Google Fonts eksternal.
+* **Zero CDN Fonts:** Semua font wajib self-hosted `.woff2` di `landing-page/public/fonts/`. Dilarang menggunakan `<link>` Google Fonts eksternal.
 * **Zero Decorative Emojis:** Dilarang menggunakan emoji sebagai ikon UI atau dekorasi; gunakan ikon SVG atau Material glyphs.
 * **Mobile Floor 360px:** Seluruh tampilan antarmuka wajib responsif dan bebas overflow horizontal (`scrollWidth <= clientWidth`) hingga lebar layar minimum 360px.
 * **Aksesibilitas (WCAG AAA):** Rasio kontras teks utama minimal 7:1 (saat ini Deep Water mencapai 15.8:1), tombol drawer mobile wajib merespons tombol keyboard `Escape`, dan sertakan skip-link ke `#main-content`.
@@ -123,9 +123,9 @@ Sebelum menyatakan tugas selesai, agen **WAJIB** menjalankan pengujian nyata:
    .venv/bin/pytest -q
    # Wajib 100% lulus (minimal 126 passed)
    ```
-2. **Frontend Build Check (jika memodifikasi `/web`):**
+2. **Frontend Build Check (jika memodifikasi `/landing-page`):**
    ```bash
-   cd web && npm run build
+   cd landing-page && npm run build
    # Wajib compiled successfully tanpa type error
    ```
 3. **Knowledge Graph Sync:**
@@ -153,7 +153,7 @@ uvicorn app.main:app --port 8300 --reload
 
 ### Menjalankan Frontend Next.js 15
 ```bash
-cd web
+cd landing-page
 npm install
 npm run dev
 # Buka di browser: http://localhost:3000
