@@ -50,6 +50,31 @@ Deployed on `api.muaraai.com` or `ubsi-api.muaraai.com` with multi-tenancy:
 ### API Gateway Prefix (`ROOT_PATH`)
 When proxied behind an API Gateway (e.g., Caddy handling `api.muaraai.com/v1/ubsi-api/*`), set `ROOT_PATH=/v1/ubsi-api` in `.env`. Swagger UI (`/docs`) and OpenAPI schema automatically adjust to the sub-path prefix.
 
+### `POST /v1/auth/verify`
+Pre-validation endpoint used by community portal (`muaraai.com`) to verify that student credentials actually authenticate against both campus portals (`students.bsi.ac.id` and `elearning.bsi.ac.id`) before persisting them into the encrypted vault.
+- **Access**: Master Key Only (`request.state.is_master == True`). Member keys return `403 FORBIDDEN`.
+- **Rate Limit**: Max 5 requests/minute per NIM (sliding-window anti-brute-force protection).
+- **Request Body**:
+  ```json
+  {
+    "nim": "15260767",
+    "elearning_pass": "mybest_password",
+    "studentv2_pass": "siakad_password"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "valid": true,
+      "nim": "15260767",
+      "elearning": { "valid": true, "message": null },
+      "studentv2": { "valid": true, "message": null }
+    }
+  }
+  ```
+
 ---
 
 ## 1. System

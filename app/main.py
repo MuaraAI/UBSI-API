@@ -18,6 +18,7 @@ from app.modules.elibrary import router as elibrary_router
 from app.modules.news import router as news_router
 from app.modules.repository import router as repository_router
 from app.modules.ejournal import router as ejournal_router
+from app.modules.auth import router as auth_router
 
 def extract_client_ip(request: Request) -> str:
     """Ekstraksi IP klien dengan prioritas Cloudflare -> Forwarded Proxy -> socket host.
@@ -102,6 +103,7 @@ app.include_router(elibrary_router)
 app.include_router(news_router)
 app.include_router(repository_router)
 app.include_router(ejournal_router)
+app.include_router(auth_router)
 
 @app.middleware("http")
 async def api_key_auth_middleware(request: Request, call_next):
