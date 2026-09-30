@@ -13,7 +13,8 @@ class RateLimiter:
             self._client = aioredis.from_url(self.redis_url, decode_responses=True)
         return self._client
 
-    async def is_allowed(self, client_id: str) -> bool:
+    async def is_allowed(self, client_id: str, limit: Optional[int] = None) -> bool:
+        max_allowed = limit if limit is not None else self.limit
         try:
             client = await self.get_client()
             minute_bucket = datetime.now().strftime("%Y%m%d%H%M")
@@ -21,7 +22,7 @@ class RateLimiter:
             count = await client.incr(key)
             if count == 1:
                 await client.expire(key, 65)
-            return count <= self.limit
+            return count <= max_allowed
         except (aioredis.RedisError, ConnectionError, OSError):
             return True
 
