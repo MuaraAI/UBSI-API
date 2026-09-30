@@ -1,5 +1,4 @@
 import asyncio
-from typing import Optional
 from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import BaseModel, Field
 

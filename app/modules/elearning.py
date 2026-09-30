@@ -284,15 +284,6 @@ def _pertemuan_sort_key(pertemuan: str) -> int:
     digits = [int(n) for n in re.findall(r"\d+", str(pertemuan))]
     return digits[0] if digits else 999
 
-def _to_float(value: Optional[str]) -> Optional[float]:
-    if value is None:
-        return None
-    cleaned = value.strip().replace(",", ".")
-    try:
-        return float(cleaned)
-    except ValueError:
-        return None
-
 def summarize_grades(
     submissions: list[dict[str, Any]],
     quizzes: Optional[list[dict[str, Any]]] = None,

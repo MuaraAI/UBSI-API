@@ -8,8 +8,7 @@ from scrapling.fetchers import Fetcher
 from scrapling.parser import Adaptor
 
 from app.config import settings
-from app.envelope import success_response, error_response
-from app.cache import cache
+from app.envelope import error_response
 from app.router_helper import cached_endpoint
 from app.proxy import get_proxy
 
