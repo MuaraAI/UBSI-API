@@ -1,5 +1,4 @@
 import os
-from typing import Optional
 from fastapi import Request, HTTPException, status
 from app.config import Settings, settings
 from app.envelope import error_response
