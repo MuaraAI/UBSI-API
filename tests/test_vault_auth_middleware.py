@@ -3,6 +3,13 @@ from httpx import AsyncClient, ASGITransport
 from unittest.mock import patch, AsyncMock
 from app.main import app
 from app.config import settings
+from app.modules.news import news_client
+
+@pytest.fixture(autouse=True)
+def mock_news_scraper(monkeypatch):
+    """Strict Offline TDD: jangan pernah live hit portal berita dari vault auth tests."""
+    monkeypatch.setattr(news_client, "fetch_posts", lambda *a, **k: [])
+    monkeypatch.setattr(news_client, "fetch_post_detail", lambda *a, **k: {})
 
 @pytest.mark.asyncio
 async def test_auth_master_key_allows_request():

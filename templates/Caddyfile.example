@@ -1,7 +1,23 @@
 # UBSI API — Caddy Reverse Proxy Template (api.muaraai.com)
 # Lokasi file di VPS: /etc/caddy/Caddyfile
+#
+# Snippet security_headers (HSTS, CSP, X-Frame-Options, dll) wajib ada di
+# Caddyfile produksi dan di-import di setiap blok site (lihat blok di bawah).
+
+(security_headers) {
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        Content-Security-Policy "default-src none"
+        Permissions-Policy "geolocation=(), microphone=(), camera=()"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "no-referrer"
+    }
+}
 
 api.muaraai.com {
+    import security_headers
+
     # Project: UBSI API docs & openapi
     handle_path /v1/ubsi-api/docs* {
         rewrite * /docs{path}
