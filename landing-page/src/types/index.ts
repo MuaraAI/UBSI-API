@@ -32,8 +32,8 @@ export interface RoadmapItem {
   version: string;
   title: string;
   description: string;
-  badge: string;
-  status: "upcoming" | "in-progress" | "planned";
+  status: "tersedia" | "upcoming" | "in-progress" | "planned";
+  href?: string;
 }
 
 export interface GitHubStats {

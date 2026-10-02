@@ -24,11 +24,8 @@ export function CodeShowcase() {
   return (
     <section id="showcase" className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="text-left mb-10">
-        <div className="badge-dark mb-4">
-          <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
-          <span>DEVELOPER EXPERIENCE</span>
-        </div>
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-3">
+        <p className="section-kicker mb-3">Developer Experience</p>
+        <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
           Interaksi Cepat, Response Terstandarisasi.
         </h2>
         <p className="text-secondary text-sm sm:text-base mt-2 max-w-xl font-sans">

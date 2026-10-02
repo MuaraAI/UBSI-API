@@ -10,10 +10,10 @@ export const CONTRIBUTORS: Contributor[] = [
     kelas: "15.1C.30",
     avatarUrl: "https://github.com/Curzyori.png",
     profileUrl: "https://github.com/Curzyori",
-    fallbackCommits: 114,
+    fallbackCommits: 156,
   },
   {
-    name: "Verzio",
+    name: "Verzio Y",
     username: "MyKineID",
     role: "Core Contributor & Endpoint Specialist",
     nim: "15260225",
@@ -21,10 +21,10 @@ export const CONTRIBUTORS: Contributor[] = [
     kelas: "15.1B.30",
     avatarUrl: "https://github.com/MyKineID.png",
     profileUrl: "https://github.com/MyKineID",
-    fallbackCommits: 5,
+    fallbackCommits: 6,
   },
   {
-    name: "Muhammad Raffli Aldiansyah",
+    name: "M. Raffli Aldiansyah",
     username: "Seeyaa77",
     role: "Core Contributor & Builder",
     nim: "15260161",
@@ -32,6 +32,6 @@ export const CONTRIBUTORS: Contributor[] = [
     kelas: "15.1A.30",
     avatarUrl: "https://github.com/Seeyaa77.png",
     profileUrl: "https://github.com/Seeyaa77",
-    fallbackCommits: 1,
+    fallbackCommits: 4,
   },
 ];

@@ -6,10 +6,7 @@ export function Hero() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
         {/* Left column: Text content */}
         <div className="lg:col-span-7 text-left">
-          <div className="badge-dark mb-6">
-            <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
-            <span>UNOFFICIAL CAMPUS GATEWAY</span>
-          </div>
+          <p className="section-kicker mb-6">Unofficial Campus Gateway</p>
 
           <h1 className="font-display text-3xl sm:text-5xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.12] mb-6">
             Satu Antarmuka REST API untuk Seluruh Layanan Kampus UBSI.
@@ -46,22 +43,22 @@ export function Hero() {
             </a>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl">
-            <div className="glass-card-3d px-4 py-3.5 text-xs font-mono text-secondary">
-              <span className="text-[#083344] font-bold block text-lg mb-0.5">6 Layanan</span>
-              Terintegrasi
+          <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-5 max-w-2xl">
+            <div className="border-l-[3px] border-[#92EEFF] pl-4">
+              <span className="block font-display text-2xl font-bold text-foreground mb-1">6</span>
+              <span className="text-[11px] font-mono text-secondary uppercase tracking-wide">Layanan Terintegrasi</span>
             </div>
-            <div className="glass-card-3d px-4 py-3.5 text-xs font-mono text-secondary">
-              <span className="text-[#083344] font-bold block text-lg mb-0.5">23 Jurnal</span>
-              Aktif Resmi
+            <div className="border-l-[3px] border-[#92EEFF] pl-4">
+              <span className="block font-display text-2xl font-bold text-foreground mb-1">23</span>
+              <span className="text-[11px] font-mono text-secondary uppercase tracking-wide">Jurnal Aktif Resmi</span>
             </div>
-            <div className="glass-card-3d px-4 py-3.5 text-xs font-mono text-secondary">
-              <span className="text-[#083344] font-bold block text-lg mb-0.5">Sub-250ms</span>
-              Caching Latency
+            <div className="border-l-[3px] border-[#92EEFF] pl-4">
+              <span className="block font-display text-2xl font-bold text-foreground mb-1">250ms</span>
+              <span className="text-[11px] font-mono text-secondary uppercase tracking-wide">Caching Latency</span>
             </div>
-            <div className="glass-card-3d px-4 py-3.5 text-xs font-mono text-secondary">
-              <span className="text-[#083344] font-bold block text-lg mb-0.5">71 Tests</span>
-              100% Passed
+            <div className="border-l-[3px] border-[#92EEFF] pl-4">
+              <span className="block font-display text-2xl font-bold text-foreground mb-1">89</span>
+              <span className="text-[11px] font-mono text-secondary uppercase tracking-wide">Tests 100% Passed</span>
             </div>
           </div>
         </div>
@@ -89,8 +86,8 @@ export function Hero() {
                     Tentang UBSI API
                   </span>
                 </div>
-                <span className="text-[10px] font-mono text-[#94A7BC] bg-white/5 px-2 py-0.5 rounded-sm border border-white/10">
-                  Open Core • MIT
+                <span className="text-[10px] font-mono text-[#94A7BC]">
+                  Open Core · MIT
                 </span>
               </div>
               <p className="text-xs text-[#94A7BC] leading-relaxed font-sans">

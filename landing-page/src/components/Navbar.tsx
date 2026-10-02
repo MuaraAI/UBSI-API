@@ -57,6 +57,9 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
             <a href="#quickstart" className="hover:text-foreground transition-colors duration-200 ease-glass">
               Quickstart
             </a>
+            <Link href="/recap" className="hover:text-foreground transition-colors duration-200 ease-glass">
+              Rekap Nilai
+            </Link>
             <a href="#contributors" className="hover:text-foreground transition-colors duration-200 ease-glass">
               Kontributor
             </a>
@@ -66,7 +69,7 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
             href="https://github.com/MuaraAI/UBSI-API"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-pill bg-[#0a1220] hover:bg-[#131b26] border border-[#92EEFF]/30 text-xs font-mono text-white transition-all duration-200 ease-glass shadow-sm group"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#0a1220] hover:bg-[#131b26] border border-[#92EEFF]/30 text-xs font-mono text-white transition-all duration-200 ease-glass shadow-sm group"
             aria-label="GitHub Repository Stars"
           >
             {/* GitHub Octocat Icon */}
@@ -144,6 +147,13 @@ export function Navbar({ starsCount = 2 }: { starsCount?: number }) {
           >
             Kontributor Mahasiswa
           </a>
+          <Link
+            href="/recap"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm font-medium text-secondary hover:text-accent py-1.5 transition-colors"
+          >
+            Rekap Nilai
+          </Link>
         </div>
       )}
     </header>

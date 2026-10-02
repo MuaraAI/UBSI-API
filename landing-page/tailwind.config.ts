@@ -37,6 +37,7 @@ const config: Config = {
         sans: ["var(--font-gordita)", "var(--font-inter)", "system-ui", "-apple-system", "sans-serif"],
         display: ["var(--font-gordita)", "var(--font-inter)", "system-ui", "-apple-system", "sans-serif"],
         mono: ["var(--font-jetbrains-mono)", "monospace"],
+        anton: ["var(--font-anton)", "Impact", "sans-serif"],
       },
       backdropBlur: {
         glass: "24px",

@@ -79,6 +79,18 @@ const jetbrainsMono = localFont({
   display: "swap",
 });
 
+const anton = localFont({
+  src: [
+    {
+      path: "../../public/fonts/Anton-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-anton",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "UBSI API: Unofficial REST API Aggregator 6 Layanan Kampus UBSI | Muara AI",
   description:
@@ -152,7 +164,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${gordita.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${gordita.variable} ${inter.variable} ${jetbrainsMono.variable} ${anton.variable}`}
     >
       <head>
         <script

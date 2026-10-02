@@ -5,11 +5,8 @@ export function ModulesGrid() {
   return (
     <section id="modules" className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="text-left mb-12">
-        <div className="badge-dark mb-4">
-          <span className="w-2 h-2 rounded-full bg-[#92EEFF] shadow-[0_0_8px_#92EEFF] animate-pulse" />
-          <span>MODULAR ENDPOINTS</span>
-        </div>
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-3">
+        <p className="section-kicker mb-3">Modular Endpoints</p>
+        <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
           6 Layanan Kampus UBSI dalam Satu Standar.
         </h2>
         <p className="text-secondary text-sm sm:text-base mt-2 max-w-2xl font-sans">
@@ -26,8 +23,8 @@ export function ModulesGrid() {
             <div className="absolute inset-0 rounded-[20px] bg-gradient-to-br from-white/60 via-transparent to-cyan-100/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <span className="accent-badge text-xs font-mono font-semibold">
-                  {mod.endpointsCount} Endpoints
+                <span className="text-[11px] font-mono text-[#08738a] font-medium">
+                  {mod.endpointsCount} endpoints
                 </span>
                 <span className="text-[11px] font-mono text-secondary font-medium">
                   {mod.service}
