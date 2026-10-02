@@ -27,7 +27,7 @@ async def test_get_courses_success(monkeypatch):
     mock_redis.incr.return_value = 1
 
     with patch("redis.asyncio.from_url", return_value=mock_redis), \
-         patch("app.modules.elearning.elearning_client.fetch_page", return_value=mock_html):
+         patch("app.modules.elearning.pooled_elearning_client.fetch_page", return_value=mock_html):
 
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             res = await ac.get("/v1/elearning/courses")
@@ -50,7 +50,7 @@ async def test_get_assignments_with_token(monkeypatch):
     mock_redis.incr.return_value = 1
 
     with patch("redis.asyncio.from_url", return_value=mock_redis), \
-         patch("app.modules.elearning.elearning_client.fetch_page", return_value=mock_html):
+         patch("app.modules.elearning.pooled_elearning_client.fetch_page", return_value=mock_html):
 
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             res = await ac.get("/v1/elearning/assignments?token=custom_token")
@@ -202,19 +202,19 @@ async def test_get_presence_and_materials_and_quiz(monkeypatch):
     mock_redis.incr.return_value = 1
 
     with patch("redis.asyncio.from_url", return_value=mock_redis):
-        with patch("app.modules.elearning.elearning_client.fetch_page", return_value=mock_absen_html):
+        with patch("app.modules.elearning.pooled_elearning_client.fetch_page", return_value=mock_absen_html):
             async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
                 res_p = await ac.get("/v1/elearning/presence?token=test_tok")
             assert res_p.status_code == 200
             assert res_p.json()["success"] is True
 
-        with patch("app.modules.elearning.elearning_client.fetch_page", return_value=mock_learning_html):
+        with patch("app.modules.elearning.pooled_elearning_client.fetch_page", return_value=mock_learning_html):
             async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
                 res_m = await ac.get("/v1/elearning/materials?token=test_tok")
             assert res_m.status_code == 200
             assert res_m.json()["success"] is True
 
-        with patch("app.modules.elearning.elearning_client.fetch_page", return_value=mock_quiz_html):
+        with patch("app.modules.elearning.pooled_elearning_client.fetch_page", return_value=mock_quiz_html):
             async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
                 res_q = await ac.get("/v1/elearning/quiz")
             assert res_q.status_code == 200

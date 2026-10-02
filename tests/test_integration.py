@@ -36,7 +36,7 @@ async def test_full_pipeline_integration(monkeypatch):
 
     with patch("redis.asyncio.from_url", return_value=mock_redis), \
          patch("app.modules.studentv2.studentv2_client.fetch_page", return_value=sv2_html), \
-         patch("app.modules.elearning.elearning_client.fetch_page", return_value=el_html), \
+         patch("app.modules.elearning.pooled_elearning_client.fetch_page", return_value=el_html), \
          patch("app.modules.elibrary.elibrary_client.fetch_search", return_value=lib_html), \
          patch("app.modules.repository.repository_client.fetch_recent", return_value=repo_html), \
          patch("app.modules.ejournal.ejournal_client.fetch_catalog", return_value=ej_html), \
